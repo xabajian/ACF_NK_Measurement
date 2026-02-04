@@ -1,12 +1,12 @@
 # Abajian, Conte, and Fenichel (ACF 2026)
 
-Read me file accompanying the scripts required to replicate findings in the main text and supplementary information for “Omitting the environment as an input biases measurement of economic productivity” (ACF 2026).
+Readme file accompanying the scripts required to replicate findings in the main text and supplementary information for “Omitting the environment as an input biases measurement of economic productivity” (ACF 2026).
 
 Replication files for the peer review responses are available from xander.abajian@gmail.com on request.
 
 ## Setup
 
-Scripts in this repository are written in Stata. It's assumed that the replicator operates from a working directory containing all the necessary files and folders detailed in the structure below. Data are small enough to be included in the github repo. To run the Stata scripts, this folder should be set as the root directory and the global macro $root should correspond to the folder containing all files in "ACF_NK_Measurement" (IE,  global root "{~/ACF_NK_Measurement}" needs to be run). Scripts will not run out of order (more below_).
+Scripts in this repository are written in Stata. It's assumed that the replicator operates from a working directory containing all the necessary files and folders detailed in the structure below. Data are small enough to be included in the GitHub repo. To run the Stata scripts, this folder should be set as the root directory and the global macro $root should correspond to the folder containing all files in "ACF_NK_Measurement" (i.e.,  global root "{~/ACF_NK_Measurement}" needs to be run). Scripts will not run out of order (more below_).
 
 ## Requirements
 
@@ -14,7 +14,7 @@ All programs are run in the following versions of these applications:
 
 * Stata: Stata/SE 18.5 for Mac 
 
-and were executed on Mac OS 26.2 (Tahoe). Programs must be run in the order in which they appear in the directory. Running all files associated with the main manuscript takes about a day on a new laptop because the simulations are performed in stata and it's not particularly efficient at simulating data. Programs outside of the simulations should take 5-10 minutes because of the interpolation process fitting simulated TFP errors to each country. Outside of that, reading in data/building indices/running regressions should run instantaneously give or take.
+and were executed on Mac OS 26.2 (Tahoe). Programs must be run in the order in which they appear in the directory. Running all files associated with the main manuscript takes about a day on a new laptop because the simulations are performed in stata and it's not particularly efficient at simulating data. Programs outside of the simulations should take 5-10 minutes because of the interpolation process fitting simulated TFP errors to each country. Outside of that, reading in data/building indices/running regressions should run instantaneously, give or take.
 
 Running the Stata scripts requires
 
@@ -61,17 +61,17 @@ Scripts run in this order do the following things:
 
 ## Section 2 - Regressions of TFP on renewables
 
-- `0_CWON_Producivity_RegsQuantity_RHS` — Creates all directopries listed above. Reads in quantitites of 7 renewable resources of interest from CWON raw data. Runs regressions of TFP on renewables in section 2. Saves these quantities out for use when constructing tornqvist indices.
+- `0_CWON_Producivity_RegsQuantity_RHS` — Creates all directories listed above. Reads in quantities of seven renewable resources of interest from CWON raw data. Runs regressions of TFP on renewables in Section 2 of the manuscript (i.e., Table 1). Saves these quantities out for use when constructing Tornqvist indices.
 
 ## Section 3 - Tornqvist indices
 
 - `1_Make_Tornqvist_Indices` — Creates tornqvist indices from raw CWON data.
-- `2_Tornqvist_Indices_Regs` - solves for average growth rates of Tornqvist indices across countries to be used to place them in Figure 1. Runs regressions of TFP and output on our two tornqvist indices that appear in the SM. 
+- `2_Tornqvist_Indices_Regs` - Solves for average growth rates of Tornqvist indices across countries to be used to place them in Figure 1. Runs regressions of TFP and output on our two tornqvist indices that appear in the SM. 
 
 ## Figures
 
-- `3_Figure1` - Assembles Figure 1 and a few appendix tables. This program is a wrapper which calls
-      - `RMSE Program Case*`- Runs casewise simulations described in appendix
+- `3_Figure1` - Assembles Figure 1 and a few appendix tables. This program is a wrapper which calls the following .do files:
+      - `RMSE Program Case*`- Runs casewise simulations described in SM
       - `overlay*` - creates overlays of ISO codes on simulated heatmaps 
 
 # Data Descriptions
@@ -82,9 +82,10 @@ Scripts run in this order do the following things:
 4. `pwt100_xsection.dta` -- cross section of PWT
 5. `real_wealth_chained_tornqvist_unbalanced.dta` -- Read in from `FR_WLD_2024_195` folder. CWON version of tornqvist quantity indices that are in the wealth index dataset
 5. `assets_volume_variables.dta` -- Read in from `FR_WLD_2024_195` folder. CWON panel opf renewable assert quantities at country level over time
-6. `renewable_wealth.dta` -- collapsed version of above file containing only renewables for convenience when merging to build weights for our index
+6. `renewable_wealth.dta` -- Collapsed version of above file containing only renewables for convenience when merging to build weights for our index
 7. `UN_FAO_TFP_panel.dta` -- Panel of agricultural TFP for 161 countries taken from the USDA ERS. Taken from here: https://www.ers.usda.gov/data-products/international-agricultural-productivity
 
 
 ## Attribution 
- ...
+
+\lipsum[1]
