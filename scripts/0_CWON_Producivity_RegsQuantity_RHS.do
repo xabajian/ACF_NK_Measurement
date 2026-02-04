@@ -12,6 +12,7 @@ capture mkdir quantities
 capture mkdir tables
 capture mkdir figs
 capture mkdir simulations
+capture mkdir processed
 
 
 
