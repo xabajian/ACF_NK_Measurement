@@ -6,8 +6,7 @@ Replication files for the peer review responses are available from xander.abajia
 
 ## Setup
 
-Scripts in this repository are written in Stata. Throughout this document, it is assumed that the replicator operates from a working directory containing all the necessary files and folders detailed in the structure below. Data are small enough to be included in the github repo. to run the Stata scripts, this folder should be set as the root directory and the global macro $root should correspond to the folder containing all files in "ACF_NK_Measurement". 
-(IE,  global root "{~/ACF_NK_Measurement}" needs to be run).
+Scripts in this repository are written in Stata. It's assumed that the replicator operates from a working directory containing all the necessary files and folders detailed in the structure below. Data are small enough to be included in the github repo. To run the Stata scripts, this folder should be set as the root directory and the global macro $root should correspond to the folder containing all files in "ACF_NK_Measurement" (IE,  global root "{~/ACF_NK_Measurement}" needs to be run). Scripts will not run out of order (more below_).
 
 ## Requirements
 
@@ -15,7 +14,7 @@ All programs are run in the following versions of these applications:
 
 * Stata: Stata/SE 18.5 for Mac 
 
-and were executed on Mac OS 26.2 (Tahoe). Programs must be run in the order in which they appear in the directory. Running all files associated with the main manuscript takes 5-10 minutes in total on an average laptop.
+and were executed on Mac OS 26.2 (Tahoe). Programs must be run in the order in which they appear in the directory. Running all files associated with the main manuscript takes about a day on a new laptop because the simulations are performed in stata and it's not particularly efficient at simulating data. Programs outside of the simulations should take 5-10 minutes because of the interpolation process fitting simulated TFP errors to each country. Outside of that, reading in data/building indices/running regressions should run instantaneously give or take.
 
 Running the Stata scripts requires
 
@@ -53,9 +52,12 @@ NB: additional folders "processed", "figs", "tables", "simulations", and "quanti
 
 # Description of Scripts to Replicate our Analysis
 
-The Stata scripts all contain numerical prefixes. These prefixes denote the order they should be run in. 
+The "scripts" folder contains all scripts that are used to generate findings in the paper and SM. Scripts all contain numerical prefixes. These prefixes denote the order they should be run in. They must be run in this order.
 
 ### Descriptions
+
+Scripts run in this order do the following things:
+
 
 ## Section 2 - Regressions of TFP on renewables
 
