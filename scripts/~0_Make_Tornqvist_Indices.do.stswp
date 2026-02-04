@@ -6,6 +6,13 @@ set seed 1234
 *===============================*
 * Paths / globals
 *===============================*
+cd "/Users/xabajian/Documents/GitHub/ACF_NK_Measurement"
+
+capture mkdir quantities
+capture mkdir figs
+capture mkdir tabs
+
+
 cd "/Users/xabajian/Documents/GitHub/ACF_NK_Measurement/quantities"
 
 global root "/Users/xabajian/Documents/GitHub/ACF_NK_Measurement"
@@ -16,6 +23,8 @@ global processed "$root/processed"
 global CWON_inputs "$raw/FR_WLD_2024_195/Reproducibility package/Output/Latest"
 
 set scheme plotplain
+
+
 
 *============================================================*
 * Nonrenewable resource extraction quantities

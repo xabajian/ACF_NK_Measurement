@@ -79,4 +79,4 @@ sort corr_N1_N2_adjust corr_N1_K_adjust
 by corr_N1_N2_adjust corr_N1_K_adjust: egen oos_means = max(oos_mean_np)
 keep if g_n1!=.
 
-save "sim_dir/oos_means4.dta", replace 
+save "$sim_dir/oos_means4.dta", replace 
