@@ -1,14 +1,12 @@
 # Abajian, Conte, and Fenichel (ACF 2026)
 
-Read me file accompanying the scripts required to replicate findings in the main text and supplementary information for “Omitting the environment as an input biases measurement of economic productivity” (ACMD 2025).
+Read me file accompanying the scripts required to replicate findings in the main text and supplementary information for “Omitting the environment as an input biases measurement of economic productivity” (ACF 2026).
 
 Replication files for the peer review responses are available from xander.abajian@gmail.com on request.
 
 ## Setup
 
-Scripts in this repository are written in Stata and R. Throughout this document, it is assumed that the replicator operates from a working directory containing all the necessary files and folders detailed in the structure below. Most importantly, a replicator must download the associated data repository from Zenodo at 
-[https://palceholder](placeholder). 
-To run the Stata scripts, this folder should be set as the root directory and the global macro $root should correspond to the folder containing all files in "ACF_NK_Measurement". 
+Scripts in this repository are written in Stata. Throughout this document, it is assumed that the replicator operates from a working directory containing all the necessary files and folders detailed in the structure below. Data are small enough to be included in the github repo. to run the Stata scripts, this folder should be set as the root directory and the global macro $root should correspond to the folder containing all files in "ACF_NK_Measurement". 
 (IE,  global root "{~/ACF_NK_Measurement}" needs to be run).
 
 ## Requirements
@@ -99,46 +97,42 @@ The dataset that these files take as an argument is proprietary. The Emissions I
 
 ### Descriptions
 
-#### Used in Main Manuscript
-- `0_Emissions_Factors_dofile` — solve for country-level fuel-specific emissions factors for each year of 2010-2018 from the IEA Emissions Intensities Report Data. At times this requires a degree of dimensional analysis to get units (emissions per energy) correct. This solves for the small _f_ terms in equation 5.
-- `0_Factors_Quantities_Merge` — Merge primary fuel-country-year specific factors into the quantities of each primary fuel consumed. This file also maps primary fuels listed as consumed in the WEB that do not have a perfect match in the EIR data. This maps each priamry fuel missing a factor into the authors' judgement of the most appropriate factor to assign to it based on what is available. These quantities are taken from the WEB dataset and represent the _omega_ terms in equation 5 in section 5.2.
-- `0_Impute_Missing_Factors`  - This file imputes missing factors for countries where insufficient data are present. The procedure is outlined in-depth in the comments of the script.
-- `0_Global_Factor_Trends` — Fits a simple exponential decay model to the trends in global emissions factors for both electriicty and other fuels between 2000 and 2018. Used in the SI as well as for peer review
+## Section 2 - Regressions of TFP on renewables
 
-## Section 2 - Simulations and regressions of TFP on renewables
-
-- `2_CAF_Calculation` — solves for our central CAF estimates in the manuscript. Evaluates equations 3 and 4 in the methods section 5.1 given inputs as constructed above.
-- `2_CAF_Decomp` — decomposes CAF between the contributions by each fuel type to inform the graphics in Figure 3.
+- `1_CWON_Producivity_RegsQuantity_RHS` — Runs regressions of TFP on renewables in section 2
 
 ## Section 3 - Tornqvist indices
 
-- `1_CAF_Decomp` — decomposes CAF between the contributions by each fuel type to inform the graphics in Figure 3.
-- `1_CAF_Decomp` — decomposes CAF between the contributions by each fuel type to inform the graphics in Figure 3.
+- `0_Make_Tornqvist_Indices` — Creates tornqvist indices from raw CWON data.
+- `2_Tornqvist_Indices_Regs' - solves for average growth rates of Tornqvist indices across countries to be used to place them in Figure 1. Runs regressions of TFP and output on our two tornqvist indices that appear in the SM. 
 
 ## Figures
 
-- `Fig1_schematic` — Figure 1
+- `3_Figure1` - Assembles Figure 1 and a few appendix tablers
+- `RMSE Program Case*`- Runs casewise simulations described in appendix
+- `overlay*` - creates overlays of ISO codes on simulated heatmaps 
 
-
-# Data Description for the Data Repo
-
-
-
-This is a brief description of the six folders contained in the Zenodo repository for the CAF paper. Each of these folders must exist for all code to run
-
-
-
+# Data Descriptions
 
 ##  Raw
 
-Raw files used as inputs into calculating the CAF.
+Raw files used as inputs  
 
-1. `RCPs`:  Datasets containing time series of GMST predictions from the GCMs used by Rode et al (2021) as well as time series of cumulative emissions under RCP 4.5 and 8.5 from the RCP Database (Version 2.0.4) at `http://www.iiasa.ac.at/web-apps/tnt/RcpDb `. 
-2. `uncertainty_9_12`:  Projections of mean and 5-95 confidence intervals for country-level adaptive energy demand from Rode et al (2021).
-3. `no_adapt`: Objects used to calculate the no extensive marign CAF in the appendix
+1. `FR_WLD_2024_195'
 
 
 ## Processed
+
+CWON_data.dta
+euro_area_mfp_panel_iso.dta
+pwt100_xsection.dta
+pwt100.dta
+real_wealth_chained_tornqvist_unbalanced.dta
+renewable_quantities.dta
+ritest1.dta
+tornqvist_panel.dta
+UN_FAO_TFP_panel.dta
+US_MFP.dta
 
 
 Finished files that store the results from various procedures documented in the methods section (manuscript section 5) or the SI. 
