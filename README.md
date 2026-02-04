@@ -17,7 +17,7 @@ All programs are run in the following versions of these applications:
 
 * Stata: Stata/SE 18.5 for Mac 
 
-and were executed on Mac OS 26.2 (Taboe). Programs must be run in the order in which they appear in the directory. Running all files associated with the main manuscript takes 5-10 minutes in total on an average laptop.
+and were executed on Mac OS 26.2 (Tahoe). Programs must be run in the order in which they appear in the directory. Running all files associated with the main manuscript takes 5-10 minutes in total on an average laptop.
 
 Running the Stata scripts requires
 
