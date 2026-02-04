@@ -26,14 +26,6 @@ Running the Stata scripts requires
 # File Tree 
 
 ```bash
-├── figs
-│   ├── four_cases_overlay.pdf
-│   ├── four_cases_overlay.png
-│   ├── overlay1.gph
-│   ├── overlay2.gph
-│   ├── overlay3.gph
-│   ├── overlay4.gph
-│   └── robustness_RI.png
 ├── processed
 ├── raw
 │   ├── euro_area_mfp_panel_iso.dta
@@ -59,7 +51,7 @@ Running the Stata scripts requires
 │   ├── RMSE Program Case3.do
 │   └── RMSE Program Case4.do
 ```
-
+NB: additional folders "processed", "figs", "tables", "simulations", and "quantities" will be made by script 0_CWON_Producivity_RegsQuantity_RHS.do.
 
 # Description of Scripts to Replicate our Analysis
 
