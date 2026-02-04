@@ -26,7 +26,6 @@ Running the Stata scripts requires
 # File Tree 
 
 ```bash
-├── processed
 ├── raw
 │   ├── euro_area_mfp_panel_iso.dta
 │   ├── FR_WLD_2024_195 [CWON DATA]
