@@ -22,11 +22,11 @@ use "$processed/tornqvist_panel.dta", clear
 
 
 /* Merges in PWT */
-merge 1:1 countrycode year using "$processed/pwt100.dta"
+merge 1:1 countrycode year using "$raw/pwt100.dta"
 drop _merge
 
 // Mine vs theirs
-merge 1:1 countrycode year using "$processed/real_wealth_chained_tornqvist_unbalanced.dta"
+merge 1:1 countrycode year using "$raw/FR_WLD_2024_195/Reproducibility package/Working/real_wealth_chained_tornqvist_unbalanced.dta"
 drop _merge
 
 drop if country_byte == .

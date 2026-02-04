@@ -63,7 +63,7 @@ replace corr_N1_K_adjust = corr_N1_K_adjust/100
 
 
 gen countrycode=country_string
-merge 1:1 countrycode using "$processed/pwt100_xsection.dta", keep(3)
+merge 1:1 countrycode using "$raw/pwt100_xsection.dta", keep(3)
 drop _merge
 
 replace oos_means = oos_means/dlog_TFP
