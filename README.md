@@ -28,55 +28,70 @@ Running the Stata scripts requires
 # File Tree 
 
 ```bash
-└── scripts
-    ├── CAF Scripts Final
-    │   ├── 0_National_emissions_shares_2019_Minx_GHG.do
-    │   ├── 0_Read_IR_Populations.do
-    │   ├── 0_Read_ISO3_Populations.do
-    │   ├── 0_Read_rode_data_noadapt.do
-    │   ├── 0_Read_rode_data_uncertainty.do
-    │   ├── 0_Read_rode_data_uncertainty_Decay.do
-    │   ├── 0_Read_rode_data_uncertainty_Decay_country_level.do
-    │   ├── 1_TCRE_analogue.do
-    │   ├── 2_CAF_Calculation.do
-    │   ├── 2_CAF_Calculation_Decay.do
-    │   ├── 2_CAF_Calculation_Decay_Country_Level.do
-    │   ├── 2_CAF_Calculation_Decay_Country_Level_Monte_Carlo.do
-    │   ├── 2_CAF_Calculation_noadapt.do
-    │   ├── 2_CAF_Decomp.do
-    │   ├── 3_Covariates_for_NDCgaps.do
-    │   ├── 3_Covariates_for_NDCgaps_alt.do
-    │   ├── 3_NDC_gaps.do
-    │   ├── 4_CAF Damages
-    │   │   ├── CAF_avoided_damages.do
-    │   │   ├── integration_damage_function_coefficients.csv
-    │   │   └── ssp2_growth.csv
-    │   ├── Appendix_dynamic_CAF.do
-    │   ├── Appendix_dynamic_CAF_makeIRFS.do
-    │   ├── Figures
-    │   │   ├── Fig1_schematic
-    │   │   │   └── CAF_components.R
-    │   │   ├── GMST_history.do
-    │   │   ├── combined_3.gph
-    │   │   ├── figure2_TCRE.do
-    │   │   ├── figure2_cumulative_emissions.do
-    │   │   ├── figure2_intensity_maps.do
-    │   │   ├── figure3.do
-    │   │   ├── figure4.do
-    │   │   ├── figure4_LOO.do
-    │   │   └── figure4_alt.do
-    │   └── Robustness_coverage_checking.do
-    └── IEA Data Processing
-        ├── 0_Check_Global_Factors.do
-        ├── 0_Check_otherfuels_emissions_factors.do
-        ├── 0_Emissions_Factors_dofile.do
-        ├── 0_Factors_Quantities_Merge.do
-        ├── 0_Global_Factor_Trends.do
-        ├── 0_Local_Factor_Trends.do
-        ├── 0_product_name_crosswalks.xlsx
-        ├── factor_maps.R
-        └── factor_maps_imputed.R
-
+├── processed
+│   ├── CWON_data.dta
+│   ├── euro_area_mfp_panel_iso.dta
+│   ├── pwt100_xsection.dta
+│   ├── pwt100.dta
+│   ├── real_wealth_chained_tornqvist_unbalanced.dta
+│   ├── renewable_quantities.dta
+│   ├── ritest1.dta
+│   ├── tornqvist_panel.dta
+│   ├── UN_FAO_TFP_panel.dta
+│   └── US_MFP.dta
+├── raw
+│   ├── Eurostat MFP
+│   │   └── Crude-MFP-calculations-by-country.xlsx
+│   └── FR_WLD_2024_195
+│       ├── LICENSE.txt
+│       ├── README.pdf
+│       ├── Repoducibility verification-RR_WLD_2024_195.pdf
+│       └── Reproducibility package
+│           ├── Data Dictionary.xlsx
+│           ├── Output
+│              ... [full CWON Data]
+├── scripts
+│   ├── ~0_Make_Tornqvist_Indices.do.stswp
+│   ├── ~3_Figure1.do.stswp
+│   ├── 0_Make_Tornqvist_Indices.do
+│   ├── 1_CWON_Producivity_RegsQuantity_RHS.do
+│   ├── 2_Tornqvist_Indices_Regs.do
+│   ├── 3_Figure1.do
+│   ├── overlay1.do
+│   ├── overlay2.do
+│   ├── overlay3.do
+│   ├── overlay4.do
+│   ├── RMSE Program Case1.do
+│   ├── RMSE Program Case2.do
+│   ├── RMSE Program Case3.do
+│   └── RMSE Program Case4.do
+├── simulations
+│   ├── country_tab.tex
+│   ├── CWON_data.dta
+│   ├── four_cases_overlay.pdf
+│   ├── four_cases_overlay.png
+│   ├── oos_means1.dta
+│   ├── oos_means2.dta
+│   ├── oos_means3.dta
+│   ├── oos_means4.dta
+│   ├── overlay1.gph
+│   ├── overlay2.gph
+│   ├── overlay3.gph
+│   ├── overlay4.gph
+│   ├── RMSE_N1_N2_case1.dta
+│   ├── RMSE_N1_N2_case2.dta
+│   ├── RMSE_N1_N2_case3.dta
+│   └── RMSE_N1_N2_case4.dta
+└── tables
+    ├── app_robustness_ag.tex
+    ├── appendix_tornq_regs_CWON.tex
+    ├── appendix_tornq_regs.tex
+    ├── country_tab.tex
+    ├── other_robustness.tex
+    ├── tab1_narrow.tex
+    ├── tab1.tex
+    ├── tab2.tex
+    └── tabEU_comp.tex
 ```
 
 
