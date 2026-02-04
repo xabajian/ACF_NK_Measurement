@@ -81,8 +81,7 @@ The Stata scripts all contain numerical prefixes. These prefixes denote the orde
 5. `real_wealth_chained_tornqvist_unbalanced.dta` -- Read in from `FR_WLD_2024_195` folder. CWON version of tornqvist quantity indices that are in the wealth index dataset
 5. `assets_volume_variables.dta` -- Read in from `FR_WLD_2024_195` folder. CWON panel opf renewable assert quantities at country level over time
 6. `renewable_wealth.dta` -- collapsed version of above file containing only renewables for convenience when merging to build weights for our index
-
-
+7. `UN_FAO_TFP_panel.dta` -- Panel of agricultural TFP for 161 countries taken from the USDA ERS. Taken from here: https://www.ers.usda.gov/data-products/international-agricultural-productivity
 
 
 ## Attribution 
