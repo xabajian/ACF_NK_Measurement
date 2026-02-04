@@ -82,31 +82,12 @@ Running the Stata scripts requires
 │   ├── RMSE_N1_N2_case2.dta
 │   ├── RMSE_N1_N2_case3.dta
 │   └── RMSE_N1_N2_case4.dta
-└── tables
-    ├── app_robustness_ag.tex
-    ├── appendix_tornq_regs_CWON.tex
-    ├── appendix_tornq_regs.tex
-    ├── country_tab.tex
-    ├── other_robustness.tex
-    ├── tab1_narrow.tex
-    ├── tab1.tex
-    ├── tab2.tex
-    └── tabEU_comp.tex
 ```
 
 
 # Description of Scripts to Replicate our Analysis
 
-
-To run the Stata scripts that are not related to processing the proprietary IEA data, one must set their root directory to be the folder containing our Zenodo repository for the paper. All other macros should then be internally consistent.
-
-Stata scripts related to processing the IEA data are present and may be reviewed, but will ultimately not run without access to the IEA’s world energy balances and emissions databases.
-
-To run the R scripts, more directory manipulation may be needed depending on how a replicator has configured their environment.  In principle both should also run out of a correct configuration which sets the Zenodo folder as a root directory.
-
-The replication scripts are separated into two folders (as suggested above): IEA Data Processing and CAF Scripts Final. They (respectively) contain the scripts which process data from the IEA to form emissions factors (section 5.2 equation 5) and run our analysis of how energy demand feeds back into climate change. 
-
-The Stata scripts all contain numerical prefixes. These prefixes roughly denote the section of the analysis they are associated with. Note that not all files in our GitHub repository are used in generating the analysis for the main text — those that are marked “used” are used in the manuscript. Others are used to create portions of the supplementary information file or were used in the peer-review process
+The Stata scripts all contain numerical prefixes. These prefixes denote the order they should be run in. 
 
 # "~/IEA Data Processing"
 
@@ -122,94 +103,21 @@ The dataset that these files take as an argument is proprietary. The Emissions I
 - `0_Emissions_Factors_dofile` — solve for country-level fuel-specific emissions factors for each year of 2010-2018 from the IEA Emissions Intensities Report Data. At times this requires a degree of dimensional analysis to get units (emissions per energy) correct. This solves for the small _f_ terms in equation 5.
 - `0_Factors_Quantities_Merge` — Merge primary fuel-country-year specific factors into the quantities of each primary fuel consumed. This file also maps primary fuels listed as consumed in the WEB that do not have a perfect match in the EIR data. This maps each priamry fuel missing a factor into the authors' judgement of the most appropriate factor to assign to it based on what is available. These quantities are taken from the WEB dataset and represent the _omega_ terms in equation 5 in section 5.2.
 - `0_Impute_Missing_Factors`  - This file imputes missing factors for countries where insufficient data are present. The procedure is outlined in-depth in the comments of the script.
-
-
-#### Not Used in Main Manuscript
-
 - `0_Global_Factor_Trends` — Fits a simple exponential decay model to the trends in global emissions factors for both electriicty and other fuels between 2000 and 2018. Used in the SI as well as for peer review
-- `0_Local_Factor_Trends` — Fits a simple exponential decay model to the trends in emissions factors at the country level for both electriicty and other fuels between 2000 and 2018. Used in the SI as well as for peer review
 
+## Section 2 - Simulations and regressions of TFP on renewables
 
-
-# "~/CAF Scripts Final"
-
-This folder contains all scripts required to calculate the CAF. All the requisite emissions factors are pre-calculated and available in our Zenodo replication files. This portion does not require any files in the "IEA Data Processing" directory to have been run before hand.
-
-
-## Section 0 — Data Processing: Files in this section read in and process all raw data we use in various portions of the paper.
-
-
-
-#### Used in Main Manuscript
-
-- `0_National_emissions_shares_2019_Minx_GHG` — load in country-level time series for emissions
-- `0_Read_IR_Populations` — load impact-region level populations from Rode et al 2021
-- `0_Read_ISO3_Populations` — load ISO3 (country) level populations from Rode et al 2021
-- `0_Read_rode_data_uncertainty` — Read in scenario level point estimates and 5-95 CIs from Rode et al for adaptive energy use under each SSP-RCP scenario we consider. This effectively fetches each element of equation (2) in the methods section we need to construct the CAF.
-
-#### Not Used in Main Manuscript
-- `0_Read_rode_data_uncertainty_Decay` — reformulate `0_Read_rode_data_uncertainty’ above with global decay rates for emissions factors
-- `0_Read_rode_data_uncertainty_Decay_country_level` — reformulate `0_Read_rode_data_uncertainty’ with country-level decay rates for emissions factors
-- `0_Check_otherfuels_emissions_factors` — examine the degree to which outliers/other data issues are affecting our factor values (see SI)
-- `0_Check_Global_Factors` — solve for global factors (see SI)
-- `0_Global_Factor_Trends` — solve for trends in global emissions factors used for sensitivity analysis (see SI)
-- `0_Local_Factor_Trends` — local trends in factors 
-- `0_Read_rode_data_no_adapt.m` — Matlab script for reading in series with no adaptation (see SI)
-- `0_Read_rode_data_no_adapt` — alternative time series for energy demand where interacted ``extensive” adaptation margin is shut down (see SI)
-
-
-## Section 1 —  Solve for our modified analog of the TCRE that measures how historical carbon emissions have translated to changes in GMST
-
-#### Used in Main Manuscript
-- `1_TCRE_analogue.do` — Solves for our beta on changes in cumulative carbon emissions. This performs the procedure in Methods Section 5.3 by estimating equation 6.
-
-## Section 2 - CAF calculations and sensitivity analysis
-
-#### Used in Main Manuscript
 - `2_CAF_Calculation` — solves for our central CAF estimates in the manuscript. Evaluates equations 3 and 4 in the methods section 5.1 given inputs as constructed above.
 - `2_CAF_Decomp` — decomposes CAF between the contributions by each fuel type to inform the graphics in Figure 3.
 
-#### Not Used in Main Manuscript
-- `2_CAF_Calculation_Decay` — solves for the CAF with global decay rates for each emissions factor
-- `2_CAF_Calculation_Decay_Country_Level`— solves for the CAF with local decay rates for each emissions factor
-- `2_CAF_Calculation_Decay_Country_Level_Monte_Carlo` — sensitivity analysis for emissions factors
-- `2_CAF_Calculation_noadapt` — Solves for CAF when extensive margin for adaptation is excluded (see SI)
+## Section 3 - Tornqvist indices
 
-## Section 3 - CAF in the context of NDCs
+- `1_CAF_Decomp` — decomposes CAF between the contributions by each fuel type to inform the graphics in Figure 3.
+- `1_CAF_Decomp` — decomposes CAF between the contributions by each fuel type to inform the graphics in Figure 3.
 
-#### Used in Main Manuscript
-- `3_NDC_gaps` — Solves for the NDC gaps we reference in text as described in the "Baseline country-level emissions and Nationally Determined Contributions” paragraph of 5.2.
-- `3_Covariates_for_NDCgaps` — Solves for country-level covariates at various horizons to use to inform the NDC gap analysis
-- `3_Covariates_for_NDCgaps_alt` — Repeats the exercise above by fuel.
-
-## Section 4 - Solves for the monetized value of damages using outputs from the DSCIM model
-
-#### Used in Main Manuscript
-- `CAF_avoided_damages` — Solves for NPV of damages avoided through 2099 under all SSP-RCP scenarios
-- `integration_damage_function_coefficients` -- Damage funciton coefficients from the DSCIM model
-- `ssp2_growth` -- GDP growth under SSP2
-
-  
 ## Figures
 
-#### Used in Main Manuscript
 - `Fig1_schematic` — Figure 1
-- `figure2_cumulative_emissions` — Figure 2: Cumulative Emissions Time Series
-- `figure2_intensity_maps` —Figure 2:  Maps of emissions intensities
-- `figure2_TCRE` —Figure 2:  historical TCRE- analogue figure graphically showing results from Methods 5.3
-- `figure3` — Figure 3: 
-- `figure4` — Figure 4
-
-
-#### Not Used in Main Manuscript
-- `figure4_alt` (SI Section 1)
-- `figure4_LOO` (SI section 5)
-
-
-## Appendix
-
-- `Appendix_dynamic_CAF_makeIRFS` — Solves for the impulse responses at the country-level by implementing equations 8 and 9 from methods section 5.4
-- `Appendix_dynamic_CAF` — aggregates them globally and resolves the dynamic CAF.
 
 
 # Data Description for the Data Repo
@@ -230,34 +138,6 @@ Raw files used as inputs into calculating the CAF.
 3. `no_adapt`: Objects used to calculate the no extensive marign CAF in the appendix
 
 
-
-## NDCs:
-
-Contains raw data on nationally determined contributions and baseline emissions forecasts from [Meinhaussen et al. 2022] (https://doi.org/10.1038/s41586-022-04553-z) as well as conversions to STATA’s data format (.dta). The country-level data are taken from `https://zenodo.org/records/6383612`.
-
-
-## Objects
-
-Contains various intermediate inputs to the CAF that are not per-se processed but are not raw data files
-
-- `essd_ghg_data` : Copernicus historical GHG emissions Data
-- `rcp45_global` and `rcp85_global` : time series of cumulative emissions under RCP 4.5 and 8.5 from the RCP Database (Version 2.0.4) at `http://www.iiasa.ac.at/web-apps/tnt/RcpDb `. 
-
-## Figures
-
-
-Folder where all intermediate files and PDFs for figures in the manuscript and supplementary information sections of the paper are stored
-
-
-
-
-
-## Temporary
-
-
-Directory to store intermediate files
-
-
 ## Processed
 
 
@@ -265,12 +145,4 @@ Finished files that store the results from various procedures documented in the 
 
 
 ## Attribution 
-
-Some processed data contain excerpts of Non-Creative Commons Material as defined by the  International Energy Agency (IEA -- see their terms of use at `https://www.iea.org/terms/terms-of-use-for-non-cc-material'). The emissions factors we use in our analysis are generated using IEA datasets. These data are aggregates of the underlying country-by-fuel level emissions factors and as presented contain only insubstantial amounts of the Non-CC Material. We attest they cannot be used to reconstruct individual data points in the original dataset. The factors we produce are attributable to the following two sources: 
-
-IEA. Emissions factors. Tech. Rep., International Energy Agency (IEA)  (2021). URL https://www.iea.org/data-and-statistics/data-product/emissions-factors-2021. All Rights Reserved.
-
-IEA. World energy balances 2021. Tech. Rep., International Energy Agency (IEA) (2022). URL https://www.iea.org/data-and-statistics/data-product/world-energy-balances. All Rights Reserved.
-
-
-
+ ...
