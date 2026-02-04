@@ -1,0 +1,130 @@
+\documentclass{article}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage[margin=1in]{geometry}
+\begin{document}
+
+\begin{table}[tbp] \centering
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+\begin{tabularx}{\linewidth}{@{}lCCCCCC@{}}
+
+\toprule
+{ISO3 Code}&{{N\_1}$}&{{N\_2}$}&{$\rho(g\_{N\_1},g\_K)$}&{$\rho(g\_{N\_1},g\_{N\_2})$}&{TFP Error Improvement}&{(mean) dlog\_TFP} \tabularnewline
+\midrule \addlinespace[\belowrulesep]
+AGO&.0296438&.0042075&.16&11&.0252382&.0177587 \tabularnewline
+ARG&.0038703&-.0009486&.11&-4&.1317303&-.002687 \tabularnewline
+ARM&.1168258&.0032019&.31&24&.006731&.0622411 \tabularnewline
+AUS&.0394606&-.0034011&-.04&-2&-.0812725&.0045776 \tabularnewline
+AUT&-.0250223&.0004367&.02&4&-.1203138&.0033297 \tabularnewline
+AZE&-.0045862&.0006664&-.05&-5&& \tabularnewline
+BDI&.0689048&-.0003917&.31&4&.0249861&-.0131097 \tabularnewline
+BEL&-.0495241&-.0009563&0&-3&.2598628&.0017964 \tabularnewline
+BEN&.0183936&.0025278&-.31&-7&.0372639&.0155054 \tabularnewline
+BFA&.2502675&.0006372&.14&-8&.0286647&.0132599 \tabularnewline
+BGR&.0044696&-.0016817&-.24&16&.0698055&-.0064298 \tabularnewline
+BHR&.0402782&-.0007364&.13&0&.0397652&-.0092287 \tabularnewline
+BIH&.0231641&.0033905&.34&-14&& \tabularnewline
+BLR&-.0354653&-.0005727&.06&-13&& \tabularnewline
+BOL&.0604754&-.0002559&-.01&-2&-.082193&.004538 \tabularnewline
+BRA&.06274&.0032348&.27&5&-.0441533&-.0083776 \tabularnewline
+BWA&.0645152&-.0013005&0&11&.030688&-.014126 \tabularnewline
+CAF&.0938012&.0000563&.08&-15&-.1381627&-.0027207 \tabularnewline
+CAN&.0159294&.0017378&-.13&0&.2271131&.0023907 \tabularnewline
+CHE&.138687&.0007455&-.02&-49&.0404954&.0061224 \tabularnewline
+CHL&.0404992&.0018842&.17&-28&-.0867979&-.003274 \tabularnewline
+CHN&.0409025&.0011656&.12&-1&.0630247&.0066424 \tabularnewline
+CIV&.1682056&.0000594&-.32&-18&.0415986&.012094 \tabularnewline
+CMR&.0417818&.0009831&.08&33&.1029953&.0056741 \tabularnewline
+COL&.0425342&.0015358&.13&0&-.5616123&-.0007444 \tabularnewline
+CRI&.1199403&.0005346&-.08&-15&.0721178&.0061078 \tabularnewline
+CZE&.0012707&-.0010687&.29&-10&-.0233922&.0121049 \tabularnewline
+DEU&-.0192235&-.0004946&.49&1&.1491761&.0047844 \tabularnewline
+DNK&-.0118637&.0000955&.19&-32&-.0583718&.0030551 \tabularnewline
+DOM&.0583349&-.0001151&.17&-11&-.0192636&.0162637 \tabularnewline
+ECU&.0437028&.0045887&.16&-4&.1590246&.002436 \tabularnewline
+EGY&.0406552&.0015399&.03&1&-.0905589&-.0051964 \tabularnewline
+ESP&.0126337&.0002384&-.1&11&-.2368622&-.002474 \tabularnewline
+EST&.0503705&.0003863&.23&68&.027891&.0222766 \tabularnewline
+FIN&.0212728&-.0014304&.07&14&-.0813465&.0053898 \tabularnewline
+FRA&-.0650899&.0000308&.29&11&-.1656521&.0024458 \tabularnewline
+GAB&.0057262&-.000287&-.22&-5&.032414&-.009969 \tabularnewline
+GBR&-.0374379&.0003972&.17&-7&-.0796625&.004061 \tabularnewline
+GEO&.0376467&-.0003906&-.49&19&& \tabularnewline
+GIN&.0314772&-.0004881&.19&-22&& \tabularnewline
+GRC&.0151659&-.003405&.34&8&.1631987&-.002023 \tabularnewline
+GTM&.0630228&-.0021271&.08&6&-.439494&.0009135 \tabularnewline
+HND&.0150888&-.0002261&-.09&-1&.1232037&-.0030206 \tabularnewline
+HRV&-.0495945&-.0022348&.07&-3&.0995555&.0050119 \tabularnewline
+HUN&-.0516332&-.0010182&-.07&0&.0482576&.0092698 \tabularnewline
+IDN&.0837659&.0018782&.29&-18&.2352702&.0011697 \tabularnewline
+IND&.0374859&-.0002194&-.2&7&-.0262545&.0152097 \tabularnewline
+IRL&-.0151733&.0012736&.03&10&-.0430791&.0099805 \tabularnewline
+IRN&.0313388&-.003057&.31&0&.0336379&-.0093004 \tabularnewline
+IRQ&.0906675&-.0002823&-.29&-19&-.0068981&.0306485 \tabularnewline
+ISR&.0851013&.0008402&-.47&-24&.1562648&.0030505 \tabularnewline
+ITA&-.0339944&-.0005447&0&0&-.0822724&-.0058454 \tabularnewline
+JAM&.0008539&-.0005383&.27&-17&.0429004&-.0061442 \tabularnewline
+JOR&.0269675&-.0012827&-.03&-9&.0990216&-.0034291 \tabularnewline
+JPN&-.0283329&-.0018496&-.23&-15&.0906626&.0034475 \tabularnewline
+KAZ&.0155155&.0004617&-.07&-13&.0147004&.0304031 \tabularnewline
+KEN&.1398903&-.0004507&-.23&-2&.2337386&-.0014461 \tabularnewline
+KGZ&.0601322&-5.42e-06&-.18&15&-.0256945&.0174916 \tabularnewline
+KOR&-.026452&-.0023422&.15&28&.0531854&.0132439 \tabularnewline
+KWT&.0519501&.0005077&-.15&12&-.0216985&-.0285065 \tabularnewline
+LAO&.2270215&.0038583&-.33&12&.5051685&.0014211 \tabularnewline
+LKA&.0142982&.0017447&.13&22&.1292092&.0039435 \tabularnewline
+LTU&.001348&-.00085&-.18&-48&-.0047232&.0226169 \tabularnewline
+LUX&-.0397061&.0003742&.26&30&.5636871&-.0009511 \tabularnewline
+MAR&.0028287&-.0004854&-.04&-10&-.0341137&.0097879 \tabularnewline
+MEX&.0135371&-.0016904&.19&20&.2057391&-.0021035 \tabularnewline
+MKD&.0109733&.0008388&.13&-34&& \tabularnewline
+MNG&.1267002&-.0000652&-.07&4&-.0173306&.0230391 \tabularnewline
+MOZ&.0997267&.0107812&.18&0&.0276705&.0142434 \tabularnewline
+MRT&.0171803&-.0014356&0&8&.1405995&-.0029825 \tabularnewline
+MYS&.0021463&.0005636&-.07&0&.0958312&.0053656 \tabularnewline
+NAM&.0292611&-.0014893&.17&4&.084783&-.0044101 \tabularnewline
+NER&.0821771&.0024005&-.14&6&.0533912&.0108765 \tabularnewline
+NGA&-.0174518&.0001643&-.12&0&-.0218196&.016843 \tabularnewline
+NIC&.0329263&-.0027922&-.04&-19&.1165829&-.0024939 \tabularnewline
+NLD&.0109441&-.0006142&.33&6&-.1090958&.0029956 \tabularnewline
+NOR&-.006205&.0008693&.11&-9&.5377011&-.0006052 \tabularnewline
+NZL&.0933725&-.002572&.34&7&-.0706184&.0046236 \tabularnewline
+OMN&.0236827&.0029528&.43&-8&& \tabularnewline
+PAN&.1189596&.0066807&0&-15&-.0922891&-.0044281 \tabularnewline
+PER&.0493309&.0046171&-.11&-2&-17.75377&-.0000294 \tabularnewline
+PHL&.0495856&.0012724&-.07&-9&.0397333&.0117718 \tabularnewline
+POL&.0253793&-.002236&.27&13&-.0241238&.0156156 \tabularnewline
+PRT&.0246425&.0000136&-.1&-2&-.6981114&-.0007421 \tabularnewline
+QAT&.0601199&.000284&.31&-1&-.0110418&-.0297615 \tabularnewline
+ROU&-.0300762&-.0011064&.21&-21&.0254408&.017749 \tabularnewline
+RWA&.2046917&.0033877&.04&-36&.0088236&.0333753 \tabularnewline
+SAU&.0681536&.0013712&.05&-25&-.0137175&-.0249595 \tabularnewline
+SDN&.1863365&-.0051158&-.07&35&-.0422323&.0132546 \tabularnewline
+SEN&.0949625&-.0014286&.18&7&-.2643204&.0014503 \tabularnewline
+SLE&.0844959&.0013246&.26&0&-.878561&-.0004051 \tabularnewline
+SRB&-.0295129&-.000092&.18&-24&.0135198&.0314249 \tabularnewline
+SUR&.0546422&-.0013118&.15&1&& \tabularnewline
+SVK&-.0321639&-.0018778&.02&0&.0229159&.0214054 \tabularnewline
+SVN&-.0244976&.0032335&-.06&-37&-.0157317&.0136786 \tabularnewline
+SWE&.0247185&-.001063&.16&12&-.0385408&.0106209 \tabularnewline
+SWZ&.0043811&.0006075&-.19&1&.0433203&.013323 \tabularnewline
+TCD&.0477726&.000491&-.04&-1&& \tabularnewline
+TGO&.0800107&.0000341&-.24&12&.0406816&.016417 \tabularnewline
+THA&.0814966&9.50e-06&.13&-5&.0251745&.0157736 \tabularnewline
+TTO&.0046292&-.0025984&-.03&15&-.2856261&.0015907 \tabularnewline
+TUN&-.0387718&.0003067&-.16&0&-.0617851&.0058059 \tabularnewline
+TUR&.0451726&.0004132&0&8&-.4936286&-.0010494 \tabularnewline
+TZA&.1715878&.0001861&-.13&6&.0657667&.0087521 \tabularnewline
+URY&-.0698604&.0093214&.08&-5&-.0453193&.007755 \tabularnewline
+USA&.0196967&-.0016729&-.04&-12&-.0474512&.0068326 \tabularnewline
+ZAF&.0094197&-.00107&.21&8&.133164&-.0028416 \tabularnewline
+ZMB&.006874&.0025504&.18&13&.0257717&.0172999 \tabularnewline
+ZWE&.0196445&.0052239&.28&34&.0551869&.0085526 \tabularnewline
+\bottomrule 
+
+\end{tabularx}
+\end{table}
+\end{document}

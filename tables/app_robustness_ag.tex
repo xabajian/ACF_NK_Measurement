@@ -1,0 +1,34 @@
+\begin{table}[htbp]\centering
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\caption{Agricultural TFP Growth vs. Natural Capital Growth}
+\begin{tabular}{l*{5}{c}}
+\hline\hline
+            &\multicolumn{1}{c}{(1)}&\multicolumn{1}{c}{(2)}&\multicolumn{1}{c}{(3)}&\multicolumn{1}{c}{(4)}&\multicolumn{1}{c}{(5)}\\
+            &\multicolumn{1}{c}{D.log\_tfp}&\multicolumn{1}{c}{D.log\_ag\_TFP}&\multicolumn{1}{c}{D.log\_ag\_TFP}&\multicolumn{1}{c}{D.log\_ag\_TFP}&\multicolumn{1}{c}{D.log\_ag\_TFP}\\
+\hline
+dlog\_q\_urban&       0.571       &      -0.104       &       0.211       &      -0.153       &      -0.145       \\
+            &     (0.218)       &     (0.200)       &     (0.262)       &     (0.194)       &     (0.188)       \\
+[1em]
+dlog\_prod\_area&       0.196       &       0.014       &       0.041       &      -0.030       &       0.060       \\
+            &     (0.098)       &     (0.183)       &     (0.050)       &     (0.129)       &     (0.207)       \\
+[1em]
+dlog\_land   &       0.037       &       0.011       &       0.066       &       0.036       &       0.067       \\
+            &     (0.021)       &     (0.083)       &     (0.052)       &     (0.092)       &     (0.097)       \\
+[1em]
+dlog\_forest\_area\_km&      -0.132       &       0.016       &      -0.074       &       0.022       &       0.024       \\
+            &     (0.112)       &     (0.160)       &     (0.118)       &     (0.155)       &     (0.225)       \\
+[1em]
+dlog\_b\_e    &       0.099       &      -0.117       &       0.038       &      -0.065       &      -0.166       \\
+            &     (0.104)       &     (0.127)       &     (0.114)       &     (0.117)       &     (0.304)       \\
+[1em]
+dlog\_hp\_gwh &       0.008       &      -0.013       &      -0.013       &      -0.017       &      -0.019       \\
+            &     (0.004)       &     (0.012)       &     (0.009)       &     (0.013)       &     (0.013)       \\
+\hline
+Wald        &       0.041       &       0.875       &       0.471       &       0.778       &       0.713       \\
+Bootstrap Wald&       0.093       &       0.940       &       0.658       &       0.844       &     990.000       \\
+N           &        1989       &        1593       &        2279       &        1593       &        1593       \\
+\hline\hline
+\multicolumn{6}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{6}{l}{\footnotesize \sym{*} \(p<0.0001\)}\\
+\end{tabular}
+\end{table}
