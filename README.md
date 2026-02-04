@@ -26,14 +26,12 @@ Running the Stata scripts requires
 # File Tree 
 
 ```bash
-├── processed
 ├── raw
 │   ├── euro_area_mfp_panel_iso.dta
 │   ├── FR_WLD_2024_195 [CWON DATA]
       ...
 │   ├── pwt100_xsection.dta
 │   ├── pwt100.dta
-│   ├── real_wealth_chained_tornqvist_unbalanced.dta
 │   ├── renewable_wealth.dta
 │   └── UN_FAO_TFP_panel.dta
 ├── README.md
@@ -61,44 +59,29 @@ The Stata scripts all contain numerical prefixes. These prefixes denote the orde
 
 ## Section 2 - Regressions of TFP on renewables
 
-- `1_CWON_Producivity_RegsQuantity_RHS` — Runs regressions of TFP on renewables in section 2
+- `0_CWON_Producivity_RegsQuantity_RHS` — Creates all directopries listed above. Reads in quantitites of 7 renewable resources of interest from CWON raw data. Runs regressions of TFP on renewables in section 2. Saves these quantities out for use when constructing tornqvist indices.
 
 ## Section 3 - Tornqvist indices
 
-- `0_Make_Tornqvist_Indices` — Creates tornqvist indices from raw CWON data.
-- `2_Tornqvist_Indices_Regs' - solves for average growth rates of Tornqvist indices across countries to be used to place them in Figure 1. Runs regressions of TFP and output on our two tornqvist indices that appear in the SM. 
+- `1_Make_Tornqvist_Indices` — Creates tornqvist indices from raw CWON data.
+- `2_Tornqvist_Indices_Regs` - solves for average growth rates of Tornqvist indices across countries to be used to place them in Figure 1. Runs regressions of TFP and output on our two tornqvist indices that appear in the SM. 
 
 ## Figures
 
-- `3_Figure1` - Assembles Figure 1 and a few appendix tablers
-- `RMSE Program Case*`- Runs casewise simulations described in appendix
-- `overlay*` - creates overlays of ISO codes on simulated heatmaps 
+- `3_Figure1` - Assembles Figure 1 and a few appendix tables. This program is a wrapper which calls
+      - `RMSE Program Case*`- Runs casewise simulations described in appendix
+      - `overlay*` - creates overlays of ISO codes on simulated heatmaps 
 
 # Data Descriptions
 
-##  Raw
-
-Raw files used as inputs  
-
-1. `FR_WLD_2024_195'
-2. 
-
-euro_area_mfp_panel_iso.dta
-pwt100_xsection.dta
-pwt100.dta
-real_wealth_chained_tornqvist_unbalanced.dta
-renewable_quantities.dta
-ritest1.dta
-tornqvist_panel.dta
-UN_FAO_TFP_panel.dta
-US_MFP.dta
-
-
-## Processed
-
-
-
-Finished files that store the results from various procedures documented in the methods section (manuscript section 5) or the SI. 
+1. `FR_WLD_2024_195` Folder -- CWON datatset. Take from here: [https://data360.worldbank.org/en/dataset/WB_CWON](CWON LINK)
+2. `euro_area_mfp_panel_iso.dta` -- Eurostat experimental MFP series. Taken from here: https://ec.europa.eu/eurostat/documents/7894008/13933430/Crude-MFP-calculations-by-country.xlsx/b47324d8-7ae0-d3ac-32f8-873d188c3811?t=1639061621807
+3. `pwt100.dta` -- PWT version 10.01, https://www.rug.nl/ggdc/productivity/pwt/pwt-releases/pwt1001
+4. `pwt100_xsection.dta` -- cross section of PWT
+5. `real_wealth_chained_tornqvist_unbalanced.dta` -- Read in from `FR_WLD_2024_195` folder. CWON version of tornqvist quantity indices that are in the wealth index dataset
+5. `assets_volume_variables.dta` -- Read in from `FR_WLD_2024_195` folder. CWON panel opf renewable assert quantities at country level over time
+6. `renewable_wealth.dta` -- collapsed version of above file containing only renewables for convenience when merging to build weights for our index
+7. `UN_FAO_TFP_panel.dta` -- Panel of agricultural TFP for 161 countries taken from the USDA ERS. Taken from here: https://www.ers.usda.gov/data-products/international-agricultural-productivity
 
 
 ## Attribution 
