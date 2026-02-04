@@ -26,33 +26,29 @@ Running the Stata scripts requires
 # File Tree 
 
 ```bash
+├── figs
+│   ├── four_cases_overlay.pdf
+│   ├── four_cases_overlay.png
+│   ├── overlay1.gph
+│   ├── overlay2.gph
+│   ├── overlay3.gph
+│   ├── overlay4.gph
+│   └── robustness_RI.png
 ├── processed
-│   ├── CWON_data.dta
+
+├── raw
 │   ├── euro_area_mfp_panel_iso.dta
+│   ├── FR_WLD_2024_195 [CWON DATA]
+      ...
 │   ├── pwt100_xsection.dta
 │   ├── pwt100.dta
 │   ├── real_wealth_chained_tornqvist_unbalanced.dta
-│   ├── renewable_quantities.dta
-│   ├── ritest1.dta
-│   ├── tornqvist_panel.dta
-│   ├── UN_FAO_TFP_panel.dta
-│   └── US_MFP.dta
-├── raw
-│   ├── Eurostat MFP
-│   │   └── Crude-MFP-calculations-by-country.xlsx
-│   └── FR_WLD_2024_195
-│       ├── LICENSE.txt
-│       ├── README.pdf
-│       ├── Repoducibility verification-RR_WLD_2024_195.pdf
-│       └── Reproducibility package
-│           ├── Data Dictionary.xlsx
-│           ├── Output
-│              ... [full CWON Data]
+│   ├── renewable_wealth.dta
+│   └── UN_FAO_TFP_panel.dta
+├── README.md
 ├── scripts
-│   ├── ~0_Make_Tornqvist_Indices.do.stswp
-│   ├── ~3_Figure1.do.stswp
-│   ├── 0_Make_Tornqvist_Indices.do
-│   ├── 1_CWON_Producivity_RegsQuantity_RHS.do
+│   ├── 0_CWON_Producivity_RegsQuantity_RHS.do
+│   ├── 1_Make_Tornqvist_Indices.do
 │   ├── 2_Tornqvist_Indices_Regs.do
 │   ├── 3_Figure1.do
 │   ├── overlay1.do
@@ -63,23 +59,6 @@ Running the Stata scripts requires
 │   ├── RMSE Program Case2.do
 │   ├── RMSE Program Case3.do
 │   └── RMSE Program Case4.do
-├── simulations
-│   ├── country_tab.tex
-│   ├── CWON_data.dta
-│   ├── four_cases_overlay.pdf
-│   ├── four_cases_overlay.png
-│   ├── oos_means1.dta
-│   ├── oos_means2.dta
-│   ├── oos_means3.dta
-│   ├── oos_means4.dta
-│   ├── overlay1.gph
-│   ├── overlay2.gph
-│   ├── overlay3.gph
-│   ├── overlay4.gph
-│   ├── RMSE_N1_N2_case1.dta
-│   ├── RMSE_N1_N2_case2.dta
-│   ├── RMSE_N1_N2_case3.dta
-│   └── RMSE_N1_N2_case4.dta
 ```
 
 
@@ -119,11 +98,8 @@ The dataset that these files take as an argument is proprietary. The Emissions I
 Raw files used as inputs  
 
 1. `FR_WLD_2024_195'
+2. 
 
-
-## Processed
-
-CWON_data.dta
 euro_area_mfp_panel_iso.dta
 pwt100_xsection.dta
 pwt100.dta
@@ -133,6 +109,10 @@ ritest1.dta
 tornqvist_panel.dta
 UN_FAO_TFP_panel.dta
 US_MFP.dta
+
+
+## Processed
+
 
 
 Finished files that store the results from various procedures documented in the methods section (manuscript section 5) or the SI. 
