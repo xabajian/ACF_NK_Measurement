@@ -5,19 +5,20 @@ set seed 1234
 set scheme stcolor
 global sim_dir "$root/simulations"
 
+			
+							
+
 program define simulate_MC_draw, rclass 
 
 
 version 12.1
-syntax [, obs(integer 1) mu(real 0.01) sigma(real 0.01) ]
+syntax [, obs(integer 1) mu(real 0.01) sigma(real 0.01)  gK(real 0.01) gL(real 0.01) gA(real 0.01) sdK(real 0.01) sdL(real 0.01) sdA(real 0.01)] 
 
 drop _all
 
 //correlation matrices
 scalar corr_N1_N2 =  sign(runiform()-0.5)  * floor(91*runiform())/100
 scalar corr_N1_K =   sign(runiform()-0.5) * floor(91*runiform())/100
-// scalar corr_N1_N2 =  sign(runiform()-0.5)  * floor(101*runiform())/100
-// scalar corr_N1_K =   sign(runiform()-0.5) * floor(101*runiform())/100
 
 //generate correlations
 //g_N1 g_N2 g_K g_L g_TFP
@@ -36,15 +37,17 @@ corr_N1_K, 0,     1,0 , 0 \ ///
 scalar growth_exog = `mu'
 scalar sd_exog = `sigma'
 
+
 //means
-matrix M = (-growth_exog,-growth_exog,growth_exog,growth_exog,growth_exog)
+// matrix M = (growth_exog,growth_exog,g_K_in,g_L_in,g_A_in)
+matrix M = (-growth_exog,-growth_exog,`gK',`gL',`gA')
 
 
 //sds
-matrix S = (sd_exog,sd_exog,sd_exog,sd_exog,sd_exog)
+// matrix S = (sd_exog,sd_exog,`sdK',sd_exog,sd_exog)
+matrix S = (sd_exog,sd_exog,`sdK',`sdL',`sdA')
 
 //simulate historical data for OLS estimates of share parameters
-// drawnorm g_N1 g_N2 g_K g_L g_TFP, n(`obs') corr(corrmat) means(M) sds(S) 
 drawnorm g_N1 g_N2 g_K g_L g_TFP, forcepsd n(`obs') corr(corrmat) means(M) sds(S) 
 
 							
@@ -115,9 +118,22 @@ return scalar corr_N1_K_out = corr_N1_K
  
  end
  
- 
+
+
+use  "$processed/usa_growth_accounting.dta", clear
+
+local T_periods = N[1]
+local bar_A = g_A[1]
+local bar_K = g_K[1]
+local bar_L = g_L[1]
+local sigma_A = sd_A[1]
+local sigma_K = sd_K[1]
+local sigma_L = sd_L[1]
+
 parallel initialize 16, f
-parallel sim , expr(alpha_1NK_out = alpha_1NK alpha_noNK_out  = alpha_noNK TFP_bias_n1 = no_N1_bias_scalar TFP_bias_nK = no_NK_bias_scalar   corr_N1_N2_out = corr_N1_N2   corr_N1_K_out = corr_N1_K ) reps(1000000): simulate_MC_draw, obs(10000)
+parallel sim , expr(alpha_1NK_out = alpha_1NK alpha_noNK_out  = alpha_noNK TFP_bias_n1 = no_N1_bias_scalar TFP_bias_nK = no_NK_bias_scalar   corr_N1_N2_out = corr_N1_N2   corr_N1_K_out = corr_N1_K ) reps(1000000): simulate_MC_draw, obs(`T_periods') mu(0.01) sigma(0.01) gK(0.01) gL(0.01) gA(0.01) sdK(`sigma_K') sdL(`sigma_L') sdA(`sigma_A') 
+
+
 
 
 scalar alpha = 0.3
