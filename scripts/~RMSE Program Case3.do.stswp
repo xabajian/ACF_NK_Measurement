@@ -40,7 +40,7 @@ scalar sd_exog = `sigma'
 
 //means
 // matrix M = (growth_exog,growth_exog,g_K_in,g_L_in,g_A_in)
-matrix M = (-growth_exog,-growth_exog,growth_exog,growth_exog,growth_exog)
+matrix M = (growth_exog,-growth_exog,growth_exog,growth_exog,growth_exog)
 
 
 //sds
@@ -163,4 +163,6 @@ gen MSE_difference_TFP = TFP_square_bias_NK-TFP_square_bias_1K
 
 
 //save out
-save "$sim_dir/RMSE_N1_N2_case4.dta", replace 
+save "$sim_dir/RMSE_N1_N2_case3.dta", replace 
+
+
