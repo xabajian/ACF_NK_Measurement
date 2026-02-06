@@ -69,7 +69,6 @@ legend(order(1 "" 2 "" 3 "" 4 "")  size(tiny) )  ///
 
 
 //interpolations
-//floor commands
 
 duplicates r corr_N1_K_out corr_N1_N2_out
 

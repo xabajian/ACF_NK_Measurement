@@ -48,7 +48,10 @@ graph export  "$figs/bias_reduction.png", replace
 graph export  "$figs/bias_reduction.pdf", replace 
 
 
-
+use "$sim_dir/bias_oos_means1.dta", clear
+append using "$sim_dir/bias_oos_means2.dta"
+append using "$sim_dir/bias_oos_means3.dta"
+append using "$sim_dir/bias_oos_means4.dta"
 
 
 /*
@@ -65,6 +68,8 @@ use "$sim_dir/oos_means1.dta", clear
 append using "$sim_dir/oos_means2.dta"
 append using "$sim_dir/oos_means3.dta"
 append using "$sim_dir/oos_means4.dta"
+
+sum 
 
 drop country_string
 decode country_byte, gen(country_string)

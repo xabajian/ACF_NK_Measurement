@@ -66,3 +66,26 @@ legend(order(1 "" 2 "" 3 "" 4 "")  size(tiny) )  ///
 
 
 
+
+
+//interpolations
+
+duplicates r corr_N1_K_out corr_N1_N2_out
+
+
+gen corr_N1_N2_adjust = corr_N1_N2_out*100
+gen corr_N1_K_adjust = corr_N1_K_out*100
+format corr_N1_N2_adjust %9.0g
+format corr_N1_K_adjust %9.0g
+duplicates r corr_N1_K_adjust corr_N1_N2_adjust
+replace corr_N1_N2_adjust = int(corr_N1_N2_adjust) 
+replace corr_N1_K_adjust = int(corr_N1_K_adjust) 
+
+
+npregress kernel MSE_difference_TFP corr_N1_K_adjust corr_N1_N2_adjust if MSE_difference_TFP!=. ,     estimator(constant) predict(oos_mean_np,  replace noderivatives) noderivatives 
+
+sort corr_N1_N2_adjust corr_N1_K_adjust 
+by corr_N1_N2_adjust corr_N1_K_adjust: egen oos_means = max(oos_mean_np)
+keep if g_n1!=.
+
+save "$sim_dir/bias_oos_means1.dta", replace 

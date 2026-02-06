@@ -40,7 +40,7 @@ scalar sd_exog = `sigma'
 
 //means
 // matrix M = (growth_exog,growth_exog,g_K_in,g_L_in,g_A_in)
-matrix M = (growth_exog,-growth_exog,`gK',`gL',`gA')
+matrix M = (growth_exog,-growth_exog,growth_exog,growth_exog,growth_exog)
 
 
 //sds
