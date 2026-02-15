@@ -12,7 +12,7 @@ program define simulate_MC_draw, rclass
 
 
 version 12.1
-syntax [, obs(integer 1) mu(real 0.01) sigma(real 0.01)  gK(real 0.01) gL(real 0.01) gA(real 0.01) sdK(real 0.01) sdL(real 0.01) sdA(real 0.01)] 
+syntax [, obs(integer 1) mu(real 0.01) sigma(real 0.01)  gK(real 0.01) gL(real 0.01) gA(real 0.01) g1(real 0.01)  g2(real 0.01)  sdK(real 0.01) sdL(real 0.01) sdA(real 0.01) sd1(real 0.01) sd2(real 0.01)   ] 
 
 drop _all
 
@@ -40,12 +40,12 @@ scalar sd_exog = `sigma'
 
 //means
 // matrix M = (growth_exog,growth_exog,g_K_in,g_L_in,g_A_in)
-matrix M = (growth_exog,growth_exog,growth_exog,growth_exog,growth_exog)
+matrix M = (`g1',`g2',`gK',`gL',`gA')
 
 
 //sds
 // matrix S = (sd_exog,sd_exog,`sdK',sd_exog,sd_exog)
-matrix S = (sd_exog,sd_exog,`sdK',`sdL',`sdA')
+matrix S = (`sd1',`sd2',`sdK',`sdL',`sdA')
 
 //simulate historical data for OLS estimates of share parameters
 drawnorm g_N1 g_N2 g_K g_L g_TFP, forcepsd n(`obs') corr(corrmat) means(M) sds(S) 
@@ -122,6 +122,7 @@ return scalar corr_N1_K_out = corr_N1_K
 
 use  "$processed/usa_growth_accounting.dta", clear
 
+
 local T_periods = N[1]
 local bar_A = g_A[1]
 local bar_K = g_K[1]
@@ -130,8 +131,14 @@ local sigma_A = sd_A[1]
 local sigma_K = sd_K[1]
 local sigma_L = sd_L[1]
 
+append using "$processed/index_growth.dta"
+local bar_1 = mu_1_plus[2]
+local bar_2 = mu_2_plus[2]
+local sigma_1 = sigma_1[2]
+local sigma_2 = sigma_2[2]
+
 parallel initialize 16, f
-parallel sim , expr(alpha_1NK_out = alpha_1NK alpha_noNK_out  = alpha_noNK TFP_bias_n1 = no_N1_bias_scalar TFP_bias_nK = no_NK_bias_scalar   corr_N1_N2_out = corr_N1_N2   corr_N1_K_out = corr_N1_K ) reps(1000000): simulate_MC_draw, obs(`T_periods') mu(0.01) sigma(0.01) gK(0.01) gL(0.01) gA(0.01) sdK(`sigma_K') sdL(`sigma_L') sdA(`sigma_A') 
+parallel sim , expr(alpha_1NK_out = alpha_1NK alpha_noNK_out  = alpha_noNK TFP_bias_n1 = no_N1_bias_scalar TFP_bias_nK = no_NK_bias_scalar   corr_N1_N2_out = corr_N1_N2   corr_N1_K_out = corr_N1_K ) reps(1000000): simulate_MC_draw, obs(`T_periods') mu(0.01) sigma(0.01) gK(0.01) gL(0.01) gA(0.01) g1(`bar_1') g2 (`bar_2') sdK(`sigma_K') sdL(`sigma_L') sdA(`sigma_A') sd1(`sigma_1') sd2(`sigma_2')
 
 
 
@@ -165,6 +172,6 @@ gen MSE_difference_alphas = square_bias_noNK-square_bias_1NK
 gen MSE_difference_TFP = TFP_square_bias_NK-TFP_square_bias_1K
 
 
-
+hist MSE_difference_TFP
 //save out
 save "$sim_dir/RMSE_N1_N2_case1.dta", replace 

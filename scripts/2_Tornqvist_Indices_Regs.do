@@ -32,11 +32,13 @@ drop _merge
 drop if country_byte == .
 xtset country_byte year
 
-// some cross checks
+// some cross checks with CWON
 gen d_torn_renew_CWON         = torn_unch_renew     / L.torn_unch_renew     - 1
 gen d_torn_nonrenewables_CWON = torn_unch_nonrenew  / L.torn_unch_nonrenew  - 1
+gen d_torn_renew_real_CWON  = torn_real_renew / L.torn_real_renew     - 1
+gen d_torn_nonrenewables_real_CWON  = torn_real_nonrenew / L.torn_real_nonrenew     - 1
 
-corr g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d_torn_renew_CWON d_torn_nonrenewables_CWON
+corr g_Q_Renew_Tornquist d_torn_renew_CWON d_torn_renew_real_CWON  g_Q_NonRewnew_Tornquist  d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON
 
 sum g_Q_NonRewnew_Tornquist ///
     DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
@@ -49,11 +51,11 @@ replace d_torn_nonrenewables_CWON = -1 if d_torn_nonrenewables_CWON < -1 & d_tor
 replace d_torn_nonrenewables_CWON =  1 if d_torn_nonrenewables_CWON >  1 & d_torn_nonrenewables_CWON != .
 replace g_Q_NonRewnew_Tornquist   =  1 if g_Q_NonRewnew_Tornquist   >  1 & g_Q_NonRewnew_Tornquist   != .
 
-corr D_Q_Tornquist_nonrenewables d_torn_nonrenewables_CWON torn_unch_nonrenew ///
+corr D_Q_Tornquist_nonrenewables d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON torn_unch_nonrenew ///
      DQ_coal_quantity DQ_oil_quantity DQ_iron_quantity DQ_gas_quantity DQ_gold_quantity ///
      if D_Q_Tornquist_nonrenewables != .
 
-corr D_Q_Tornquist_nonrenewables d_torn_nonrenewables_CWON torn_unch_nonrenew ///
+corr D_Q_Tornquist_nonrenewables d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON ///
      DQ_coal_quantity DQ_oil_quantity DQ_iron_quantity DQ_gas_quantity DQ_gold_quantity ///
      if (D_Q_Tornquist_nonrenewables != . & D_Q_Tornquist_nonrenewables != 1)
 
@@ -151,12 +153,39 @@ drop ///
 *============================================================*
 
 // // lasso
-// cvlasso d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share i.year, fe
-// cvlasso, lopt
+cvlasso d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share i.year, fe
+cvlasso, lopt
 
 pcorr d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share i.year i.country_byte
 
+//create average growth from these indices
+preserve 
+//renew 
+sum g_Q_Renew_Tornquist if g_Q_Renew_Tornquist>0, d
+scalar mu_2_plus = r(p50)
+sum g_Q_Renew_Tornquist if g_Q_Renew_Tornquist<0 ,d 
+scalar mu_2_minus = r(p50)
+sum g_Q_Renew_Tornquist 
+scalar sigma_2 = r(sd)
 
+//NR
+sum g_Q_NonRewnew_Tornquist if g_Q_NonRewnew_Tornquist>0, d
+scalar mu_1_plus = r(p50)
+sum g_Q_NonRewnew_Tornquist if g_Q_NonRewnew_Tornquist<0 ,d 
+scalar mu_1_minus = r(p50)
+sum g_Q_NonRewnew_Tornquist
+scalar sigma_1 = r(sd)
+
+drop _all
+set obs 1
+gen mu_1_plus = mu_1_plus
+gen mu_1_minus = mu_1_minus
+gen mu_2_plus = mu_2_plus
+gen mu_2_minus = mu_2_minus
+gen sigma_1 = sigma_1
+gen sigma_2 = sigma_2
+save "$processed/index_growth.dta", replace
+restore
 *============================================================*
 * Robust per-column p-values via esttab
 *============================================================*
