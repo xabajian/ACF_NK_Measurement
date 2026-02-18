@@ -35,10 +35,12 @@ xtset country_byte year
 // some cross checks with CWON
 gen d_torn_renew_CWON         = torn_unch_renew     / L.torn_unch_renew     - 1
 gen d_torn_nonrenewables_CWON = torn_unch_nonrenew  / L.torn_unch_nonrenew  - 1
+gen d_torn_renew_chain_CWON         = torn_ch_renew     / L.torn_ch_renew     - 1
+gen d_torn_nonrenewables_chain_CWON = torn_ch_nonrenew  / L.torn_ch_nonrenew  - 1
 gen d_torn_renew_real_CWON  = torn_real_renew / L.torn_real_renew     - 1
 gen d_torn_nonrenewables_real_CWON  = torn_real_nonrenew / L.torn_real_nonrenew     - 1
 
-corr g_Q_Renew_Tornquist d_torn_renew_CWON d_torn_renew_real_CWON  g_Q_NonRewnew_Tornquist  d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON
+corr g_Q_Renew_Tornquist d_torn_renew_chain_CWON d_torn_renew_CWON d_torn_renew_real_CWON   g_Q_NonRewnew_Tornquist d_torn_nonrenewables_chain_CWON d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON 
 
 sum g_Q_NonRewnew_Tornquist ///
     DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
@@ -55,8 +57,8 @@ corr D_Q_Tornquist_nonrenewables d_torn_nonrenewables_CWON  d_torn_nonrenewables
      DQ_coal_quantity DQ_oil_quantity DQ_iron_quantity DQ_gas_quantity DQ_gold_quantity ///
      if D_Q_Tornquist_nonrenewables != .
 
-corr D_Q_Tornquist_nonrenewables d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON ///
-     DQ_coal_quantity DQ_oil_quantity DQ_iron_quantity DQ_gas_quantity DQ_gold_quantity ///
+corr DQ_oil_quantity D_Q_Tornquist_nonrenewables d_torn_nonrenewables_chain_CWON d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON ///
+     DQ_coal_quantity  DQ_iron_quantity DQ_gas_quantity DQ_gold_quantity ///
      if (D_Q_Tornquist_nonrenewables != . & D_Q_Tornquist_nonrenewables != 1)
 
 
@@ -112,17 +114,6 @@ corr g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d_torn_renew_CWON d_torn_nonren
  
 // Clean brefore regressionss
 drop ///
-    bauxite_quantity nickel_rent bauxite_rent coal_quantity oil_quantity coal_rent oil_rent ///
-    copper_quantity phosphate_quantity copper_rent phosphate_rent gas_quantity gas_rent ///
-    gold_quantity silver_quantity gold_rent silver_rent iron_quantity tin_quantity iron_rent ///
-    tin_rent lead_quantity zinc_quantity lead_rent zinc_rent nickel_quantity ///
-    q_urban prod_area land forest_area_km mangrove_ha b_e hp_gwh ///
-    ag_NK_wealth fisheries_wealth rec_forests_wealth FWE_wealth Hydro_wealth ///
-    Mangroves_wealth NFS_wealth Timber_wealth ///
-    DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
-    DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
-    DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
-    DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh ///
     total_non_renewable_NK ///
     nickel_rent_weight bauxite_rent_weight coal_rent_weight oil_rent_weight ///
     copper_rent_weight phosphate_rent_weight gas_rent_weight gold_rent_weight ///
@@ -144,12 +135,18 @@ drop ///
     DQ_forest_area_km_exponentiated DQ_mangrove_ha_exponentiated DQ_b_e_exponentiated ///
     DQ_hp_gwh_exponentiated D_Q_Tornquist_renewables
 
-
+//take logs of these 
+local varlist   all_nk_vars  DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
+    DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
+    DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
+    DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
+	
+foreach var of local all_nk_vars{
+	
+	replace `var' = ln(`var')
+}
 *============================================================*
-* Tab 1: TFP Growth vs. Natural Capital Growth (5 specs)
-*   - locals for p-values (no scalars)
-*   - unique p-values per column
-*   - adec() prevents rounding collapse
+* Tab : output  Growth vs. Natural Capital Growth (5 specs)
 *============================================================*
 
 // // lasso
@@ -186,6 +183,8 @@ gen sigma_1 = sigma_1
 gen sigma_2 = sigma_2
 save "$processed/index_growth.dta", replace
 restore
+
+
 *============================================================*
 * Robust per-column p-values via esttab
 *============================================================*
@@ -210,6 +209,7 @@ areg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist i.year d.log_K d.log_L 
     absorb(country_byte) vce(cluster country_byte)
 eststo m4
 
+
 *(5)
 reghdfe d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
     absorb(i.country_byte##c.year) vce(cluster country_byte)
@@ -225,7 +225,7 @@ esttab m1 m2 m3 m4 m5 using "$tables/appendix_tornq_regs.tex", replace ///
 
 	
 *============================================================*
-* Robust per-column p-values via esttab
+* CWON version, wrong indices
 *============================================================*
 eststo clear
 
@@ -261,7 +261,174 @@ esttab m1 m2 m3 m4 m5 using "$tables/appendix_tornq_regs_CWON.tex", replace ///
     star(* 0.0001)
 
 	
-	
+
+
+*============================================================*
+* Tab : TFP vs ALL NK vs. Natural Capital Growth (5 specs)
+*============================================================*
+
+eststo clear
+
+local keepvars ///
+	 DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
+    DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
+    DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
+    DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
+
+*(1)
+reg d.log_tfp  `keepvars' , vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m1
+
+*(2)
+reg d.log_tfp  `keepvars'	d.log_K d.log_L d.log_HC d.log_lab_share, vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m2
+
+*(3)
+areg d.log_tfp `keepvars' i.year, absorb(country_byte) vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m3
+
+*(4)
+areg d.log_tfp `keepvars' i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+    absorb(country_byte) vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m4
+
+*(5)
+reghdfe d.log_tfp `keepvars' i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+    absorb(i.country_byte##c.year) vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+// boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = 990
+eststo m5
+
+*(6) arellano bond
+
+qui{
+	forvalues i = 1995/2019  {
+		gen year`i' = 1 if year==`i'
+		replace year`i'=0 if  year!=`i'
+}
+}
+
+xtabond d.log_tfp `keepvars' d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*,  lags(2) vce(robust)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m6
+
+drop year1* year2*
+
+
+*---- export with esttab ----*
+esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1_appendix_all_NK.tex", replace ///
+    title("TFP Growth vs. Natural Capital Growth") ///
+    keep(`keepvars') ///
+    b(3) se(3) ///
+    star(* 0.0001) ///
+    stats(p_joint p_joint_boot N, ///
+          labels("Wald" "Bootstrap Wald" "N") ///
+          fmt(3 3 0 3))
+		  
+		  
+*============================================================*
+* Tab : TFP vs ALL NK vs. Natural Capital Growth (5 specs), post 1994
+*============================================================*
+
+eststo clear
+
+local keepvars ///
+	 DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
+    DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
+    DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
+    DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
+
+*(1)
+reg d.log_tfp  `keepvars'  if year>1994, vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m1
+
+*(2)
+reg d.log_tfp  `keepvars'	d.log_K d.log_L d.log_HC d.log_lab_share  if year>1994 , vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m2
+
+*(3)
+areg d.log_tfp `keepvars' i.year  if year>1994, absorb(country_byte) vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m3
+
+*(4)
+areg d.log_tfp `keepvars' i.year d.log_K d.log_L d.log_HC d.log_lab_share if year>1994, ///
+    absorb(country_byte) vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m4
+
+*(5)
+reghdfe d.log_tfp `keepvars' i.year d.log_K d.log_L d.log_HC d.log_lab_share  if year>1994, ///
+    absorb(i.country_byte##c.year) vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+// boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = 990
+eststo m5
+
+*(6) arellano bond
+
+qui{
+	forvalues i = 1995/2019  {
+		gen year`i' = 1 if year==`i'
+		replace year`i'=0 if  year!=`i'
+}
+}
+
+xtabond d.log_tfp `keepvars' d.log_K d.log_L d.log_HC d.log_lab_share year1* year2* if year>1994,  lags(2) vce(robust)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m6
+
+drop year1* year2*
+
+
+*---- export with esttab ----*
+esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1_appendix_all_NK_post94.tex", replace ///
+    title("TFP Growth vs. Natural Capital Growth") ///
+    keep(`keepvars') ///
+    b(3) se(3) ///
+    star(* 0.0001) ///
+    stats(p_joint p_joint_boot N, ///
+          labels("Wald" "Bootstrap Wald" "N") ///
+          fmt(3 3 0 3))
 	
 *============================================================*
 * Country-level data out

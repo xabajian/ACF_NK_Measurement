@@ -217,7 +217,7 @@ local NR_quantities ///
 
 
 /*
-gen Q'/Q with upper bound of 4
+gen Q'/Q with upper bound of 2
 */
 xtset country_byte year
 sort country_byte year

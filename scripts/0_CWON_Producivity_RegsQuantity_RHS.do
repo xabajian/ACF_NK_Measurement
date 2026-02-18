@@ -83,8 +83,6 @@ foreach var of local resources {
     replace dlog_`var' = 0 if dlog_`var' == .
 
     drop log_`var'
-
-    gen d_`var' = d.`var'
 }
 
 
