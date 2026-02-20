@@ -86,13 +86,13 @@ gen g_n2_CWON  = d_torn_renew_CWON
 
 
 xtset country_byte year
-//cvlasso d.log_y ///
-//     DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
-//     DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
-//     DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
-//     DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh ///
-//     d.log_K d.log_L d.log_HC d.log_lab_share i.year, fe
-//cvlasso opt
+cvlasso d.log_y ///
+    DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
+    DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
+    DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
+    DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh ///
+    d.log_K d.log_L d.log_HC d.log_lab_share i.year, fe
+cvlasso, lopt
 
 
 pcorr d.log_y ///
@@ -150,11 +150,12 @@ foreach var of local all_nk_vars{
 *============================================================*
 
 // // lasso
+/*
 cvlasso d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share i.year, fe
 cvlasso, lopt
 
 pcorr d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share i.year i.country_byte
-
+*/
 //create average growth from these indices
 preserve 
 //renew 
@@ -215,54 +216,33 @@ reghdfe d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist i.year d.log_K d.log
     absorb(i.country_byte##c.year) vce(cluster country_byte)
 eststo m5
 
+	
+
+qui{
+	forvalues i = 1995/2019  {
+		gen year`i' = 1 if year==`i'
+		replace year`i'=0 if  year!=`i'
+}
+}
+
+*(6)
+xtabond d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*,  lags(2) vce(robust)
+eststo m6
+
+drop year1* year2*
+
+
 *---- export with esttab ----*
-esttab m1 m2 m3 m4 m5 using "$tables/appendix_tornq_regs.tex", replace ///
+esttab m1 m2 m3 m4 m5 m6 using "$tables/appendix_tornq_regs.tex", replace ///
     title("TFP Growth vs. Natural Capital Growth") ///
     keep(g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist) ///
     b(3) se(3) ///
     star(* 0.0001)
 
 
-	
-*============================================================*
-* CWON version, wrong indices
-*============================================================*
-eststo clear
 
-*(1)
-reg d.log_y d_torn_renew_CWON d_torn_nonrenewables_CWON, vce(cluster country_byte)
-eststo m1
-
-*(2)
-reg d.log_y d_torn_renew_CWON d_torn_nonrenewables_CWON d.log_K d.log_L d.log_HC d.log_lab_share, ///
-    vce(cluster country_byte)
-eststo m2
-
-*(3)
-areg d.log_y d_torn_renew_CWON d_torn_nonrenewables_CWON i.year, ///
-    absorb(country_byte) vce(cluster country_byte)
-eststo m3
-
-*(4)
-areg d.log_y d_torn_renew_CWON d_torn_nonrenewables_CWON i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
-    absorb(country_byte) vce(cluster country_byte)
-eststo m4
-
-*(5)
-reghdfe d.log_y d_torn_renew_CWON d_torn_nonrenewables_CWON i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
-    absorb(i.country_byte##c.year) vce(cluster country_byte)
-eststo m5
-
-*---- export with esttab ----*
-esttab m1 m2 m3 m4 m5 using "$tables/appendix_tornq_regs_CWON.tex", replace ///
-    title("TFP Growth vs. Natural Capital Growth") ///
-    keep(d_torn_renew_CWON d_torn_nonrenewables_CWON) ///
-    b(3) se(3) ///
-    star(* 0.0001)
 
 	
-
-
 *============================================================*
 * Tab : TFP vs ALL NK vs. Natural Capital Growth (5 specs)
 *============================================================*
@@ -270,7 +250,7 @@ esttab m1 m2 m3 m4 m5 using "$tables/appendix_tornq_regs_CWON.tex", replace ///
 eststo clear
 
 local keepvars ///
-	 DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
+	DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
     DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
     DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
     DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
@@ -354,7 +334,7 @@ esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1_appendix_all_NK.tex", replace ///
 eststo clear
 
 local keepvars ///
-	 DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
+	DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
     DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
     DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
     DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
@@ -440,7 +420,7 @@ bysort country_byte: egen corr_N1_N2_CWON= corr(g_n1_CWON g_n2_CWON)
 
 collapse (mean) ///
     corr_N1_K corr_N1_N2 corr_N1_N2_CWON corr_N1_K_CWON ///
-    g_n1 g_k g_n2 g_n1_CWON g_n2_CWON dlog_tfp, by(country_byte)
+    g_n1 g_k g_n2 g_n1_CWON g_n2_CWON dlog_tfp g_A= dlog_tfp (sd) sdn1 = g_n1 sdK = g_k sdn2 = g_n2 sdA = dlog_tfp , by(country_byte)
 
 sum corr_N1_K corr_N1_N2 corr_N1_N2_CWON corr_N1_K_CWON ///
     g_n1 g_k g_n2 g_n1_CWON g_n2_CWON if g_n1 != .

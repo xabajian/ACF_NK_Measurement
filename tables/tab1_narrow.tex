@@ -1,0 +1,28 @@
+\begin{table}[htbp]\centering
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\caption{TFP Growth vs. Natural Capital Growth}
+\begin{tabular}{l*{6}{c}}
+\hline\hline
+            &\multicolumn{1}{c}{(1)}&\multicolumn{1}{c}{(2)}&\multicolumn{1}{c}{(3)}&\multicolumn{1}{c}{(4)}&\multicolumn{1}{c}{(5)}&\multicolumn{1}{c}{(6)}\\
+            &\multicolumn{1}{c}{D.log\_tfp}&\multicolumn{1}{c}{D.log\_tfp}&\multicolumn{1}{c}{D.log\_tfp}&\multicolumn{1}{c}{D.log\_tfp}&\multicolumn{1}{c}{D.log\_tfp}&\multicolumn{1}{c}{ldiff\_TFP}\\
+\hline
+dlog\_q\_urban&       0.295       &       0.298       &       0.198       &       0.209       &       0.146       &       0.062       \\
+            &     (0.092)       &     (0.096)       &     (0.065)       &     (0.073)       &     (0.061)       &     (0.115)       \\
+[1em]
+dlog\_prod\_area&       0.171       &       0.171       &       0.078       &       0.082       &       0.001       &       0.017       \\
+            &     (0.093)       &     (0.076)       &     (0.075)       &     (0.072)       &     (0.068)       &     (0.107)       \\
+[1em]
+dlog\_land   &       0.029       &       0.045       &       0.029       &       0.035       &       0.041       &       0.046       \\
+            &     (0.025)       &     (0.025)       &     (0.022)       &     (0.022)       &     (0.021)       &     (0.017)       \\
+[1em]
+dlog\_forest\_area\_km&      -0.069       &      -0.114       &      -0.003       &       0.013       &       0.080       &      -0.028       \\
+            &     (0.097)       &     (0.092)       &     (0.079)       &     (0.083)       &     (0.053)       &     (0.076)       \\
+\hline
+Wald        &       0.004       &       0.002       &       0.004       &       0.003       &       0.002       &       0.101       \\
+Bootstrap Wald&       0.077       &       0.033       &       0.049       &       0.008       &     990.000       &       0.027       \\
+N           &        2808       &        2808       &        2808       &        2808       &        2808       &        2457       \\
+\hline\hline
+\multicolumn{7}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{7}{l}{\footnotesize \sym{*} \(p<0.0001\)}\\
+\end{tabular}
+\end{table}

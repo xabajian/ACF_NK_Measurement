@@ -271,8 +271,9 @@ foreach var of local renewable_rents {
     replace `var' = 0 if `var' == .
 }
 
+//doubling ag wealth here to reflect that im setting urban equal to that 
 gen total_renewable_NK = ///
-    ag_NK_wealth + rec_forests_wealth + FWE_wealth + Hydro_wealth + ///
+    2*ag_NK_wealth + rec_forests_wealth + FWE_wealth + Hydro_wealth + ///
     Mangroves_wealth + NFS_wealth + Timber_wealth
 
 foreach var of local renewable_rents {
@@ -280,7 +281,7 @@ foreach var of local renewable_rents {
 }
 
 gen test = ///
-    ag_NK_wealth_weight + rec_forests_wealth_weight + FWE_wealth_weight + ///
+    2*ag_NK_wealth_weight + rec_forests_wealth_weight + FWE_wealth_weight + ///
     Hydro_wealth_weight + Mangroves_wealth_weight + NFS_wealth_weight + ///
     Timber_wealth_weigh
 sum test
@@ -306,9 +307,9 @@ collapse ///
     FWE_wealth_weight Hydro_wealth_weight Mangroves_wealth_weight ///
     NFS_wealth_weight Timber_wealth_weight, by(countrycode)
 
-gen q_urban_weight         = ag_NK_wealth_weight / 2
+gen q_urban_weight         = ag_NK_wealth_weight 
 gen prod_area_weight       = Timber_wealth_weight
-gen land_weight            = ag_NK_wealth_weight / 2
+gen land_weight            = ag_NK_wealth_weight 
 gen forest_area_km_weight  = rec_forests_wealth_weight + NFS_wealth_weight
 gen mangrove_ha_weight     = Mangroves_wealth_weight
 gen b_e_weight             = FWE_wealth_weight

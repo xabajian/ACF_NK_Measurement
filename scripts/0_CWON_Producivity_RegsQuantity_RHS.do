@@ -230,6 +230,8 @@ esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1.tex", replace ///
     stats(p_joint p_joint_boot N, ///
           labels("Wald" "Bootstrap Wald" "N") ///
           fmt(3 3 0 3))
+*---- export with esttab ----*
+
 
 sum flag_* if year > 1995 & d.log_tfp != .
 codebook countryname if flag_q_urban ==0 & d.log_tfp != .
@@ -291,6 +293,91 @@ restore
 
 
 *============================================================*
+* Tab 1, no urban
+*============================================================*
+eststo clear
+
+local keepvars ///
+     dlog_prod_area dlog_land ///
+    dlog_forest_area_km dlog_mangrove_ha ///
+    dlog_b_e dlog_hp_gwh
+
+*(1)
+reg d.log_tfp dlog*, vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m1
+
+*(2)
+reg d.log_tfp dlog* d.log_K d.log_L d.log_HC d.log_lab_share, vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m2
+
+*(3)
+areg d.log_tfp dlog* i.year, absorb(country_byte) vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m3
+
+*(4)
+areg d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+    absorb(country_byte) vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m4
+
+*(5)
+reghdfe d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+    absorb(i.country_byte##c.year) vce(cluster country_byte)
+test `keepvars'
+estadd scalar p_joint = r(p)
+// boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = 990
+eststo m5
+
+*(6) arellano bond
+
+qui{
+	forvalues i = 1995/2019  {
+		gen year`i' = 1 if year==`i'
+		replace year`i'=0 if  year!=`i'
+}
+}
+
+xtabond ldiff_TFP dlog* d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*,  lags(2) vce(robust)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m6
+
+drop year1* year2*
+
+
+*---- export with esttab ----*
+esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1_nourban.tex", replace ///
+    title("TFP Growth vs. Natural Capital Growth") ///
+    keep(`keepvars') ///
+    b(3) se(3) ///
+    star(* 0.0001) ///
+    stats(p_joint p_joint_boot N, ///
+          labels("Wald" "Bootstrap Wald" "N") ///
+          fmt(3 3 0 3))
+*---- export with esttab ----*
+
+
+
+
+*============================================================*
 * Tab 1 (narrow): drop some stocks
 *   drop dlog_mangrove_ha dlog_b_e dlog_hp_gwh
 *============================================================*
@@ -345,9 +432,26 @@ estadd scalar p_joint = r(p)
 estadd scalar p_joint_boot = 990
 eststo m5
 
+*(6) arellano bond
+
+qui{
+	forvalues i = 1995/2019  {
+		gen year`i' = 1 if year==`i'
+		replace year`i'=0 if  year!=`i'
+}
+}
+
+xtabond ldiff_TFP dlog* d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*,  lags(2) vce(robust)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars', cluster(country_byte) nograph
+estadd scalar p_joint_boot = r(p)
+eststo m6
+
+drop year1* year2*
 
 *---- export with esttab ----*
-esttab m1 m2 m3 m4 m5 using "$tables/tab1_narrow.tex", replace ///
+esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1_narrow.tex", replace ///
     title("TFP Growth vs. Natural Capital Growth") ///
     keep(`keepvars') ///
     b(3) se(3) ///
