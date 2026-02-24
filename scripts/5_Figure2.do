@@ -17,12 +17,12 @@ set scheme plotplain
 
 
 use "$sim_dir/bias_rmse.dta", clear
-preserve
 drop country_string 
 decode country_byte, gen (country_string)
 drop if country_string=="EST"
 export delimited using "$sim_dir/bias_rmse.csv", replace 
-restore 
+
+
 
   //Figure 
 twoway (lpoly RMSE_reduction g_n1 , color(orange%80)  lwidth(.6) lpattern(dash)) ///
@@ -51,34 +51,79 @@ ylabel(, nogrid  labsize(small)) ), ///
 
 
 //Figure 
-twoway (lpoly RMSE_reduction corr_N1_N2_out , color(orange%80)  lwidth(.6) lpattern(dash)) ///
-(scatter RMSE_reduction corr_N1_N2_out,   mcolor(navy%100) msy(circle) msize(small)     ///
-yline(0, lpattern(dash) lcolor(gray%40) ) ///
-xline(0, lpattern(dash) lcolor(gray%40) ) ///
+// twoway (lpoly RMSE_reduction corr_N1_N2_out , color(orange%80)  lwidth(.6) lpattern(dash)) ///
+// (scatter RMSE_reduction corr_N1_N2_out,   mcolor(navy%100) msy(circle) msize(small)     ///
+// yline(0, lpattern(dash) lcolor(gray%40) ) ///
+// xline(0, lpattern(dash) lcolor(gray%40) ) ///
+// xlabel(, nogrid  labsize(small)) ///
+// ylabel(, nogrid  labsize(small)) ), ///
+//   xtitle("ρ(g{sub:N{sub:1}},g{sub:N{sub:2}})", size(small))  ///
+//   ytitle("Reduction in RMSE", size(small)) ///
+//     legend(off) ///
+//  saving("$figs/overlay_alt3.gph", replace) 
+// 
+// 
+//  twoway (lpoly RMSE_reduction corr_N1_K_out , color(orange%80)  lwidth(.6) lpattern(dash)) ///
+// (scatter RMSE_reduction corr_N1_K_out,   mcolor(navy%100) msy(circle) msize(small)     ///
+// yline(0, lpattern(dash) lcolor(gray%40) ) ///
+// xline(0, lpattern(dash) lcolor(gray%40) ) ///
+// xlabel(, nogrid  labsize(small)) ///
+// ylabel(, nogrid  labsize(small)) ), ///
+//   xtitle("ρ(g{sub:N{sub:1}},g{sub:K})", size(small))  ///
+//     ytitle("Reduction in RMSE", size(small)) ///
+//     legend(off) ///
+//  saving("$figs/overlay_alt4.gph", replace) 
+// 
+ 
+
+  twoway (lfit g_A_bar g_A_bar , color(grey%20)   lpattern(dash)) ///
+  (lpoly g_hat_A g_A_bar , color(navy%30)  lwidth(.6) lpattern(dash)) ///
+(scatter g_hat_A g_A_bar,   mcolor(red%100) msy(circle) msize(small)     ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("ρ(g{sub:N{sub:1}},g{sub:N{sub:2}})", size(small))  ///
-  ytitle("Reduction in RMSE", size(small)) ///
+  xtitle("g{sub:A} from PWT", size(small))  ///
+    ytitle("Estimated ĝ{sub:A}", size(small)) ///
     legend(off) ///
  saving("$figs/overlay_alt3.gph", replace) 
- 
- 
- twoway (lpoly RMSE_reduction corr_N1_K_out , color(orange%80)  lwidth(.6) lpattern(dash)) ///
-(scatter RMSE_reduction corr_N1_K_out,   mcolor(navy%100) msy(circle) msize(small)     ///
-yline(0, lpattern(dash) lcolor(gray%40) ) ///
-xline(0, lpattern(dash) lcolor(gray%40) ) ///
+
+   twoway (lfit g_A_bar g_A_bar , color(grey%20)   lpattern(dash)) ///
+  (lpoly g_tilde_A g_A_bar , color(navy%30)  lwidth(.6) lpattern(dash)) ///
+(scatter g_tilde_A g_A_bar,   mcolor(red%100) msy(circle) msize(small)     ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("ρ(g{sub:N{sub:1}},g{sub:K})", size(small))  ///
-    ytitle("Reduction in RMSE", size(small)) ///
+  xtitle("g{sub:A} from PWT", size(small))  ///
+    ytitle("Estimated g̃{sub:A}", size(small)) ///
+	    legend(off) ///
+	 saving("$figs/overlay_alt4.gph", replace) 
+
+	 
+  
+ 
+ 	  twoway (lfit RMSE_baseline_NK RMSE_baseline_NK , color(grey%20)   lpattern(dash)) ///
+  (lpoly RMSE_baseline RMSE_baseline_NK , color(navy%30)  lwidth(.6) lpattern(dash)) ///
+(scatter RMSE_baseline RMSE_baseline_NK,   mcolor(red%100) msy(circle) msize(small)     ///
+xlabel(, nogrid  labsize(small)) ///
+ylabel(, nogrid  labsize(small)) ), ///
+  xtitle("RMSE from Model 1 ", size(small))  /// 
+    ytitle("RMSE from Model 2", size(small)) ///
+	    legend(off) ///
+  saving("$figs/overlay_alt5.gph", replace) 
+    
+
+	
+ 
+ 
+  twoway hist RMSE_reduction_share, freq ///s
+xlabel(, nogrid  labsize(small)) ///
+ylabel(, nogrid  labsize(small))  ///
+    xtitle("Share of RMSE Reduced Going from Model 1 to 2", size(small)) ///
     legend(off) ///
- saving("$figs/overlay_alt4.gph", replace) 
+ saving("$figs/overlay_alt6.gph", replace) 
  
- 
 
 
 
-graph combine "$figs/overlay_alt1.gph" "$figs/overlay_alt2.gph" "$figs/overlay_alt3.gph" "$figs/overlay_alt4.gph" ,  ///
+graph combine "$figs/overlay_alt1.gph" "$figs/overlay_alt2.gph" "$figs/overlay_alt3.gph" "$figs/overlay_alt4.gph" "$figs/overlay_alt5.gph" "$figs/overlay_alt6.gph" ,  ///
 col(2) imargin(none) 
 graph export  "$figs/four_cases_overlay.png", replace 
 graph export  "$figs/four_cases_overlay.pdf", replace 
