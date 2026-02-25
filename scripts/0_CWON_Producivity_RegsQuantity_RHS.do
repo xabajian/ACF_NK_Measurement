@@ -184,6 +184,20 @@ boottest `keepvars', cluster(country_byte) nograph
 estadd scalar p_joint_boot = r(p)
 eststo m3
 
+
+qui{
+areg d.log_tfp  i.year,     absorb(country_byte) vce(cluster country_byte)
+scalar r2A_nest = e(r2)
+areg d.log_tfp i.year dlog*, ///
+    absorb(country_byte) vce(cluster country_byte)
+scalar r2A_free = e(r2)
+scalar ratio = (r2A_free- r2A_nest) /r2A_nest
+scalar dif = r2A_free - r2A_nest 
+}
+
+display  r2A_nest " vs  " r2A_free " vs  ratio" ratio " vs dif " dif
+
+
 *(4)
 areg d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
     absorb(country_byte) vce(cluster country_byte)
@@ -192,6 +206,21 @@ estadd scalar p_joint = r(p)
 boottest `keepvars', cluster(country_byte) nograph
 estadd scalar p_joint_boot = r(p)
 eststo m4
+
+
+qui{
+areg d.log_tfp  i.year d.log_K d.log_L d.log_HC d.log_lab_share,     absorb(country_byte) vce(cluster country_byte)
+scalar r2A_nest = e(r2)
+areg d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+    absorb(country_byte) vce(cluster country_byte)
+scalar r2A_free = e(r2)
+scalar ratio = (r2A_free- r2A_nest) /r2A_nest
+scalar dif = r2A_free - r2A_nest 
+
+}
+	
+display  r2A_nest " vs  " r2A_free " vs  ratio" ratio " vs dif " dif
+
 
 *(5)
 reghdfe d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
