@@ -31,7 +31,7 @@ yline(0, lpattern(dash) lcolor(gray%40) ) ///
 xline(0, lpattern(dash) lcolor(gray%40) ) ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("g{sub:N{sub:1}}", size(small))  ///
+  xtitle("Average Growth in Renewable Resource Use (g{sub:N{sub:1}}), 1996-2019", size(small))  ///
     ytitle("Reduction in RMSE", size(small)) ///
     legend(off) ///
  saving("$figs/overlay_alt1.gph", replace) 
@@ -44,7 +44,7 @@ yline(0, lpattern(dash) lcolor(gray%40) ) ///
 xline(0, lpattern(dash) lcolor(gray%40) ) ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("g{sub:N{sub:2}}", size(small))  ///
+  xtitle("Average Growth in Renewable Resource Use (g{sub:N{sub:2}}), 1996-2019", size(small))  ///
     ytitle("Reduction in RMSE", size(small)) ///
     legend(off) ///
  saving("$figs/overlay_alt2.gph", replace) 
@@ -81,8 +81,8 @@ ylabel(, nogrid  labsize(small)) ), ///
 (scatter g_hat_A g_A_bar,   mcolor(red%100) msy(circle) msize(small)     ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("g{sub:A} from PWT", size(small))  ///
-    ytitle("Estimated ĝ{sub:A}", size(small)) ///
+  xtitle("Average g{sub:A} from the PWT", size(small))  ///
+    ytitle("Estimated ĝ{sub:A} from Model 1", size(small)) ///
     legend(off) ///
  saving("$figs/overlay_alt3.gph", replace) 
 
@@ -91,8 +91,8 @@ ylabel(, nogrid  labsize(small)) ), ///
 (scatter g_tilde_A g_A_bar,   mcolor(red%100) msy(circle) msize(small)     ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("g{sub:A} from PWT", size(small))  ///
-    ytitle("Estimated g̃{sub:A}", size(small)) ///
+  xtitle("Average g{sub:A} from the PWT", size(small))  ///
+    ytitle("Estimated g̃{sub:A} from Model 2", size(small)) ///
 	    legend(off) ///
 	 saving("$figs/overlay_alt4.gph", replace) 
 
@@ -104,8 +104,8 @@ ylabel(, nogrid  labsize(small)) ), ///
 (scatter RMSE_baseline RMSE_baseline_NK,   mcolor(red%100) msy(circle) msize(small)     ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("RMSE from Model 1 ", size(small))  /// 
-    ytitle("RMSE from Model 2", size(small)) ///
+  xtitle("RMSE when Omitting Non-Renewables", size(small))  /// 
+    ytitle("RMSE when Including Non-Renewables", size(small)) ///
 	    legend(off) ///
   saving("$figs/overlay_alt5.gph", replace) 
     
@@ -113,10 +113,11 @@ ylabel(, nogrid  labsize(small)) ), ///
 	
  
  
-  twoway hist RMSE_reduction_share, freq ///s
+  twoway hist RMSE_reduction_share, freq ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small))  ///
     xtitle("Share of RMSE Reduced Going from Model 1 to 2", size(small)) ///
+	ytitle("Number of Countries") ///
     legend(off) ///
  saving("$figs/overlay_alt6.gph", replace) 
  

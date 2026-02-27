@@ -119,5 +119,12 @@ quietly {
     }
 }
 
- 
+sum RMSE_reduction, d
+gen RMSE_reduction_topcode = min(RMSE_reduction, r(p90))
+replace RMSE_reduction_topcode = . if RMSE_reduction==.
 save "$sim_dir/bias_rmse.dta", replace
+drop country_string
+decode country_byte, gen(country_string)
+export delimited "$sim_dir/bias_rmse.csv", replace
+
+
