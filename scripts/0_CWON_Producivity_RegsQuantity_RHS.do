@@ -121,7 +121,7 @@ save "$processed/renewable_quantities.dta", replace
 restore
 
 
-// Lassos
+/* Lassos
 
 // First stage, test ability to predict GDP
 cvlasso d.log_y dlog* d.log_K d.log_L d.log_HC d.log_lab_share i.year, fe
@@ -130,7 +130,7 @@ cvlasso, lopt
 // Second stage, test ability to predict TFP
 cvlasso d.log_tfp dlog* d.log_K d.log_L d.log_HC d.log_lab_share i.year, fe
 cvlasso, lopt
-
+*/
 
 // PWT
 
@@ -271,19 +271,118 @@ codebook countryname if flag_mangrove_ha==0 & d.log_tfp != .
 codebook countryname if flag_b_e==0 & d.log_tfp != .
 codebook countryname if flag_hp_gwh==0 & d.log_tfp != .
 
-// RI test
+/* RI test
 
+*/
+
+
+
+//make simple data
+preserve
+keep ldiff_TFP year country_byte ///
+dlog_q_urban dlog_prod_area dlog_land dlog_forest_area_km dlog_mangrove_ha dlog_b_e dlog_hp_gwh
+
+
+xtset country_byte year
+save "$raw/ri_test_data.dta", replace
+restore
+
+
+//make covariates 
+preserve
+use  "$raw/ri_test_data.dta", clear
+keep year country_byte dlog_q_urban dlog_prod_area dlog_land dlog_forest_area_km dlog_mangrove_ha dlog_b_e dlog_hp_gwh
+save  "$raw/ri_test_covs.dta", replace
+restore 
+
+//make outcomes  
+preserve
+use  "$raw/ri_test_data.dta", clear
+keep ldiff_TFP year country_byte
+by country_byte: gen index = _n
+save  "$raw/ri_test_otucomes.dta", replace
+restore 
+
+preserve 
+program define RI_test, rclass
+version 12.1
+    
+	use  "$raw/ri_test_covs.dta", clear
+	gen rand_seed = runiform()
+	sort country_byte rand_seed
+	by country_byte: gen index = _n
+	
+	merge 1:1 index country_byte using "$raw/ri_test_otucomes.dta", nogen
+	
+    // Run your model
+	xtset country_byte year
+
+	
+	areg ldiff_TFP dlog* i.year, absorb(country_byte) vce(cluster country_byte)
+	
+    // Extract estimates
+	test dlog_q_urban dlog_prod_area dlog_land dlog_forest_area_km dlog_mangrove_ha dlog_b_e dlog_hp_gwh
+	scalar f_stat = r(F)
+
+	
+ 	return scalar F_stats = scalar(f_stat)
+
+end
+
+
+simulate F_stat_out =r(F_stats)  , reps(100000): RI_test
+
+save  "$processed/ri_test_out.dta", replace
+restore 
+
+//plot RI tests
+preserve 
+
+areg ldiff_TFP dlog*, absorb(country_byte) vce(cluster country_byte)
+
+local keepvars ///
+    dlog_q_urban dlog_prod_area dlog_land ///
+    dlog_forest_area_km dlog_mangrove_ha ///
+    dlog_b_e dlog_hp_gwh
+
+test `keepvars'
+// display %4.3f r(p)
+// local p : display %4.3f r(p)
+display %4.3f r(F)
+local F : display %4.3f r(F)
+
+
+use  "$processed/ri_test_out.dta", clear 
+
+count if F_stat_out > `F'
+    
+display r(N) / 100000
+
+histogram F_stat_out, ///
+    lcolor(red) color(red%40) bins(50) ///
+    text(4000 4.75 "{it:F} = `F'", size(vsmall)) ///
+    legend(off) ///
+    ytitle("Number of Resampled Estimates") ///
+    xline(`F', lcolor(gray) extend lpattern(dash)) ///
+    xtitle("{it:F}-stats of Wald Tests") ///
+    ylabel(0(4000)20000) ///
+    frequency
+
+graph export "$figs/robustness_RI.png", replace
+restore
+
+/*
 //old
 //permute ldiff_TFP F_test = Ftail(e(df_m), e(df_r), e(F))
 
 
-permute ldiff_TFP F_test = e(F), ///
+permute dlog_q_urban dlog_prod_area dlog_land dlog_forest_area_km dlog_mangrove_ha dlog_b_e dlog_hp_gwh F_test = e(F), ///
     saving("$processed/ritest1.dta", replace) ///
     strata(country_byte) ///
     reps(10000) ///
     dots(100) ///
     seed(1234) : ///
-    areg ldiff_TFP dlog*, absorb(country_byte) vce(cluster country_byte)
+    areg ldiff_TFP dlog_q_urban dlog_prod_area dlog_land dlog_forest_area_km dlog_mangrove_ha dlog_b_e dlog_hp_gwh, absorb(country_byte) vce(cluster country_byte)
 
  areg ldiff_TFP dlog*, absorb(country_byte) vce(cluster country_byte)
 
@@ -303,24 +402,24 @@ use "$processed/ritest1.dta", clear
 
 count if F_test < `F'
     
-display r(N) / 10000
-// .9815
+display 1- r(N) / 10000
+
 
 
 histogram F_test, ///
     lcolor(red) color(red%40) bins(50) ///
-    text(1400 4.4 "{it:F} = `F'", size(vsmall)) ///
+    text(4000 4.75 "{it:F} = `F'", size(vsmall)) ///
     legend(off) ///
     ytitle("Number of Resampled Estimates") ///
     xline(`F', lcolor(gray) extend lpattern(dash)) ///
     xtitle("Placebo {it:F}-stat of Wald Test") ///
-    ylabel(0(500)1500) ///
+    ylabel(0(1000)5000) ///
     frequency
 
 graph export "$figs/robustness_RI.png", replace
 restore
 
-
+*/
 *============================================================*
 * Tab 1, no urban
 *============================================================*
