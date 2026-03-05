@@ -78,14 +78,18 @@ gen log_y         = ln(rgdpna)
 gen dlog_tfp = D.log_tfp
 
 // rename for ease
-gen g_n1      = g_Q_NonRewnew_Tornquist
+gen g_n1      = g_Q_NonRewnew_Tornquist 
 gen g_n2      = g_Q_Renew_Tornquist
-gen g_k       = d.log_K
+gen g_k       = d.log_K if country_byte == country_byte[_n-1]
+gen g_L  = d.log_L if country_byte == country_byte[_n-1]
 gen g_n1_CWON  = d_torn_nonrenewables_CWON
 gen g_n2_CWON  = d_torn_renew_CWON
 
+corr g_n1 g_n2 g_k g_L
 
 xtset country_byte year
+
+/*
 cvlasso d.log_y ///
     DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
     DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
@@ -93,7 +97,7 @@ cvlasso d.log_y ///
     DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh ///
     d.log_K d.log_L d.log_HC d.log_lab_share i.year, fe
 cvlasso, lopt
-
+*/
 
 pcorr d.log_y ///
     DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
@@ -145,9 +149,6 @@ foreach var of local all_nk_vars{
 	
 	replace `var' = ln(`var')
 }
-*============================================================*
-* Tab : output  Growth vs. Natural Capital Growth (5 specs)
-*============================================================*
 
 // // lasso
 /*
@@ -187,8 +188,10 @@ restore
 
 
 *============================================================*
-* Robust per-column p-values via esttab
+* Tab : output  Growth vs. Törnqvist index growth
 *============================================================*
+
+
 eststo clear
 
 *(1)
@@ -240,9 +243,101 @@ esttab m1 m2 m3 m4 m5 m6 using "$tables/appendix_tornq_regs.tex", replace ///
     star(* 0.0001)
 
 
+*============================================================*
+* Tab : output  Growth vs. Törnqvist index growth, OPEC+
+*============================================================*
 
+
+gen opec_plus = 0
+
+
+preserve 
+local opec_plus_iso3 ///
+DZA ///
+AGO ///
+COG ///
+GNQ ///
+GAB ///
+IRN ///
+IRQ ///
+KWT ///
+LBY ///
+NGA ///
+SAU ///
+ARE ///
+VEN ///
+AZE ///
+BHR ///
+BRN ///
+KAZ ///
+MYS ///
+MEX ///
+OMN ///
+RUS ///
+SDN ///
+SSD
+ 
+foreach c of local opec_plus_iso3 {
+    replace opec_plus = 1 if countrycode == "`c'"
+}
+
+
+keep if opec_plus == 1
+
+eststo clear
+
+*(1)
+reg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist, vce(cluster country_byte)
+eststo m1
+
+*(2)
+reg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share, ///
+    vce(cluster country_byte)
+eststo m2
+
+*(3)
+areg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist i.year, ///
+    absorb(country_byte) vce(cluster country_byte)
+eststo m3
+
+*(4)
+areg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+    absorb(country_byte) vce(cluster country_byte)
+eststo m4
+
+
+*(5)
+reghdfe d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+    absorb(i.country_byte##c.year) vce(cluster country_byte)
+eststo m5
 
 	
+
+qui{
+	forvalues i = 1995/2019  {
+		gen year`i' = 1 if year==`i'
+		replace year`i'=0 if  year!=`i'
+}
+}
+
+*(6)
+xtabond d.log_y g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*,  lags(2) vce(robust)
+eststo m6
+
+drop year1* year2*
+
+
+*---- export with esttab ----*
+esttab m1 m2 m3 m4 m5 m6 using "$tables/appendix_tornq_regs_OPEC_plus.tex", replace ///
+    title("TFP Growth vs. Natural Capital Growth") ///
+    keep(g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist) ///
+    b(3) se(3) ///
+    star(* 0.0001)
+
+
+restore
+
+
 *============================================================*
 * Tab : TFP vs ALL NK vs. Natural Capital Growth (5 specs)
 *============================================================*
@@ -415,15 +510,18 @@ esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1_appendix_all_NK_post94.tex", replac
 *============================================================*
 bysort country_byte: egen corr_N1_K      = corr(g_n1 g_k)
 bysort country_byte: egen corr_N1_N2     = corr(g_n1 g_n2)
-bysort country_byte: egen corr_N1_K_CWON = corr(g_n1_CWON g_k)
-bysort country_byte: egen corr_N1_N2_CWON= corr(g_n1_CWON g_n2_CWON)
+bysort country_byte: egen corr_N2_K     = corr(g_n2 g_k)
+bysort country_byte: egen corr_N1_L      = corr(g_n1 g_L)
+bysort country_byte: egen corr_N2_L      = corr(g_n2 g_L)
+bysort country_byte: egen corr_L_K     = corr(g_L g_k)
+
 
 collapse (mean) ///
-    corr_N1_K corr_N1_N2 corr_N1_N2_CWON corr_N1_K_CWON ///
-    g_n1 g_k g_n2 g_n1_CWON g_n2_CWON dlog_tfp g_A= dlog_tfp (sd) sdn1 = g_n1 sdK = g_k sdn2 = g_n2 sdA = dlog_tfp , by(country_byte)
+    corr_N1_K corr_N1_N2 corr_N2_L corr_N1_L  corr_L_K corr_N2_K ///
+    g_L g_n1 g_k g_n2 dlog_tfp g_A= dlog_tfp (sd) sdL = g_L sdn1 = g_n1 sdK = g_k sdn2 = g_n2 sdA = dlog_tfp , by(country_byte)
 
-sum corr_N1_K corr_N1_N2 corr_N1_N2_CWON corr_N1_K_CWON ///
-    g_n1 g_k g_n2 g_n1_CWON g_n2_CWON if g_n1 != .
+sum corr_N1_K corr_N1_N2 corr_N2_L corr_N1_L corr_N2_K ///
+    g_n1 g_k g_n2  if g_n1 != .
 
 // scatter g_n1 g_n1_CWON
 
@@ -434,6 +532,7 @@ count
 
 rename corr_N1_K  corr_N1_K_out
 rename corr_N1_N2 corr_N1_N2_out
+rename corr_N2_K corr_N2_K_out
 
 tostring country_byte, gen(country_string)
 save "$processed/CWON_data.dta", replace

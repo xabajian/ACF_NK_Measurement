@@ -21,25 +21,27 @@ drop country_string
 decode country_byte, gen (country_string)
 drop if country_string=="EST"
 export delimited using "$sim_dir/bias_rmse.csv", replace 
-
+keep if sdA!=.
 
 
   //Figure a
-twoway (lpoly RMSE_reduction g_n1 , color(orange%80)  lwidth(.6) lpattern(dash)) ///
+twoway  ///
 (scatter RMSE_reduction g_n1,   mcolor(navy%100) msy(circle) msize(small)     ///
 yline(0, lpattern(dash) lcolor(gray%40) ) ///
 xline(0, lpattern(dash) lcolor(gray%40) ) ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("Average Growth in Renewable Resource Use (g{sub:N{sub:1}}), 1996-2019", size(small))  ///
+  xtitle("Average Growth in Non-Renewable Resource Use (g{sub:N{sub:1}}), 1996-2019", size(small))  ///
     ytitle("Reduction in RMSE", size(small)) ///
     legend(off) ///
     title("{bf:a}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
  saving("$figs/overlay_alt1.gph", replace) 
 
+//(lpoly RMSE_reduction g_n1 , color(orange%80)  lwidth(.6) lpattern(dash)) ///
+
 
  //Figure b
-twoway (lpoly RMSE_reduction g_n2 , color(orange%80)  lwidth(.6) lpattern(dash)) ///
+twoway ///
 (scatter RMSE_reduction g_n2,   mcolor(navy%100) msy(circle) msize(small)     ///
 yline(0, lpattern(dash) lcolor(gray%40) ) ///
 xline(0, lpattern(dash) lcolor(gray%40) ) ///
@@ -55,7 +57,6 @@ ylabel(, nogrid  labsize(small)) ), ///
  
  //Figure c
 twoway (lfit g_A_bar g_A_bar , color(grey%20)   lpattern(dash)) ///
-  (lpoly g_hat_A g_A_bar , color(navy%30)  lwidth(.6) lpattern(dash)) ///
 (scatter g_hat_A g_A_bar,   mcolor(red%100) msy(circle) msize(small)     ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
@@ -67,7 +68,6 @@ ylabel(, nogrid  labsize(small)) ), ///
 
   //Figure d
 twoway (lfit g_A_bar g_A_bar , color(grey%20)   lpattern(dash)) ///
-  (lpoly g_tilde_A g_A_bar , color(navy%30)  lwidth(.6) lpattern(dash)) ///
 (scatter g_tilde_A g_A_bar,   mcolor(red%100) msy(circle) msize(small)     ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
@@ -81,7 +81,6 @@ ylabel(, nogrid  labsize(small)) ), ///
   
   //Figure e
 twoway (lfit RMSE_baseline_NK RMSE_baseline_NK , color(grey%20)   lpattern(dash)) ///
-  (lpoly RMSE_baseline RMSE_baseline_NK , color(navy%30)  lwidth(.6) lpattern(dash)) ///
 (scatter RMSE_baseline RMSE_baseline_NK,   mcolor(red%100) msy(circle) msize(small)     ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
@@ -92,21 +91,25 @@ ylabel(, nogrid  labsize(small)) ), ///
   saving("$figs/overlay_alt5.gph", replace) 
     
 
-	
-  //Figure f
+	// Figure f
 twoway hist RMSE_reduction_share, freq ///
-xlabel(, nogrid  labsize(small)) ///
-ylabel(, nogrid  labsize(small))  ///
+    start(-0.1) width(0.1) ///
+    xlabel(-0.1(0.1)0.9, nogrid labsize(small)) ///
+	xline(0, lpattern(dash) lcolor(gray%40) ) ///
+    ylabel(, nogrid labsize(small)) ///
     xtitle("Share of RMSE Reduced Going from Model 1 to 2", size(small)) ///
     ytitle("Number of Countries") ///
     legend(off) ///
     title("{bf:f}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
- saving("$figs/overlay_alt6.gph", replace) 
- 
-
+    saving("$figs/overlay_alt6.gph", replace)
 
 
 graph combine "$figs/overlay_alt1.gph" "$figs/overlay_alt2.gph" "$figs/overlay_alt3.gph" "$figs/overlay_alt4.gph" "$figs/overlay_alt5.gph" "$figs/overlay_alt6.gph" ,  ///
 col(2) imargin(none) 
 graph export  "$figs/four_cases_overlay.png", replace 
 graph export  "$figs/four_cases_overlay.pdf", replace 
+
+sum RMSE* ,d
+
+count if g_n1>0 
+count if g_n2>0

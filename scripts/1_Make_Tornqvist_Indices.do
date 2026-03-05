@@ -232,6 +232,8 @@ foreach var of local NR_quantities {
 
     // topcode
     replace DQ_`var' = 2 if DQ_`var' > 2
+	
+	
 }
 
 
