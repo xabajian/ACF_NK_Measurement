@@ -36,8 +36,6 @@ scalar gamma_2 = 0.05
 scalar cov_N1_K = `corr_N1_K' * `sdK' * `sdn1'
 scalar cov_N1_N2 = `corr_N1_N2'  * `sdn1' * `sdn2'
 scalar cov_K_N2 = `corr_N2_K'  * `sdK' * `sdn2'
-
-// New covariances involving L
 scalar cov_L_K    = `corr_L_K'   * `sdL'  * `sdK'
 scalar cov_L_N1   = `corr_N1_L'  * `sdL'  * `sdn1'
 scalar cov_L_N2   = `corr_N2_L'  * `sdL'  * `sdn2'
@@ -53,7 +51,7 @@ scalar var_L  = (`sdL')^2
 //====================================================
 // Estimator 1: regressing output on {K, L} omitting {N1, N2}
 // Bias = gamma1*(gn1 - b_N1K*gK - b_N1L*gL) + gamma2*(gn2 - b_N2K*gK - b_N2L*gL)
-// where [b_K, b_L]' = Var([gK,gL])^{-1} Cov([gK,gL], gN)
+// where kappas = Var([gK,gL])^{-1} Cov([gK,gL], gN)
 //====================================================
 
 // Build Var([K L]) and its inverse
@@ -65,12 +63,7 @@ matrix iVKL = invsym(VKL)
 matrix cKL_N1 = ( cov_N1_K \ cov_L_N1 )
 matrix cKL_N2 = ( cov_K_N2  \ cov_L_N2 )
 
-
-// If you want the maintained assumption Cov(K,N2)=0:
-scalar cov_K_N2 = 0
-matrix cKL_N2 = ( cov_K_N2 \ cov_L_N2 )
-
-// Projection coefficients
+// Projection coefficients (kappas)
 matrix bKL_N1 = iVKL * cKL_N1   // [b_N1K, b_N1L]'
 matrix bKL_N2 = iVKL * cKL_N2   // [b_N2K, b_N2L]'
 
@@ -111,9 +104,8 @@ scalar lambdaK  = lambda[1,1]
 scalar lambdaN1 = lambda[2,1]
 scalar lambdaL  = lambda[3,1]
 
-// Bias term for estimator B (one omitted stock, partialling out K, N1, L)
+// Bias term for estimator 2
 scalar tfp_bias_1K = gamma_2 * ( `gn2' - lambdaK*`gK' - lambdaN1*`gn1' - lambdaL*`gL' )
-
 scalar g_tilde = `gA' + tfp_bias_1K
 
 
@@ -124,7 +116,7 @@ scalar abs_difference_TFP = TFP_square_bias_NK-TFP_square_bias_1K
 
 
 
-//repeate for expected root of squared error 
+//repeat for RMSE
 scalar var_no_NK = (`sdA'^2 + gamma_1 ^2 * `sdn1'^2 + gamma_2 ^2 * `sdn2'^2 + 2*gamma_1*gamma_2*cov_N1_N2) / 70
 scalar var_1_NK = (`sdA'^2 + gamma_2 ^2 * `sdn1'^2  ) /70
 scalar MSE_NK = sqrt(var_no_NK + tfp_bias_NK^2)
@@ -177,8 +169,7 @@ quietly {
 		
 		
 		
-		
-        * Run your program (example)
+        * Run simulation
 		solve_bias_variance, number_periods(70) corr_N1_K(`corr_N1_K_in') corr_N1_N2(`corr_N1_N2_in') corr_N2_K(`corr_N2_K_in')  gn1(`g1_in')  gn2(`g2_in')  gK(`gk_in') sdK(`sdK_in') sdA(`sdA_in') sdn1(`sd1_in') sdn2(`sd2_in') gA(`ga_in')  gL(`gl_in') sdL(`sdL_in') corr_N1_L(`corr_L_N1_in')  corr_N2_L(`corr_L_N2_in')  corr_L_K(`corr_L_K_in') 
 			
 		//  number_periods(integer 70) corr_N1_K(real 0.01) corr_N1_N2(real 0.01) corr_N2_K(real 0.01) gn1(real 0.01)  gn2(real 0.01)   gK(real 0.01) sdK(real 0.01) sdA(real 0.01) sdn1(real 0.01) sdn2(real 0.01) gA(real 0.01)  gL(real 0.01) sdL(real 0.01) corr_N1_L(real 0.01) corr_N2_L(real 0.01)   corr_L_K(real 0.01)  ] 
@@ -197,9 +188,14 @@ quietly {
     }
 }
 
+//summary stats
 sum RMSE_reduction, d
+
+//topcode for figure
 gen RMSE_reduction_topcode = min(RMSE_reduction, r(p90))
 replace RMSE_reduction_topcode = . if RMSE_reduction==.
+
+//save out
 save "$sim_dir/bias_rmse.dta", replace
 drop country_string
 decode country_byte, gen(country_string)
