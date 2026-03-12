@@ -37,5 +37,7 @@ label var dlog_tfp "$g_A$"
  format bias_reduction %9.2e
   format RMSE_reduction %9.2e
  format dlog_tfp %4.2f
+ 
+ drop if RMSE_reduction==.
 
 texsave country_string g_n1 g_n2 corr_N1_K_out corr_N1_N2_out  bias_reduction RMSE_reduction dlog_tfp using "$tables/country_tab.tex", replace varlabels

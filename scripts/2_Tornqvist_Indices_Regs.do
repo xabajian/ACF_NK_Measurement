@@ -16,7 +16,16 @@ global CWON_inputs "$root/CWON Data/FR_WLD_2024_195/Reproducibility package/Outp
 
 set scheme plotplain
 
-//start 
+
+/*
+@!#$!@#$#@!$@!#$#!#
+@!#$!@#$#@!$@!#$#!#
+
+//start -- read data for regressions
+
+@!#$!@#$#@!$@!#$#!#
+@!#$!@#$#@!$@!#$#!#
+*/
 
 use "$processed/tornqvist_panel.dta", clear
 
@@ -423,7 +432,7 @@ esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1_appendix_all_NK.tex", replace ///
 		  
 		  
 *============================================================*
-* Tab : TFP vs ALL NK vs. Natural Capital Growth (5 specs), post 1994
+* Tab : TFP vs ALL NK vs. Natural Capital Growth (5 specs), post 1995
 *============================================================*
 
 eststo clear
@@ -435,7 +444,7 @@ local keepvars ///
     DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
 
 *(1)
-reg d.log_tfp  `keepvars'  if year>1994, vce(cluster country_byte)
+reg d.log_tfp  `keepvars'  if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
 boottest `keepvars', cluster(country_byte) nograph
@@ -443,7 +452,7 @@ estadd scalar p_joint_boot = r(p)
 eststo m1
 
 *(2)
-reg d.log_tfp  `keepvars'	d.log_K d.log_L d.log_HC d.log_lab_share  if year>1994 , vce(cluster country_byte)
+reg d.log_tfp  `keepvars'	d.log_K d.log_L d.log_HC d.log_lab_share  if year>1995 , vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
 boottest `keepvars', cluster(country_byte) nograph
@@ -451,7 +460,7 @@ estadd scalar p_joint_boot = r(p)
 eststo m2
 
 *(3)
-areg d.log_tfp `keepvars' i.year  if year>1994, absorb(country_byte) vce(cluster country_byte)
+areg d.log_tfp `keepvars' i.year  if year>1995, absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
 boottest `keepvars', cluster(country_byte) nograph
@@ -459,7 +468,7 @@ estadd scalar p_joint_boot = r(p)
 eststo m3
 
 *(4)
-areg d.log_tfp `keepvars' i.year d.log_K d.log_L d.log_HC d.log_lab_share if year>1994, ///
+areg d.log_tfp `keepvars' i.year d.log_K d.log_L d.log_HC d.log_lab_share if year>1995, ///
     absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
@@ -468,7 +477,7 @@ estadd scalar p_joint_boot = r(p)
 eststo m4
 
 *(5)
-reghdfe d.log_tfp `keepvars' i.year d.log_K d.log_L d.log_HC d.log_lab_share  if year>1994, ///
+reghdfe d.log_tfp `keepvars' i.year d.log_K d.log_L d.log_HC d.log_lab_share  if year>1995, ///
     absorb(i.country_byte##c.year) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
@@ -485,7 +494,7 @@ qui{
 }
 }
 
-xtabond d.log_tfp `keepvars' d.log_K d.log_L d.log_HC d.log_lab_share year1* year2* if year>1994,  lags(2) vce(robust)
+xtabond d.log_tfp `keepvars' d.log_K d.log_L d.log_HC d.log_lab_share year1* year2* if year>1995,  lags(2) vce(robust)
 test `keepvars'
 estadd scalar p_joint = r(p)
 boottest `keepvars', cluster(country_byte) nograph
@@ -506,8 +515,10 @@ esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1_appendix_all_NK_post94.tex", replac
           fmt(3 3 0 3))
 	
 *============================================================*
-* Country-level data out
+* Country-level data out for simulations
 *============================================================*
+keep if year>1995 & year<2020
+tab year
 bysort country_byte: egen corr_N1_K      = corr(g_n1 g_k)
 bysort country_byte: egen corr_N1_N2     = corr(g_n1 g_n2)
 bysort country_byte: egen corr_N2_K     = corr(g_n2 g_k)

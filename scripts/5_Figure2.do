@@ -16,12 +16,32 @@ set scheme plotplain
 
 
 
+/*
+@!#$!@#$#@!$@!#$#!#
+@!#$!@#$#@!$@!#$#!#
+
+Step 1 -- Read Data
+
+@!#$!@#$#@!$@!#$#!#
+@!#$!@#$#@!$@!#$#!#
+*/
+
+
 use "$sim_dir/bias_rmse.dta", clear
 drop country_string 
 decode country_byte, gen (country_string)
-drop if country_string=="EST"
 export delimited using "$sim_dir/bias_rmse.csv", replace 
 keep if sdA!=.
+
+/*
+@!#$!@#$#@!$@!#$#!#
+@!#$!@#$#@!$@!#$#!#
+
+Step  2 -- Make Figure
+
+@!#$!@#$#@!$@!#$#!#
+@!#$!@#$#@!$@!#$#!#
+*/
 
 
   //Figure a
@@ -37,7 +57,6 @@ ylabel(, nogrid  labsize(small)) ), ///
     title("{bf:a}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
  saving("$figs/overlay_alt1.gph", replace) 
 
-//(lpoly RMSE_reduction g_n1 , color(orange%80)  lwidth(.6) lpattern(dash)) ///
 
 
  //Figure b
@@ -93,8 +112,8 @@ ylabel(, nogrid  labsize(small)) ), ///
 
 	// Figure f
 twoway hist RMSE_reduction_share, freq ///
-    start(-0.1) width(0.1) ///
-    xlabel(-0.1(0.1)0.9, nogrid labsize(small)) ///
+    start(-0.3) width(0.1) ///
+    xlabel(-0.3(0.1)0.9, nogrid labsize(small)) ///
 	xline(0, lpattern(dash) lcolor(gray%40) ) ///
     ylabel(, nogrid labsize(small)) ///
     xtitle("Share of RMSE Reduced Going from Model 1 to 2", size(small)) ///
