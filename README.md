@@ -38,7 +38,6 @@ Running the Stata scripts requires
 │   ├── RMSE_Correlations.pdf
 │   ├── RMSE_Correlations.png
 │   └── robustness_RI.png
-├── papers
 ├── processed
 ├── quantities
 ├── raw
@@ -63,8 +62,6 @@ Running the Stata scripts requires
 │   ├── 5_Figure2.do
 │   ├── 6_RMSE_correlations.do
 │   ├── Revenue forecast error math for US.xlsx
-│   └── unused
-│       └── 3_sim_bias_program_old.do
 ├── setup_nk_env.sh
 ├── simulations
 
