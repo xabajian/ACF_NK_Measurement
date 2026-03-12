@@ -1,2 +1,6 @@
 # Ignore the 'temp' folder
-Papers/
+papers/
+
+
+# ignore unused folder 
+scripts/unused
