@@ -6,7 +6,7 @@ Replication files for the peer review responses are available from xander.abajia
 
 ## Setup
 
-Scripts in this repository are written in Stata. It's assumed that the replicator operates from a working directory containing all the necessary files and folders detailed in the structure below. Data are small enough to be included in the GitHub repo. To run the Stata scripts, this folder should be set as the root directory and the global macro $root should correspond to the folder containing all files in "ACF_NK_Measurement" (i.e.,  global root "{~/ACF_NK_Measurement}" needs to be run). Scripts will not run out of order (more below_).
+Scripts in this repository are written in Stata. It's assumed that the replicator operates from a working directory containing all the necessary files and folders detailed in the structure below. Data are small enough to be included in the GitHub repo. To run the Stata scripts, this folder should be set as the root directory and the global macro $root should correspond to the folder containing all files in "ACF_NK_Measurement" (i.e.,  global root "{~/ACF_NK_Measurement}" needs to be run). Scripts will not run out of order (more below...).
 
 ## Requirements
 
@@ -25,28 +25,51 @@ Running the Stata scripts requires
 # File Tree 
 
 ```bash
+├── figs
+│   ├── four_cases_overlay.pdf
+│   ├── four_cases_overlay.png
+│   ├── overlay_alt1.gph
+│   ├── overlay_alt2.gph
+│   ├── overlay_alt3.gph
+│   ├── overlay_alt4.gph
+│   ├── overlay_alt5.gph
+│   ├── overlay_alt6.gph
+│   ├── overlay_alt6s.gph
+│   ├── RMSE_Correlations.pdf
+│   ├── RMSE_Correlations.png
+│   └── robustness_RI.png
+├── papers
+├── processed
+├── quantities
 ├── raw
 │   ├── euro_area_mfp_panel_iso.dta
-│   ├── FR_WLD_2024_195 [CWON DATA]
-      ...
-│   ├── pwt100_xsection.dta
+│   ├── FR_WLD_2024_195
 │   ├── pwt100.dta
 │   ├── renewable_wealth.dta
+│   ├── ri_test_covs.dta
+│   ├── ri_test_data.dta
+│   ├── ri_test_otucomes.dta
 │   └── UN_FAO_TFP_panel.dta
 ├── README.md
 ├── scripts
-│   ├── 0_CWON_Producivity_RegsQuantity_RHS.do
+│   ├── ~6_RMSE_correlations.do.stswp
+│   ├── 0_CWON_Regs.do
+│   ├── 0_PWT_XSection.do
 │   ├── 1_Make_Tornqvist_Indices.do
 │   ├── 2_Tornqvist_Indices_Regs.do
-│   ├── 3_Figure1.do
-│   ├── overlay1.do
-│   ├── overlay2.do
-│   ├── overlay3.do
-│   ├── overlay4.do
-│   ├── RMSE Program Case1.do
-│   ├── RMSE Program Case2.do
-│   ├── RMSE Program Case3.do
-│   └── RMSE Program Case4.do
+│   ├── 3_sim_bias_program.do
+│   ├── 4_make_appendix_overlay_table.do
+│   ├── 5_Figure1.ipynb
+│   ├── 5_Figure2.do
+│   ├── 6_RMSE_correlations.do
+│   ├── Revenue forecast error math for US.xlsx
+│   └── unused
+│       └── 3_sim_bias_program_old.do
+├── setup_nk_env.sh
+├── simulations
+
+└── tables
+
 ```
 NB: additional folders "processed", "figs", "tables", "simulations", and "quantities" will be made by script 0_CWON_Producivity_RegsQuantity_RHS.do.
 
