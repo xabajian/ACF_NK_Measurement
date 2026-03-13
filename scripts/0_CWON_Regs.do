@@ -47,17 +47,18 @@ merge PWT and other datasets
 */
 merge 1:1 countrycode year using "$raw/pwt100.dta", keep(3)
 drop _merge
+isid countrycode year
 
 gen iso3 = countrycode
 
 // merge the euro area version from Eurostat
 merge 1:1 year iso3 using "$raw/euro_area_mfp_panel_iso.dta", gen(merge_EU)
 drop if merge_EU == 2
-
+isid countrycode year
 // FAO TFP panel
 merge 1:1 year countrycode using "$raw/UN_FAO_TFP_panel.dta", gen(merge_UNFAO)
 drop if merge_UNFAO == 2
-
+isid countrycode year
 
 /*
 Prep % changes of renewable NK stocks
@@ -132,7 +133,7 @@ cvlasso, lopt
 // PWT
 
 *============================================================*
-* Tab 1: TFP Growth vs. Natural Capital Growth (5 specs)
+* Tab 1: TFP Growth vs. Natural Capital Growth (6 specs)
 *============================================================*
 
 label var dlog_q_urban        "Urban Land"
@@ -150,6 +151,7 @@ label var dlog_hp_gwh         "Hydropower"
 
 eststo clear
 
+xtset country_byte year 
 local keepvars ///
     dlog_q_urban dlog_prod_area dlog_land ///
     dlog_forest_area_km dlog_mangrove_ha ///
@@ -206,7 +208,7 @@ eststo m4
 qui{
 areg d.log_tfp  i.year d.log_K d.log_L d.log_HC d.log_lab_share  if year>1995,     absorb(country_byte) vce(cluster country_byte)
 scalar r2A_nest = e(r2)
-areg d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+areg d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share if year>1995, ///
     absorb(country_byte) vce(cluster country_byte)
 scalar r2A_free = e(r2)
 scalar ratio = (r2A_free- r2A_nest) /r2A_nest
@@ -697,7 +699,7 @@ esttab m1 m2 m3 m4 m5 using "$tables/tab2.tex", replace ///
 
 *============================================================*
 * Tab 3: EU + Norway PWT TFP Growth vs. Natural Capital Growth
-*   (apples-to-apples vs Eurostat MFP)
+*   (apples-to-apples vs Eurostat MFP), (5 specs)
 *============================================================*
 eststo clear
 
@@ -793,7 +795,7 @@ restore
 
 
 *============================================================*
-* Tab 4: Agricultural TFP Growth vs. Natural Capital Growth
+* Tab 4: Agricultural TFP Growth vs. Natural Capital Growth, (5 specs)
 *============================================================*
 eststo clear
 

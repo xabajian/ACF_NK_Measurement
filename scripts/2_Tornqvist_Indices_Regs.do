@@ -49,18 +49,18 @@ gen d_torn_nonrenewables_chain_CWON = torn_ch_nonrenew  / L.torn_ch_nonrenew  - 
 gen d_torn_renew_real_CWON  = torn_real_renew / L.torn_real_renew     - 1
 gen d_torn_nonrenewables_real_CWON  = torn_real_nonrenew / L.torn_real_nonrenew     - 1
 
-corr g_Q_Renew_Tornquist d_torn_renew_chain_CWON d_torn_renew_CWON d_torn_renew_real_CWON   g_Q_NonRewnew_Tornquist d_torn_nonrenewables_chain_CWON d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON 
+corr g_Q_Renew_Tornquist d_torn_renew_chain_CWON d_torn_renew_CWON d_torn_renew_real_CWON   g_Q_NonRenew_Tornquist d_torn_nonrenewables_chain_CWON d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON 
 
-sum g_Q_NonRewnew_Tornquist ///
+sum g_Q_NonRenew_Tornquist ///
     DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
     DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
     DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity ///
-    DQ_nickel_quantity d_torn_nonrenewables_CWON if g_Q_NonRewnew_Tornquist != .
+    DQ_nickel_quantity d_torn_nonrenewables_CWON if g_Q_NonRenew_Tornquist != .
 
 // winsorize
 replace d_torn_nonrenewables_CWON = -1 if d_torn_nonrenewables_CWON < -1 & d_torn_nonrenewables_CWON != .
 replace d_torn_nonrenewables_CWON =  1 if d_torn_nonrenewables_CWON >  1 & d_torn_nonrenewables_CWON != .
-replace g_Q_NonRewnew_Tornquist   =  1 if g_Q_NonRewnew_Tornquist   >  1 & g_Q_NonRewnew_Tornquist   != .
+replace g_Q_NonRenew_Tornquist   =  1 if g_Q_NonRenew_Tornquist   >  1 & g_Q_NonRenew_Tornquist   != .
 
 corr D_Q_Tornquist_nonrenewables d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON torn_unch_nonrenew ///
      DQ_coal_quantity DQ_oil_quantity DQ_iron_quantity DQ_gas_quantity DQ_gold_quantity ///
@@ -87,7 +87,7 @@ gen log_y         = ln(rgdpna)
 gen dlog_tfp = D.log_tfp
 
 // rename for ease
-gen g_n1      = g_Q_NonRewnew_Tornquist 
+gen g_n1      = g_Q_NonRenew_Tornquist 
 gen g_n2      = g_Q_Renew_Tornquist
 gen g_k       = d.log_K if country_byte == country_byte[_n-1]
 gen g_L  = d.log_L if country_byte == country_byte[_n-1]
@@ -122,7 +122,7 @@ pcorr d.log_tfp ///
     DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh ///
     d.log_K d.log_L d.log_HC d.log_lab_share i.year i.country_byte
 
-corr g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d_torn_renew_CWON d_torn_nonrenewables_CWON g_k
+corr g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist d_torn_renew_CWON d_torn_nonrenewables_CWON g_k
 
  
 // Clean brefore regressionss
@@ -149,7 +149,7 @@ drop ///
     DQ_hp_gwh_exponentiated D_Q_Tornquist_renewables
 
 //take logs of these 
-local varlist   all_nk_vars  DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
+local   all_nk_vars  DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
     DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
     DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
     DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
@@ -161,10 +161,10 @@ foreach var of local all_nk_vars{
 
 // // lasso
 /*
-cvlasso d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share i.year, fe
+cvlasso d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share i.year, fe
 cvlasso, lopt
 
-pcorr d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share i.year i.country_byte
+pcorr d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share i.year i.country_byte
 */
 //create average growth from these indices
 preserve 
@@ -177,11 +177,11 @@ sum g_Q_Renew_Tornquist
 scalar sigma_2 = r(sd)
 
 //NR
-sum g_Q_NonRewnew_Tornquist if g_Q_NonRewnew_Tornquist>0, d
+sum g_Q_NonRenew_Tornquist if g_Q_NonRenew_Tornquist>0, d
 scalar mu_1_plus = r(p50)
-sum g_Q_NonRewnew_Tornquist if g_Q_NonRewnew_Tornquist<0 ,d 
+sum g_Q_NonRenew_Tornquist if g_Q_NonRenew_Tornquist<0 ,d 
 scalar mu_1_minus = r(p50)
-sum g_Q_NonRewnew_Tornquist
+sum g_Q_NonRenew_Tornquist
 scalar sigma_1 = r(sd)
 
 drop _all
@@ -204,27 +204,27 @@ restore
 eststo clear
 
 *(1)
-reg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist, vce(cluster country_byte)
+reg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist, vce(cluster country_byte)
 eststo m1
 
 *(2)
-reg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share, ///
+reg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share, ///
     vce(cluster country_byte)
 eststo m2
 
 *(3)
-areg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist i.year, ///
+areg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist i.year, ///
     absorb(country_byte) vce(cluster country_byte)
 eststo m3
 
 *(4)
-areg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+areg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
     absorb(country_byte) vce(cluster country_byte)
 eststo m4
 
 
 *(5)
-reghdfe d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+reghdfe d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
     absorb(i.country_byte##c.year) vce(cluster country_byte)
 eststo m5
 
@@ -238,7 +238,7 @@ qui{
 }
 
 *(6)
-xtabond d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*,  lags(2) vce(robust)
+xtabond d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*,  lags(2) vce(robust)
 eststo m6
 
 drop year1* year2*
@@ -247,7 +247,7 @@ drop year1* year2*
 *---- export with esttab ----*
 esttab m1 m2 m3 m4 m5 m6 using "$tables/appendix_tornq_regs.tex", replace ///
     title("TFP Growth vs. Natural Capital Growth") ///
-    keep(g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist) ///
+    keep(g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist) ///
     b(3) se(3) ///
     star(* 0.0001)
 
@@ -296,27 +296,27 @@ keep if opec_plus == 1
 eststo clear
 
 *(1)
-reg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist, vce(cluster country_byte)
+reg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist, vce(cluster country_byte)
 eststo m1
 
 *(2)
-reg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share, ///
+reg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share, ///
     vce(cluster country_byte)
 eststo m2
 
 *(3)
-areg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist i.year, ///
+areg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist i.year, ///
     absorb(country_byte) vce(cluster country_byte)
 eststo m3
 
 *(4)
-areg d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+areg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
     absorb(country_byte) vce(cluster country_byte)
 eststo m4
 
 
 *(5)
-reghdfe d.log_y g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+reghdfe d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
     absorb(i.country_byte##c.year) vce(cluster country_byte)
 eststo m5
 
@@ -330,7 +330,7 @@ qui{
 }
 
 *(6)
-xtabond d.log_y g_Q_NonRewnew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*,  lags(2) vce(robust)
+xtabond d.log_y g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*,  lags(2) vce(robust)
 eststo m6
 
 drop year1* year2*
@@ -339,7 +339,7 @@ drop year1* year2*
 *---- export with esttab ----*
 esttab m1 m2 m3 m4 m5 m6 using "$tables/appendix_tornq_regs_OPEC_plus.tex", replace ///
     title("TFP Growth vs. Natural Capital Growth") ///
-    keep(g_Q_Renew_Tornquist g_Q_NonRewnew_Tornquist) ///
+    keep(g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist) ///
     b(3) se(3) ///
     star(* 0.0001)
 

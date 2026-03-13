@@ -19,25 +19,29 @@ global CWON_inputs "$raw/FR_WLD_2024_195/Reproducibility package/Output/Latest"
 
 set scheme plotplain
 
-
+/*
+*============================================================*
+Step 1--Read raw CWON data
+*============================================================*
+*/
 
 *============================================================*
 * Nonrenewable resource extraction quantities
 *============================================================*
 local quantities_list ///
-    coal_production.dta ///
-    gas_production.dta ///
-    min_production_bauxite.dta ///
-    min_production_copper.dta ///
-    min_production_gold.dta ///
-    min_production_iron_ore.dta ///
-    min_production_lead.dta ///
-    min_production_nickel.dta ///
-    min_production_phosphate.dta ///
-    min_production_silver.dta ///
-    min_production_tin.dta ///
-    min_production_zinc.dta ///
-    oil_production.dta
+coal_production.dta ///
+gas_production.dta ///
+min_production_bauxite.dta ///
+min_production_copper.dta ///
+min_production_gold.dta ///
+min_production_iron_ore.dta ///
+min_production_lead.dta ///
+min_production_nickel.dta ///
+min_production_phosphate.dta ///
+min_production_silver.dta ///
+min_production_tin.dta ///
+min_production_zinc.dta ///
+oil_production.dta
 
 local lbl1  "Coal"
 local lbl2  "Gas"
@@ -68,7 +72,7 @@ qui {
         local varname = subinstr("`varname'", "/", "_", .)
 
         rename YR `varname'_quantity
-        save "`textlbl'_quantites.dta", replace
+        save "`textlbl'_quantities.dta", replace
 
         display series[1]
         local ++i
@@ -94,19 +98,19 @@ local lbl12 "Zinc"
 local lbl13 "Oil"
 
 local rents_list ///
-    coal_rent_cd.dta ///
-    gas_rent_cd.dta ///
-    min_rent_bauxite_cd_uc.dta ///
-    min_rent_copper_cd_uc.dta ///
-    min_rent_gold_cd_uc.dta ///
-    min_rent_iron_ore_cd_uc.dta ///
-    min_rent_lead_cd_uc.dta ///
-    min_rent_nickel_cd_uc.dta ///
-    min_rent_phosphate_cd_uc.dta ///
-    min_rent_silver_cd_uc.dta ///
-    min_rent_tin_cd_uc.dta ///
-    min_rent_zinc_cd_uc.dta ///
-    oil_rent_cd.dta
+coal_rent_cd.dta ///
+gas_rent_cd.dta ///
+min_rent_bauxite_cd_uc.dta ///
+min_rent_copper_cd_uc.dta ///
+min_rent_gold_cd_uc.dta ///
+min_rent_iron_ore_cd_uc.dta ///
+min_rent_lead_cd_uc.dta ///
+min_rent_nickel_cd_uc.dta ///
+min_rent_phosphate_cd_uc.dta ///
+min_rent_silver_cd_uc.dta ///
+min_rent_tin_cd_uc.dta ///
+min_rent_zinc_cd_uc.dta ///
+oil_rent_cd.dta
 
 local lbl1  "Coal"
 local lbl2  "Gas"
@@ -151,33 +155,33 @@ qui {
 merge non-renewable resources single panel
 */
 local merge_list ///
-    Nickel_rents.dta ///
-    Bauxite_rents.dta ///
-    Coal_quantites.dta ///
-    Oil_quantites.dta ///
-    Coal_rents.dta ///
-    Oil_rents.dta ///
-    Copper_quantites.dta ///
-    Phosphate_quantites.dta ///
-    Copper_rents.dta ///
-    Phosphate_rents.dta ///
-    Gas_quantites.dta ///
-    Gas_rents.dta ///
-    Gold_quantites.dta ///
-    Silver_quantites.dta ///
-    Gold_rents.dta ///
-    Silver_rents.dta ///
-    Iron_quantites.dta ///
-    Tin_quantites.dta ///
-    Iron_rents.dta ///
-    Tin_rents.dta ///
-    Lead_quantites.dta ///
-    Zinc_quantites.dta ///
-    Lead_rents.dta ///
-    Zinc_rents.dta ///
-    Nickel_quantites.dta
+Nickel_rents.dta ///
+Bauxite_rents.dta ///
+Coal_quantities.dta ///
+Oil_quantities.dta ///
+Coal_rents.dta ///
+Oil_rents.dta ///
+Copper_quantities.dta ///
+Phosphate_quantities.dta ///
+Copper_rents.dta ///
+Phosphate_rents.dta ///
+Gas_quantities.dta ///
+Gas_rents.dta ///
+Gold_quantities.dta ///
+Silver_quantities.dta ///
+Gold_rents.dta ///
+Silver_rents.dta ///
+Iron_quantities.dta ///
+Tin_quantities.dta ///
+Iron_rents.dta ///
+Tin_rents.dta ///
+Lead_quantities.dta ///
+Zinc_quantities.dta ///
+Lead_rents.dta ///
+Zinc_rents.dta ///
+Nickel_quantities.dta
 
-use Bauxite_quantites.dta
+use Bauxite_quantities.dta, clear
 
 foreach q of local merge_list {
     merge 1:1 countrycode year using `q'
@@ -186,12 +190,13 @@ foreach q of local merge_list {
 
 save NR_Resource_Rents_Panel.dta, replace
 
-
 /*
-Step next... Make Tornquist indices
+*============================================================*
+Step 2--Make Tornquist indices
+*============================================================*
 */
 
-*/
+use NR_Resource_Rents_Panel.dta, clear
 
 /*
 Merge in renewables
@@ -228,8 +233,10 @@ foreach var of local NR_quantities {
     }
 
     // remove anything that's using pct change from missings or zeros
-    replace DQ_`var' = 1 if (L.`var' == . | L.`var' == 0 | F.`var' == 0 | F.`var' == .)
-
+	//old
+    //replace DQ_`var' = 1 if (L.`var' == . | L.`var' == 0 | F.`var' == 0 | F.`var' == .)
+	//new
+	replace DQ_`var' = 1 if (L.`var' == . | L.`var' == 0 | `var' == 0 | `var' == .)
     // topcode
     replace DQ_`var' = 2 if DQ_`var' > 2
 	
@@ -285,7 +292,7 @@ foreach var of local renewable_rents {
 gen test = ///
     2*ag_NK_wealth_weight + rec_forests_wealth_weight + FWE_wealth_weight + ///
     Hydro_wealth_weight + Mangroves_wealth_weight + NFS_wealth_weight + ///
-    Timber_wealth_weigh
+    Timber_wealth_weight
 sum test
 drop test
 
@@ -320,6 +327,7 @@ gen hp_gwh_weight          = Hydro_wealth_weight
 save renewable_capital_weights.dta, replace
 restore
 
+//assign these average weights across all years as the actual weights in the data.
 merge m:1 countrycode using renewable_capital_weights.dta
 drop _merge
 
@@ -382,7 +390,7 @@ sum D_Q_Tornquist_nonrenewables ///
     DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity ///
     DQ_nickel_quantity if D_Q_Tornquist_nonrenewables != .
 
-gen g_Q_NonRewnew_Tornquist = D_Q_Tornquist_nonrenewables - 1
+gen g_Q_NonRenew_Tornquist = D_Q_Tornquist_nonrenewables - 1
 
 
 // renewables index

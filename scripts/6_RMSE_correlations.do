@@ -144,3 +144,16 @@ graph combine "$figs/overlay_alt1.gph" "$figs/overlay_alt2.gph" "$figs/overlay_a
 col(2) imargin(none) 
 graph export  "$figs/RMSE_Correlations.png", replace 
 graph export  "$figs/RMSE_Correlations.pdf", replace 
+
+
+
+
+sureg ///
+    (RMSE_reduction gdp_pc) ///
+    (RMSE_reduction rgdpna) ///
+    (RMSE_reduction hc) ///
+    (RMSE_reduction statcap) 
+
+	reg RMSE_reduction gdp_pc rgdpna hc , r
+	test  hc rgdpna gdp_pc
+	

@@ -35,12 +35,11 @@ Step 1 -- Read Data
 
 use "$raw/pwt100.dta", clear
 
-
+//make GDP per capita
 gen gdp_pc = rgdpna/pop
-
+//keep 2019
 keep if year==2019
-
 keep gdp_pc rgdpna hc statcap country countrycode
-	
-	
+
+//save out
 save "$processed/pwt100_xsection.dta", replace
