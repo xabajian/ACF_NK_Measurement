@@ -20,7 +20,9 @@ Running the Stata scripts requires
 
 * REGHDFE
 * ESTAB
+* ESTADD
 * ESTAB2
+* BOOTTEST      
 
 # File Tree 
 
