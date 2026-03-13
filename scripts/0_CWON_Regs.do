@@ -281,7 +281,7 @@ RI test
 !@#$!#@$@#$!@#$!@#$@#
 !@#$!#@$@#$!@#$!@#$@#
 
-*/
+
 
 
 //make simple data
@@ -378,7 +378,7 @@ histogram F_stat_out, ///
 graph export "$figs/robustness_RI.png", replace
 restore
 
-
+*/
 
 *============================================================*
 * Tab 1, no urban
@@ -407,7 +407,7 @@ estadd scalar p_joint_boot = r(p)
 eststo m2
 
 *(3)
-areg d.log_tfp dlog* i.year if year>1995,, absorb(country_byte) vce(cluster country_byte)
+areg d.log_tfp dlog* i.year if year>1995, absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
 boottest `keepvars', cluster(country_byte) nograph
@@ -669,7 +669,7 @@ estadd scalar p_joint_boot = r(p)
 eststo m3
 
 *(4)
-areg d.log_eurostat_MFP dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_shareif year>1995, ///
+areg d.log_eurostat_MFP dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share if year>1995, ///
     absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
