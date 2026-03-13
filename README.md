@@ -12,7 +12,8 @@ Scripts in this repository are written in Stata. It's assumed that the replicato
 
 All programs are run in the following versions of these applications:
 
-* Stata: Stata/SE 18.5 for Mac 
+* Stata: Stata/SE 18.5 for Mac
+* Python 3.11.14 
 
 and were executed on Mac OS 26.2 (Tahoe). Programs must be run in the order in which they appear in the directory. Running all files associated with the main manuscript takes about a day on a new laptop because the simulations are performed in stata and it's not particularly efficient at simulating data. Programs outside of the simulations should take 5-10 minutes because of the interpolation process fitting simulated TFP errors to each country. Outside of that, reading in data/building indices/running regressions should run instantaneously, give or take.
 
@@ -24,22 +25,12 @@ Running the Stata scripts requires
 * ESTAB2
 * BOOTTEST      
 
+Running the Python scripts requires the python packages reported in our bash file which sets up the conda environment we use (`setup_nk_env.sh`)
+
 # File Tree 
 
 ```bash
 ├── figs
-│   ├── four_cases_overlay.pdf
-│   ├── four_cases_overlay.png
-│   ├── overlay_alt1.gph
-│   ├── overlay_alt2.gph
-│   ├── overlay_alt3.gph
-│   ├── overlay_alt4.gph
-│   ├── overlay_alt5.gph
-│   ├── overlay_alt6.gph
-│   ├── overlay_alt6s.gph
-│   ├── RMSE_Correlations.pdf
-│   ├── RMSE_Correlations.png
-│   └── robustness_RI.png
 ├── processed
 ├── quantities
 ├── raw
@@ -47,13 +38,9 @@ Running the Stata scripts requires
 │   ├── FR_WLD_2024_195
 │   ├── pwt100.dta
 │   ├── renewable_wealth.dta
-│   ├── ri_test_covs.dta
-│   ├── ri_test_data.dta
-│   ├── ri_test_otucomes.dta
 │   └── UN_FAO_TFP_panel.dta
 ├── README.md
 ├── scripts
-│   ├── ~6_RMSE_correlations.do.stswp
 │   ├── 0_CWON_Regs.do
 │   ├── 0_PWT_XSection.do
 │   ├── 1_Make_Tornqvist_Indices.do
@@ -66,7 +53,6 @@ Running the Stata scripts requires
 │   ├── Revenue forecast error math for US.xlsx
 ├── setup_nk_env.sh
 ├── simulations
-
 └── tables
 
 ```
@@ -80,21 +66,43 @@ The "scripts" folder contains all scripts that are used to generate findings in 
 
 Scripts run in this order do the following things:
 
-
+## Setup 
+ - `setup_nk_env.sh` -- sets up an anaconda enviroment to make figure 1
+   
 ## Section 2 - Regressions of TFP on renewables
 
-- `0_CWON_Producivity_RegsQuantity_RHS` — Creates all directories listed above. Reads in quantities of seven renewable resources of interest from CWON raw data. Runs regressions of TFP on renewables in Section 2 of the manuscript (i.e., Table 1). Saves these quantities out for use when constructing Tornqvist indices.
+- `0_CWON_Regs.do` — Creates all directories listed above. Reads in quantities of seven renewable resources of interest from CWON raw data. Runs regressions of TFP on renewables in Section 2 of the manuscript (i.e., Table 1). Saves these quantities out for use when constructing Tornqvist indices.
 
 ## Section 3 - Tornqvist indices
 
 - `1_Make_Tornqvist_Indices` — Creates tornqvist indices from raw CWON data.
-- `2_Tornqvist_Indices_Regs` - Solves for average growth rates of Tornqvist indices across countries to be used to place them in Figure 1. Runs regressions of TFP and output on our two tornqvist indices that appear in the SM. 
+- `2_Tornqvist_Indices_Regs` - Solves for average growth rates of Tornqvist indices across countries to be used to place them in Figure 1. Runs regressions of TFP and output on our two tornqvist indices that appear in the SM.
+
+- ``
+- ``
+
+## Section 4 - Simulations
+
+- `0_PWT_XSection.do` - creates a cross sectin of PWT variables for countries in 2019 used in appendix figures
+- `3_sim_bias_program.do` - calculates the bias and RMSE terms for each estimator we consider. Follows directly from the steps shown in the main text and the appendix.
+- 
+- ` 5_Figure1.ipynb`
+│   ├── 
+│   ├── .do
+│   ├── .do
+│   ├── 
+│   ├──
+│   ├── 
+│   ├── 
+│   ├── Revenue forecast error math for US.xlsx
+
 
 ## Figures
 
-- `3_Figure1` - Assembles Figure 1 and a few appendix tables. This program is a wrapper which calls the following .do files:
-      - `RMSE Program Case*`- Runs casewise simulations described in SM
-      - `overlay*` - creates overlays of ISO codes on simulated heatmaps 
+- `4_make_appendix_overlay_table.do - makes appendix table 15 which shows the results from our simulations at the country level
+- `5_Figure1.ipynb` -- python script to create the two panels in figure 1.
+- `5_Figure2.do` -- stata do file to create the six panels in figure 2.
+- `6_RMSE_correlations.do` - creates the appendix figure showing scatters of simulated RMSE improvements against various variables in our PWT cross seciton. 
 
 # Data Descriptions
 
