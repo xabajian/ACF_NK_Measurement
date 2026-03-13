@@ -13,9 +13,9 @@ Scripts in this repository are written in Stata. It's assumed that the replicato
 All programs are run in the following versions of these applications:
 
 * Stata: Stata/SE 18.5 for Mac
-* Python 3.11.14 
+* Python: 3.11.14 
 
-and were executed on Mac OS 26.2 (Tahoe). Programs must be run in the order in which they appear in the directory. Running all files associated with the main manuscript takes about a day on a new laptop because the simulations are performed in stata and it's not particularly efficient at simulating data. Programs outside of the simulations should take 5-10 minutes because of the interpolation process fitting simulated TFP errors to each country. Outside of that, reading in data/building indices/running regressions should run instantaneously, give or take.
+and were executed on Mac OS 26.2 (Tahoe). Programs must be run in the order in which they appear in the directory. Running all files associated with the main manuscript takes about 20 minutes on a depending on how fast your terminal runs the interpolation processes fitting simulated TFP errors to each country. Outside of that, reading in data/building indices/running regressions should run pretty much instantaneously, give or take.
 
 Running the Stata scripts requires
 
@@ -97,7 +97,7 @@ Scripts run in this order do the following things:
 1. `FR_WLD_2024_195` Folder -- CWON datatset. Take from here: [https://data360.worldbank.org/en/dataset/WB_CWON](CWON LINK)
 2. `euro_area_mfp_panel_iso.dta` -- Eurostat experimental MFP series. Taken from here: https://ec.europa.eu/eurostat/documents/7894008/13933430/Crude-MFP-calculations-by-country.xlsx/b47324d8-7ae0-d3ac-32f8-873d188c3811?t=1639061621807
 3. `pwt100.dta` -- PWT version 10.01, https://www.rug.nl/ggdc/productivity/pwt/pwt-releases/pwt1001
-4. `pwt100_xsection.dta` -- cross section of PWT
+4. `pwt100_xsection.dta` -- cross section of PWT for 2019.
 5. `real_wealth_chained_tornqvist_unbalanced.dta` -- Read in from `FR_WLD_2024_195` folder. CWON version of tornqvist quantity indices that are in the wealth index dataset
 5. `assets_volume_variables.dta` -- Read in from `FR_WLD_2024_195` folder. CWON panel opf renewable assert quantities at country level over time
 6. `renewable_wealth.dta` -- Collapsed version of above file containing only renewables for convenience when merging to build weights for our index
