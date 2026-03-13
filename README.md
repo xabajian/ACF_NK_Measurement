@@ -76,10 +76,7 @@ Scripts run in this order do the following things:
 ## Section 3 - Tornqvist indices
 
 - `1_Make_Tornqvist_Indices` — Creates tornqvist indices from raw CWON data.
-- `2_Tornqvist_Indices_Regs` - Solves for average growth rates of Tornqvist indices across countries to be used to place them in Figure 1. Runs regressions of TFP and output on our two tornqvist indices that appear in the SM.
-
-- ``
-- ``
+- `2_Tornqvist_Indices_Regs` - Solves for average growth rates of Tornqvist indices across countries to be used to place them in Figure 1. Runs regressions of TFP and output on our two tornqvist indices that appear in the Appendix.
 
 ## Section 4 - Simulations
 
