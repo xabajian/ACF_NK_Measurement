@@ -82,16 +82,7 @@ Scripts run in this order do the following things:
 
 - `0_PWT_XSection.do` - creates a cross sectin of PWT variables for countries in 2019 used in appendix figures
 - `3_sim_bias_program.do` - calculates the bias and RMSE terms for each estimator we consider. Follows directly from the steps shown in the main text and the appendix.
-- 
-- ` 5_Figure1.ipynb`
-│   ├── 
-│   ├── .do
-│   ├── .do
-│   ├── 
-│   ├──
-│   ├── 
-│   ├── 
-│   ├── Revenue forecast error math for US.xlsx
+- `Revenue forecast error math for US.xlsx` - performs the very basic accounting exercise that shows how a 10 basis point forecast error, when compounded over 10 years, leads to a cumulative forecast error for revenues of about 400 billion (in the case of the United States).
 
 
 ## Figures
