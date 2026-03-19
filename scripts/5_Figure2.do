@@ -33,6 +33,12 @@ decode country_byte, gen (country_string)
 export delimited using "$sim_dir/bias_rmse.csv", replace 
 keep if sdA!=.
 
+
+gen corr_N1_K_out2 = corr_N1_K_out^2
+
+gen corr_N1_N2_out2 = corr_N1_N2_out^2
+reg corr_N1_K_out corr_N1_K_out2 corr_N1_N2_out corr_N1_N2_out2
+s
 /*
 @!#$!@#$#@!$@!#$#!#
 @!#$!@#$#@!$@!#$#!#
