@@ -34,39 +34,62 @@ export delimited using "$sim_dir/bias_rmse.csv", replace
 keep if sdA!=.
 
 
-reg RMSE_baseline corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A sdA
 
 
-//OK, fine
-//make residualized sdA
-reg sdA corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A 
-predict fitted_sdA, xb
+/*
+@!#$!@#$#@!$@!#$#!#
+@!#$!@#$#@!$@!#$#!#
 
-reg RMSE_baseline fitted_sdA
-predict rmse_bl_partialled, resid
+Step 2 --  RF evidence in text and appendix
+
+@!#$!@#$#@!$@!#$#!#
+@!#$!@#$#@!$@!#$#!#
+*/
 
 
-//lasso step 2
-cvlasso rmse_bl_partialled corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A
+
+eststo clear
+
+*(1)
+reg RMSE_reduction corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A sdA
+eststo m1
+
+
+*---- export with esttab ----*
+esttab m1 using "$tables/app_tab_decomp.tex", replace ///
+    title("RMSE Improvement Decomposition Growth vs. Natural Capital Growth") ///
+    keep(corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A sdA) ///
+    b(3) se(3) ///
+    star(* 0.05) ///
+    stats(R2 N, ///
+          labels("R Squared" "N") ///
+          fmt(3 3 0 3))
+*---- export with esttab ----*
+
+
+//correlations 
+reg RMSE_reduction corr_N1_K_out corr_N1_N2_out, r
+test corr_N1_K_out corr_N1_N2_out
+
+reg RMSE_reduction corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A sdA
+test corr_N1_K_out corr_N1_N2_out
+
+cvlasso RMSE_reduction corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A sdA
 cvlasso, lopt
-cvlasso, lse
-
-//pca the residuals
-pca corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A
-predict pca1 pca2
-scoreplot 
-reg rmse_bl_partialled pca1 pca2
-reg rmse_bl_partialled corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A
 
 /* 
 @!#$!@#$#@!$@!#$#!#
 @!#$!@#$#@!$@!#$#!#
 
-Step  2 -- Make Figure
+Step  3 -- Make Figure 2
 
 @!#$!@#$#@!$@!#$#!#
 @!#$!@#$#@!$@!#$#!#
 */
+
+reg g_n1 corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L  g_k g_n2 g_A sdA
+predict g_n1_resid, residual
+
 
 
   //Figure a
@@ -157,3 +180,110 @@ sum RMSE* ,d
 
 count if g_n1>0 
 count if g_n2>0
+
+
+
+/* 
+@!#$!@#$#@!$@!#$#!#
+@!#$!@#$#@!$@!#$#!#
+
+Step  4 -- Make  12 panel appendix FWL figure
+
+@!#$!@#$#@!$@!#$#!#
+@!#$!@#$#@!$@!#$#!#
+*/
+
+
+*======================================*
+* Frisch-Waugh-Lovell partial-regression plots
+* with shaded 95% confidence intervals
+* Outcome: RMSE_reduction
+*======================================*
+
+local yvar RMSE_reduction
+local xvars corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A sdA
+local letters a b c d e f g h i j k l
+
+* Clean up old graphs / variables
+capture graph drop _all
+foreach x of local xvars {
+    capture drop resid_`x'
+    capture drop resid_y_`x'
+    capture drop fit_`x'
+    capture drop sefit_`x'
+    capture drop lb_`x'
+    capture drop ub_`x'
+}
+
+local i = 1
+foreach x of local xvars {
+
+    * All controls except focal regressor
+    local controls : list xvars - x
+
+    * Residualize outcome on all other regressors
+    quietly reg `yvar' `controls'
+    predict resid_y_`x', resid
+
+    * Residualize focal regressor on all other regressors
+    quietly reg `x' `controls'
+    predict resid_`x', resid
+
+    * Partial regression of residualized outcome on residualized regressor
+    quietly reg resid_y_`x' resid_`x'
+
+    * Fitted values and standard error of mean prediction
+    predict fit_`x', xb
+    predict sefit_`x', stdp
+
+    * 95% confidence interval
+    gen lb_`x' = fit_`x' - 1.96*sefit_`x'
+    gen ub_`x' = fit_`x' + 1.96*sefit_`x'
+
+    * Sort for clean line/rarea drawing
+    gsort resid_`x'
+
+    * Panel letter
+    local panel : word `i' of `letters'
+
+    * Graph
+    twoway ///
+        (rarea ub_`x' lb_`x' resid_`x', ///
+            color(maroon%18) lcolor(maroon%18)) ///
+        (line fit_`x' resid_`x', ///
+            lcolor(maroon) lwidth(medthin)) ///
+        (scatter resid_y_`x' resid_`x', ///
+            mcolor(navy%100) msymbol(circle) msize(small)), ///
+        yline(0, lpattern(dash) lcolor(gs10)) ///
+        xline(0, lpattern(dash) lcolor(gs10)) ///
+        xlabel(, nogrid labsize(small)) ///
+        ylabel(, nogrid labsize(small)) ///
+        xtitle("Residualized `x'", size(small)) ///
+        ytitle("Residualized RMSE reduction", size(small)) ///
+        legend(off) ///
+        title("{bf:`panel'}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
+        saving("$figs/overlay_alt`i'.gph", replace)
+
+    local ++i
+}
+
+* Combine all 12 graphs
+graph combine ///
+    "$figs/overlay_alt1.gph" ///
+    "$figs/overlay_alt2.gph" ///
+    "$figs/overlay_alt3.gph" ///
+    "$figs/overlay_alt4.gph" ///
+    "$figs/overlay_alt5.gph" ///
+    "$figs/overlay_alt6.gph" ///
+    "$figs/overlay_alt7.gph" ///
+    "$figs/overlay_alt8.gph" ///
+    "$figs/overlay_alt9.gph" ///
+    "$figs/overlay_alt10.gph" ///
+    "$figs/overlay_alt11.gph" ///
+    "$figs/overlay_alt12.gph", ///
+    col(4) ///
+    imargin(none) ///
+    graphregion(color(white))
+
+graph export "$figs/12_cases_app.png", replace 
+graph export "$figs/12_cases_app.pdf", replace
