@@ -34,12 +34,31 @@ export delimited using "$sim_dir/bias_rmse.csv", replace
 keep if sdA!=.
 
 
-gen corr_N1_K_out2 = corr_N1_K_out^2
+reg RMSE_baseline corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A sdA
 
-gen corr_N1_N2_out2 = corr_N1_N2_out^2
-reg corr_N1_K_out corr_N1_K_out2 corr_N1_N2_out corr_N1_N2_out2
-s
-/*
+
+//OK, fine
+//make residualized sdA
+reg sdA corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A 
+predict fitted_sdA, xb
+
+reg RMSE_baseline fitted_sdA
+predict rmse_bl_partialled, resid
+
+
+//lasso step 2
+cvlasso rmse_bl_partialled corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A
+cvlasso, lopt
+cvlasso, lse
+
+//pca the residuals
+pca corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A
+predict pca1 pca2
+scoreplot 
+reg rmse_bl_partialled pca1 pca2
+reg rmse_bl_partialled corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A
+
+/* 
 @!#$!@#$#@!$@!#$#!#
 @!#$!@#$#@!$@!#$#!#
 
@@ -86,7 +105,7 @@ twoway (lfit g_A_bar g_A_bar , color(grey%20)   lpattern(dash)) ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
   xtitle("Average g{sub:A} from the PWT", size(small))  ///
-    ytitle("Estimated ĝ{sub:A} from Model 1", size(small)) ///
+    ytitle("Estimated γ̃{sub:A} from Model 1", size(small)) ///
     legend(off) ///
     title("{bf:c}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
  saving("$figs/overlay_alt3.gph", replace) 
@@ -97,7 +116,7 @@ twoway (lfit g_A_bar g_A_bar , color(grey%20)   lpattern(dash)) ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
   xtitle("Average g{sub:A} from the PWT", size(small))  ///
-    ytitle("Estimated g̃{sub:A} from Model 2", size(small)) ///
+    ytitle("Estimated γ̂{sub:A} from Model 2", size(small)) ///
     legend(off) ///
     title("{bf:d}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
  saving("$figs/overlay_alt4.gph", replace) 
