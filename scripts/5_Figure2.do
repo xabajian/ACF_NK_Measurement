@@ -33,7 +33,7 @@ decode country_byte, gen (country_string)
 export delimited using "$sim_dir/bias_rmse.csv", replace 
 keep if sdA!=.
 
-
+sum , d
 
 
 /*
@@ -145,7 +145,7 @@ ylabel(, nogrid  labsize(small)) ), ///
  saving("$figs/overlay_alt4.gph", replace) 
 
 	 
-  
+
   //Figure e
 twoway (lfit RMSE_baseline_NK RMSE_baseline_NK , color(grey%20)   lpattern(dash)) ///
 (scatter RMSE_baseline RMSE_baseline_NK,   mcolor(red%100) msy(circle) msize(small)     ///
@@ -160,8 +160,8 @@ ylabel(, nogrid  labsize(small)) ), ///
 
 	// Figure f
 twoway hist RMSE_reduction_share, freq ///
-    start(-0.3) width(0.1) ///
-    xlabel(-0.3(0.1)0.9, nogrid labsize(small)) ///
+    start(-0.2) width(0.1) ///
+    xlabel(-0.2(0.1)0.9, nogrid labsize(small)) ///
 	xline(0, lpattern(dash) lcolor(gray%40) ) ///
     ylabel(, nogrid labsize(small)) ///
     xtitle("Share of RMSE Reduced Going from Model 1 to 2", size(small)) ///

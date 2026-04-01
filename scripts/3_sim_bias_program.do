@@ -21,7 +21,7 @@ program define solve_bias_variance, rclass
 
 
 version 12.1
-syntax [,  number_periods(integer 70) corr_N1_K(real 0.01) corr_N1_N2(real 0.01) corr_N2_K(real 0.01) gn1(real 0.01)  gn2(real 0.01)   gK(real 0.01) sdK(real 0.01) sdA(real 0.01) sdn1(real 0.01) sdn2(real 0.01) gA(real 0.01)  gL(real 0.01) sdL(real 0.01) corr_N1_L(real 0.01) corr_N2_L(real 0.01)   corr_L_K(real 0.01)  ] 
+syntax [,  number_periods(integer 25) corr_N1_K(real 0.01) corr_N1_N2(real 0.01) corr_N2_K(real 0.01) gn1(real 0.01)  gn2(real 0.01)   gK(real 0.01) sdK(real 0.01) sdA(real 0.01) sdn1(real 0.01) sdn2(real 0.01) gA(real 0.01)  gL(real 0.01) sdL(real 0.01) corr_N1_L(real 0.01) corr_N2_L(real 0.01)   corr_L_K(real 0.01)  ] 
 
 		
 //gammas 
@@ -107,8 +107,8 @@ scalar abs_difference_TFP = TFP_square_bias_NK-TFP_square_bias_1K
 
 
 //repeat for RMSE
-scalar var_no_NK = (`sdA'^2 + gamma_1 ^2 * `sdn1'^2 + gamma_2 ^2 * `sdn2'^2 + 2*gamma_1*gamma_2*cov_N1_N2) / 70
-scalar var_1_NK = (`sdA'^2 + gamma_2 ^2 * `sdn1'^2  ) /70
+scalar var_no_NK = (`sdA'^2 + gamma_1 ^2 * `sdn1'^2 + gamma_2 ^2 * `sdn2'^2 + 2*gamma_1*gamma_2*cov_N1_N2) / `number_periods'
+scalar var_1_NK = (`sdA'^2 + gamma_2 ^2 * `sdn1'^2  ) / `number_periods'
 scalar MSE_NK = sqrt(var_no_NK + tfp_bias_NK^2)
 scalar MSE_1K = sqrt(var_1_NK + tfp_bias_1K^2)
 scalar MSE_difference = MSE_NK - MSE_1K
@@ -122,6 +122,12 @@ return scalar MSE_1K_out = scalar(MSE_1K)
 return scalar reduction_share = scalar((MSE_NK-MSE_1K)/MSE_NK)
 return scalar g_hat_out   = scalar(g_hat)
 return scalar g_tilde_out = scalar(g_tilde)
+
+//new updates
+return scalar bias0_out = scalar(tfp_bias_NK)
+return scalar bias1_out = scalar(tfp_bias_1K)
+return scalar var0_out = scalar(var_no_NK)
+return scalar var1_out = scalar(var_1_NK)
  
  end
  
@@ -134,6 +140,10 @@ gen RMSE_reduction_share = .
 gen g_A_bar = .
 gen g_hat_A = .
 gen g_tilde_A = .
+gen bias0 = .
+gen bias1 = .
+gen var0 = .
+gen var1 = .
 
 count
 quietly {
@@ -174,7 +184,10 @@ quietly {
         replace g_hat_A = r(g_hat_out) in `i'
         replace g_tilde_A = r(g_tilde_out) in `i'
 		replace g_A_bar = `ga_in' in `i'
-
+		replace bias0 = r(bias0_out)  in `i'
+		replace bias1 = r(bias1_out)  in `i' 
+		replace var0 = r(var0_out)  in `i'
+		replace var1 = r(var1_out)  in `i'
     }
 }
 
@@ -189,11 +202,22 @@ replace RMSE_reduction_topcode = . if RMSE_reduction==.
 save "$sim_dir/bias_rmse.dta", replace
 drop country_string
 decode country_byte, gen(country_string)
-// drop if country_string=="EST"
+
+//a few summary statistics for main text
+sum RMSE_reduction RMSE_reduction_share, d
+sum RMSE_reduction, d
+sum RMSE_reduction if country_string=="USA", d
+ sum RMSE_reduction if RMSE_reduction<0, d
+ 
+scalar mean_reduction = r(p50)
 sum RMSE_reduction if RMSE_reduction<0
-sum *, d
 sum g_A if g_A<0, d
 sum g_A if g_A>0, d
+
+sum g_A,d 
+scalar mean_GA = r(p50)
+
+display mean_reduction/ mean_GA
 export delimited "$sim_dir/bias_rmse.csv", replace
 
 

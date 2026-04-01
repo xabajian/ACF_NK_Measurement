@@ -65,5 +65,5 @@ cd "$root/scripts"
 do 5_Figure2.do
 cd "$root/scripts"
 
-do 6_RMSE_correlations.do
+do 6_appendix_figures.do
 cd "$root/scripts"
