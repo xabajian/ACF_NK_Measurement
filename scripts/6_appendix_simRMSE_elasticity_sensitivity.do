@@ -161,6 +161,14 @@ count
 scalar count_full = r(N)
 display count_negative/count_full
 
+//appendix figure
+twoway ///
+(histogram RMSE_reduction ) , ///
+xtitle("Country Level Reductions in RMSE (basis points)") ///
+xline(0, lpattern(dash) lcolor(gray%40) ) ///
+legend(off) ///
+ylabel(0(100)400)
+graph export "$figs/rmse_MC.pdf", replace 
 
 
 
