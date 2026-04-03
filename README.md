@@ -15,42 +15,28 @@ All programs are run in the following versions of these applications:
 * Stata: Stata/SE 18.5 for Mac
 * Python: 3.11.14 
 
-and were executed on Mac OS 26.2 (Tahoe). Programs must be run in the order in which they appear in the directory. Running all files associated with the main manuscript takes about 20 minutes on a depending on how fast your terminal runs the interpolation processes fitting simulated TFP errors to each country. Outside of that, reading in data/building indices/running regressions should run pretty much instantaneously, give or take.
+and were executed on Mac OS 26.2 (Tahoe). Programs must be run in the order in which they appear in the directory. Running all files associated with the main manuscript takes about 20 minutes on a depending on how fast your terminal runs the Monte Carlo simulation in the appendix. Outside of that, reading in data/building indices/running regressions (ie. things for the main text) should run pretty much instantaneously, give or take.
 
-Running the Stata scripts requires
+Running the Stata scripts requires the following .ado files
 
 * REGHDFE
 * ESTAB
 * ESTADD
 * ESTAB2
-* BOOTTEST      
+* BOOTTEST
+* PARALLEL
 
-Running the Python scripts requires the python packages reported in our bash file which sets up the conda environment we use (`setup_nk_env.sh`)
+to be download from SSC. Running the Python scripts requires the python packages reported in our bash file which sets up the conda environment we use (`setup_nk_env.sh`)
 
-# File Tree 
+# File Structure 
 
 ```bash
 ├── figs
 ├── processed
 ├── quantities
 ├── raw
-│   ├── euro_area_mfp_panel_iso.dta
-│   ├── FR_WLD_2024_195
-│   ├── pwt100.dta
-│   ├── renewable_wealth.dta
-│   └── UN_FAO_TFP_panel.dta
 ├── README.md
 ├── scripts
-│   ├── 0_CWON_Regs.do
-│   ├── 0_PWT_XSection.do
-│   ├── 1_Make_Tornqvist_Indices.do
-│   ├── 2_Tornqvist_Indices_Regs.do
-│   ├── 3_sim_bias_program.do
-│   ├── 4_make_appendix_overlay_table.do
-│   ├── 5_Figure1.ipynb
-│   ├── 5_Figure2.do
-│   ├── 6_RMSE_correlations.do
-│   ├── Revenue forecast error math for US.xlsx
 ├── setup_nk_env.sh
 ├── simulations
 └── tables
@@ -72,6 +58,7 @@ Scripts run in this order do the following things. All stata scripts can be run 
 ## Section 2 - Regressions of TFP on renewables
 
 - `0_CWON_Regs.do` — Creates all directories listed above. Reads in quantities of seven renewable resources of interest from CWON raw data. Runs regressions of TFP on renewables in Section 2 of the manuscript (i.e., Table 1). Saves these quantities out for use when constructing Tornqvist indices.
+- `0_PWT_XSection.do` — makes cross section of PWT in 2019
 
 ## Section 3 - Tornqvist indices
 
@@ -90,7 +77,12 @@ Scripts run in this order do the following things. All stata scripts can be run 
 - `4_make_appendix_overlay_table.do - makes appendix table 15 which shows the results from our simulations at the country level
 - `5_Figure1.ipynb` -- python script to create the two panels in figure 1.
 - `5_Figure2.do` -- stata do file to create the six panels in figure 2.
-- `6_RMSE_correlations.do` - creates the appendix figure showing scatters of simulated RMSE improvements against various variables in our PWT cross seciton. 
+
+## Appendix Items
+- `6_appendix_figures.do` - creates the appendix figure showing scatters of simulated RMSE improvements against various variables in our PWT cross seciton. 
+- `6_appendix_alternative_sample_periods.do` - creates the "early" and "late" sample periods for the sensitivity analysis over section 4.
+- `6_appendix_simRMSE_elasticity_sensitivity.do` - Mone Carlo over alternative ooutput elasticity pairs.
+- `7_appendix_simRMSE_sample_sensitivity.do` - repeats analysis in Section 4 main manuscript for the partitioned subsample periods
 
 # Data Descriptions
 
