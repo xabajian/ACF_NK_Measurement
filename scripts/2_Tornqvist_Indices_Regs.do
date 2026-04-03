@@ -33,42 +33,13 @@ use "$processed/tornqvist_panel.dta", clear
 /* Merges in PWT */
 merge 1:1 countrycode year using "$raw/pwt100.dta"
 drop _merge
-
-// Mine vs theirs
-merge 1:1 countrycode year using "$raw/FR_WLD_2024_195/Reproducibility package/Working/real_wealth_chained_tornqvist_unbalanced.dta"
-drop _merge
-
 drop if country_byte == .
 xtset country_byte year
 
-// some cross checks with CWON
-gen d_torn_renew_CWON         = torn_unch_renew     / L.torn_unch_renew     - 1
-gen d_torn_nonrenewables_CWON = torn_unch_nonrenew  / L.torn_unch_nonrenew  - 1
-gen d_torn_renew_chain_CWON         = torn_ch_renew     / L.torn_ch_renew     - 1
-gen d_torn_nonrenewables_chain_CWON = torn_ch_nonrenew  / L.torn_ch_nonrenew  - 1
-gen d_torn_renew_real_CWON  = torn_real_renew / L.torn_real_renew     - 1
-gen d_torn_nonrenewables_real_CWON  = torn_real_nonrenew / L.torn_real_nonrenew     - 1
-
-corr g_Q_Renew_Tornquist d_torn_renew_chain_CWON d_torn_renew_CWON d_torn_renew_real_CWON   g_Q_NonRenew_Tornquist d_torn_nonrenewables_chain_CWON d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON 
-
-sum g_Q_NonRenew_Tornquist ///
-    DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
-    DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
-    DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity ///
-    DQ_nickel_quantity d_torn_nonrenewables_CWON if g_Q_NonRenew_Tornquist != .
-
 // winsorize
-replace d_torn_nonrenewables_CWON = -1 if d_torn_nonrenewables_CWON < -1 & d_torn_nonrenewables_CWON != .
-replace d_torn_nonrenewables_CWON =  1 if d_torn_nonrenewables_CWON >  1 & d_torn_nonrenewables_CWON != .
 replace g_Q_NonRenew_Tornquist   =  1 if g_Q_NonRenew_Tornquist   >  1 & g_Q_NonRenew_Tornquist   != .
+replace g_Q_Renew_Tornquist   =  1 if g_Q_Renew_Tornquist   >  1 & g_Q_Renew_Tornquist   != .
 
-corr D_Q_Tornquist_nonrenewables d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON torn_unch_nonrenew ///
-     DQ_coal_quantity DQ_oil_quantity DQ_iron_quantity DQ_gas_quantity DQ_gold_quantity ///
-     if D_Q_Tornquist_nonrenewables != .
-
-corr DQ_oil_quantity D_Q_Tornquist_nonrenewables d_torn_nonrenewables_chain_CWON d_torn_nonrenewables_CWON  d_torn_nonrenewables_real_CWON ///
-     DQ_coal_quantity  DQ_iron_quantity DQ_gas_quantity DQ_gold_quantity ///
-     if (D_Q_Tornquist_nonrenewables != . & D_Q_Tornquist_nonrenewables != 1)
 
 
 // PWT variables for growth within countries over time
@@ -91,41 +62,12 @@ gen g_n1      = g_Q_NonRenew_Tornquist
 gen g_n2      = g_Q_Renew_Tornquist
 gen g_k       = d.log_K if country_byte == country_byte[_n-1]
 gen g_L  = d.log_L if country_byte == country_byte[_n-1]
-gen g_n1_CWON  = d_torn_nonrenewables_CWON
-gen g_n2_CWON  = d_torn_renew_CWON
 
-corr g_n1 g_n2 g_k g_L
 
 xtset country_byte year
 
-/*
-cvlasso d.log_y ///
-    DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
-    DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
-    DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
-    DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh ///
-    d.log_K d.log_L d.log_HC d.log_lab_share i.year, fe
-cvlasso, lopt
-*/
-
-pcorr d.log_y ///
-    DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
-    DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
-    DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
-    DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh ///
-    d.log_K d.log_L d.log_HC d.log_lab_share i.year i.country_byte
-
-pcorr d.log_tfp ///
-    DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
-    DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
-    DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
-    DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh ///
-    d.log_K d.log_L d.log_HC d.log_lab_share i.year i.country_byte
-
-corr g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist d_torn_renew_CWON d_torn_nonrenewables_CWON g_k
-
  
-// Clean brefore regressionss
+// Clean before regressionss
 drop ///
     total_non_renewable_NK ///
     nickel_rent_weight bauxite_rent_weight coal_rent_weight oil_rent_weight ///
@@ -155,17 +97,16 @@ local   all_nk_vars  DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_cop
     DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
 	
 foreach var of local all_nk_vars{
-	
 	replace `var' = ln(`var')
 }
 
-// // lasso
+//lasso
 /*
 cvlasso d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share i.year, fe
 cvlasso, lopt
-
 pcorr d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share i.year i.country_byte
 */
+
 //create average growth from these indices
 preserve 
 //renew 

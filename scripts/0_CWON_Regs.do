@@ -161,7 +161,7 @@ local keepvars ///
 reg d.log_tfp dlog*  if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m1
 
@@ -169,7 +169,7 @@ eststo m1
 reg d.log_tfp dlog* d.log_K d.log_L d.log_HC d.log_lab_share if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m2
 
@@ -177,7 +177,7 @@ eststo m2
 areg d.log_tfp dlog* i.year  if year>1995, absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m3
 
@@ -200,7 +200,7 @@ areg d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share  if year>19
     absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m4
 
@@ -224,7 +224,7 @@ reghdfe d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share  if year
     absorb(i.country_byte##c.year) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-// boottest `keepvars', cluster(country_byte) nograph
+// boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = 990
 eststo m5
 
@@ -237,13 +237,15 @@ qui{
 }
 }
 
+
 xtabond ldiff_TFP dlog* d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*  if year>1995,  lags(2) vce(robust)
+display e(sargan)
+
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m6
-
 drop year1* year2*
 
 
@@ -394,7 +396,7 @@ local keepvars ///
 reg d.log_tfp dlog* if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m1
 
@@ -402,7 +404,7 @@ eststo m1
 reg d.log_tfp dlog* d.log_K d.log_L d.log_HC d.log_lab_share if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m2
 
@@ -410,7 +412,7 @@ eststo m2
 areg d.log_tfp dlog* i.year if year>1995, absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m3
 
@@ -419,7 +421,7 @@ areg d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share if year>199
     absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m4
 
@@ -428,7 +430,7 @@ reghdfe d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share if year>
     absorb(i.country_byte##c.year) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-// boottest `keepvars', cluster(country_byte) nograph
+// boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = 990
 eststo m5
 
@@ -444,7 +446,7 @@ qui{
 xtabond ldiff_TFP dlog* d.log_K d.log_L d.log_HC d.log_lab_share year1* year2* if year>1995,  lags(2) vce(robust)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m6
 
@@ -482,7 +484,7 @@ local keepvars ///
 reg d.log_tfp dlog* if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m1
 
@@ -490,7 +492,7 @@ eststo m1
 reg d.log_tfp dlog* d.log_K d.log_L d.log_HC d.log_lab_share if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m2
 
@@ -498,7 +500,7 @@ eststo m2
 areg d.log_tfp dlog* i.year if year>1995, absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m3
 
@@ -507,7 +509,7 @@ areg d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share if year>199
     absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m4
 
@@ -516,7 +518,7 @@ reghdfe d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share if year>
     absorb(i.country_byte##c.year) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-// boottest `keepvars', cluster(country_byte) nograph
+// boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = 990
 eststo m5
 
@@ -532,7 +534,7 @@ qui{
 xtabond ldiff_TFP dlog* d.log_K d.log_L d.log_HC d.log_lab_share year1* year2* if year>1995,  lags(2) vce(robust)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m6
 
@@ -567,7 +569,7 @@ local keepvars ///
 reg d.log_tfp dlog* if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m1
 
@@ -575,7 +577,7 @@ eststo m1
 reg d.log_tfp dlog* d.log_K d.log_L d.log_HC d.log_lab_share if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m2
 
@@ -583,7 +585,7 @@ eststo m2
 areg d.log_tfp dlog* i.year if year>1995, absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m3
 
@@ -592,7 +594,7 @@ areg d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share if year>199
     absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m4
 
@@ -616,7 +618,7 @@ qui{
 xtabond ldiff_TFP dlog* d.log_K d.log_L d.log_HC d.log_lab_share year1* year2* if year>1995,  lags(2) vce(robust)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m6
 
@@ -648,7 +650,7 @@ local keepvars ///
 reg d.log_eurostat_MFP dlog* if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m1
 
@@ -656,7 +658,7 @@ eststo m1
 reg d.log_eurostat_MFP dlog* d.log_K d.log_L d.log_HC d.log_lab_share if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m2
 
@@ -664,7 +666,7 @@ eststo m2
 areg d.log_eurostat_MFP dlog* i.year if year>1995, absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m3
 
@@ -673,7 +675,7 @@ areg d.log_eurostat_MFP dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share if
     absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m4
 
@@ -687,7 +689,7 @@ eststo m5
 
 
 *---- export with esttab ----*
-esttab m1 m2 m3 m4 m5 using "$tables/tab2.tex", replace ///
+esttab m1 m2 m3 m4 m5 using "$tables/tab1_eurostat.tex", replace ///
     title("Eurostat MFP Growth vs. Natural Capital Growth") ///
     keep(`keepvars') ///
     b(3) se(3) ///
@@ -731,7 +733,7 @@ corr d.log_tfp d.log_eurostat_MFP
 reg d.log_tfp dlog* if year > 2002 , vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m1
 
@@ -739,7 +741,7 @@ eststo m1
 reg d.log_tfp dlog* d.log_K d.log_L d.log_HC d.log_lab_share if year > 2002 , vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m2
 
@@ -747,7 +749,7 @@ eststo m2
 areg d.log_tfp dlog* i.year if year > 2002, absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m3
 
@@ -756,7 +758,7 @@ areg d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share if year > 2
     absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m4
 
@@ -765,13 +767,13 @@ reghdfe d.log_tfp dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share if year 
     absorb(i.country_byte##c.year) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-// boottest `keepvars', cluster(country_byte) nograph
+// boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = 990
 eststo m5
 
 
 *---- export with esttab ----*
-esttab m1 m2 m3 m4 m5 using "$tables/tabEU_comp.tex", replace ///
+esttab m1 m2 m3 m4 m5 using "$tables/tab1_EU_comp.tex", replace ///
     title("EU + Norway PWT TFP Growth vs. Natural Capital Growth") ///
     keep(`keepvars') ///
     b(3) se(3) ///
@@ -808,7 +810,7 @@ local keepvars ///
 reg d.log_tfp dlog* if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m1
 
@@ -816,7 +818,7 @@ eststo m1
 reg d.log_ag_TFP dlog* d.log_K d.log_L d.log_HC d.log_lab_share if year>1995, vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m2
 
@@ -824,7 +826,7 @@ eststo m2
 areg d.log_ag_TFP dlog* i.year if year>1995, absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m3
 
@@ -833,7 +835,7 @@ areg d.log_ag_TFP dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share if year>
     absorb(country_byte) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-boottest `keepvars', cluster(country_byte) nograph
+boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
 estadd scalar p_joint_boot = r(p)
 eststo m4
 
@@ -842,13 +844,12 @@ reghdfe d.log_ag_TFP dlog* i.year d.log_K d.log_L d.log_HC d.log_lab_share if ye
     absorb(i.country_byte##c.year) vce(cluster country_byte)
 test `keepvars'
 estadd scalar p_joint = r(p)
-// boottest `keepvars', cluster(country_byte) nograph
 estadd scalar p_joint_boot = 990
 eststo m5
 
 
 *---- export with esttab ----*
-esttab m1 m2 m3 m4 m5 using "$tables/other_robustness.tex", replace ///
+esttab m1 m2 m3 m4 m5 using "$tables/tab1_ag_TFP.tex", replace ///
     title("Agricultural TFP Growth vs. Natural Capital Growth") ///
     keep(`keepvars') ///
     b(3) se(3) ///

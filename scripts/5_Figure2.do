@@ -87,10 +87,6 @@ Step  3 -- Make Figure 2
 @!#$!@#$#@!$@!#$#!#
 */
 
-reg g_n1 corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L  g_k g_n2 g_A sdA
-predict g_n1_resid, residual
-
-
 
   //Figure a
 twoway  ///
