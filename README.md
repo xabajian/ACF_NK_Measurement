@@ -50,10 +50,10 @@ The "scripts" folder contains all scripts that are used to generate findings in 
 
 ### Descriptions
 
-Scripts run in this order do the following things. All stata scripts can be run by the single wrapper .do file.
+Scripts run in this order do the following things. All STATA scripts can be run by the single `wrapper.do` file.
 
 ## Setup 
- - `setup_nk_env.sh` -- sets up an anaconda enviroment to make figure 1
+ - `setup_nk_env.sh` -- sets up an anaconda enviroment to make figure 1. 
    
 ## Section 2 - Regressions of TFP on renewables
 
