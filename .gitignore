@@ -4,3 +4,4 @@ papers/
 
 # ignore unused folder 
 scripts/unused
+simulations/MC_results.dta
