@@ -55,11 +55,13 @@ gen iso3 = countrycode
 merge 1:1 year iso3 using "$raw/euro_area_mfp_panel_iso.dta", gen(merge_EU)
 drop if merge_EU == 2
 isid countrycode year
+
 // FAO TFP panel
 merge 1:1 year countrycode using "$raw/UN_FAO_TFP_panel.dta", gen(merge_UNFAO)
 drop if merge_UNFAO == 2
 isid countrycode year
 
+isid countrycode year
 /*
 Prep % changes of renewable NK stocks
 */
@@ -101,6 +103,7 @@ FAO ag TFP
 gen log_ag_TFP = ln(TFP_Index)
 
 
+
 // PWT variables for growth within countries over time
 gen log_tfp       = ln(rtfp)
 gen log_K         = ln(rkna)
@@ -108,6 +111,7 @@ gen log_L         = ln(emp)
 gen log_HC        = ln(hc)
 gen log_lab_share = ln(labsh)
 gen log_y         = ln(rgdpna)
+gen log_y_PPP	  = ln(cgdpo)
 gen ldiff_TFP = d.log_tfp
 
 /*
@@ -380,6 +384,182 @@ graph export "$figs/robustness_RI.png", replace
 restore
 
 */
+
+
+*============================================================*
+* Tab 1: PWT GDP from national accounts as outcome, control for K L
+*============================================================*
+
+gen dlog_K = d.log_K
+gen dlog_L = d.log_L
+
+eststo clear
+
+xtset country_byte year 
+local keepvars  dlog_K dlog_L ///
+    dlog_q_urban dlog_prod_area dlog_land ///
+    dlog_forest_area_km dlog_mangrove_ha ///
+    dlog_b_e dlog_hp_gwh
+
+local testvars ///
+    dlog_q_urban dlog_prod_area dlog_land ///
+    dlog_forest_area_km dlog_mangrove_ha ///
+    dlog_b_e dlog_hp_gwh
+
+
+*(1)
+reg d.log_y dlog*  if year>1995, vce(cluster country_byte)
+test `testvars'
+estadd scalar p_joint = r(p)
+boottest `testvars', cluster(country_byte) nograph seed(1234)  reps(10000)
+estadd scalar p_joint_boot = r(p)
+eststo m1
+
+*(2)
+reg d.log_y dlog*  d.log_HC d.log_lab_share if year>1995, vce(cluster country_byte)
+test `testvars'
+estadd scalar p_joint = r(p)
+boottest `testvars', cluster(country_byte) nograph seed(1234)  reps(10000)
+estadd scalar p_joint_boot = r(p)
+eststo m2
+
+*(3)
+areg d.log_y dlog* i.year d.log_HC d.log_lab_share if year>1995, absorb(country_byte) vce(cluster country_byte)
+test `testvars'
+estadd scalar p_joint = r(p)
+boottest `testvars', cluster(country_byte) nograph seed(1234)  reps(10000)
+estadd scalar p_joint_boot = r(p)
+eststo m3
+
+
+*(4)
+reghdfe d.log_y dlog* i.year  d.log_HC d.log_lab_share  if year>1995, ///
+    absorb(i.country_byte##c.year) vce(cluster country_byte)
+test `testvars'
+estadd scalar p_joint = r(p)
+// boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
+estadd scalar p_joint_boot = 990
+eststo m4
+
+*(5) arellano bond
+
+qui{
+	forvalues i = 1995/2019  {
+		gen year`i' = 1 if year==`i'
+		replace year`i'=0 if  year!=`i'
+}
+}
+
+gen AB_dlog_gdp = d.log_y
+
+xtabond AB_dlog_gdp dlog*  d.log_HC d.log_lab_share year1* year2*  if year>1995,  lags(2) vce(robust)
+test `testvars'
+estadd scalar p_joint = r(p)
+boottest `testvars', cluster(country_byte) statistic(c) nograph seed(1234)  reps(10000)
+estadd scalar p_joint_boot = r(p)
+eststo m5
+drop year1* year2*  AB_dlog_gdp dlog_K dlog_L
+
+
+*---- export with esttab ----*
+esttab m1 m2 m3 m4 m5 using "$tables/tab1_gdp_na.tex", replace ///
+    title("Output Growth vs. Natural Capital Growth") ///
+    keep(`keepvars') ///
+    b(3) se(3) ///
+    star(* 0.0001) ///
+    stats(p_joint p_joint_boot N, ///
+          labels("Wald" "Bootstrap Wald" "N") ///
+          fmt(3 3 0 3))
+*---- export with esttab ----*
+
+
+*============================================================*
+* Tab 1: PWT GDP at current PPP as outcome, control for K L
+*============================================================*
+
+gen dlog_K = d.log_K
+gen dlog_L = d.log_L
+
+eststo clear
+
+xtset country_byte year 
+local keepvars  dlog_K dlog_L ///
+    dlog_q_urban dlog_prod_area dlog_land ///
+    dlog_forest_area_km dlog_mangrove_ha ///
+    dlog_b_e dlog_hp_gwh
+
+local testvars ///
+    dlog_q_urban dlog_prod_area dlog_land ///
+    dlog_forest_area_km dlog_mangrove_ha ///
+    dlog_b_e dlog_hp_gwh
+
+
+*(1)
+reg d.log_y dlog*  if year>1995, vce(cluster country_byte)
+test `testvars'
+estadd scalar p_joint = r(p)
+boottest `testvars', cluster(country_byte) nograph seed(1234)  reps(10000)
+estadd scalar p_joint_boot = r(p)
+eststo m1
+
+*(2)
+reg d.log_y dlog*  d.log_HC d.log_lab_share if year>1995, vce(cluster country_byte)
+test `testvars'
+estadd scalar p_joint = r(p)
+boottest `testvars', cluster(country_byte) nograph seed(1234)  reps(10000)
+estadd scalar p_joint_boot = r(p)
+eststo m2
+
+*(3)
+areg d.log_y dlog* i.year d.log_HC d.log_lab_share if year>1995, absorb(country_byte) vce(cluster country_byte)
+test `testvars'
+estadd scalar p_joint = r(p)
+boottest `testvars', cluster(country_byte) nograph seed(1234)  reps(10000)
+estadd scalar p_joint_boot = r(p)
+eststo m3
+
+
+*(4)
+reghdfe d.log_y dlog* i.year  d.log_HC d.log_lab_share  if year>1995, ///
+    absorb(i.country_byte##c.year) vce(cluster country_byte)
+test `testvars'
+estadd scalar p_joint = r(p)
+// boottest `keepvars', cluster(country_byte) nograph seed(1234)  reps(10000)
+estadd scalar p_joint_boot = 990
+eststo m4
+
+*(5) arellano bond
+
+qui{
+	forvalues i = 1995/2019  {
+		gen year`i' = 1 if year==`i'
+		replace year`i'=0 if  year!=`i'
+}
+}
+
+gen AB_dlog_gdp = d.log_y_PPP
+
+xtabond AB_dlog_gdp dlog*  d.log_HC d.log_lab_share year1* year2*  if year>1995,  lags(2) vce(robust)
+
+test `testvars'
+estadd scalar p_joint = r(p)
+boottest `testvars', cluster(country_byte) statistic(c) nograph seed(1234)  reps(10000)
+estadd scalar p_joint_boot = r(p)
+eststo m5
+drop year1* year2*  AB_dlog_gdp dlog_K dlog_L
+
+
+*---- export with esttab ----*
+esttab m1 m2 m3 m4 m5 using "$tables/tab1_gdp_PPP.tex", replace ///
+    title("Output Growth vs. Natural Capital Growth") ///
+    keep(`keepvars') ///
+    b(3) se(3) ///
+    star(* 0.0001) ///
+    stats(p_joint p_joint_boot N, ///
+          labels("Wald" "Bootstrap Wald" "N") ///
+          fmt(3 3 0 3))
+*---- export with esttab ----*
+
 
 *============================================================*
 * Tab 1, no urban

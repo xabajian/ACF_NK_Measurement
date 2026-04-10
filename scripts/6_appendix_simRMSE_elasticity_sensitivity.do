@@ -152,6 +152,17 @@ parallel sim , expr(RMSE_reduction = MSE_difference seed_out  = seed_mc_trial ga
 
 
 
+//save out MC results 
+save "$sim_dir/MC_results.dta", replace
+
+
+
+/***************
+Appendix results
+**************/
+
+use "$sim_dir/MC_results.dta", clear
+
 
 //summary stats
 sum RMSE_reduction, d
@@ -161,7 +172,8 @@ count
 scalar count_full = r(N)
 display count_negative/count_full
 
-//appendix figure
+//appendix histogram figure
+
 twoway ///
 (histogram RMSE_reduction ) , ///
 xtitle("Country Level Reductions in RMSE (basis points)") ///
@@ -171,5 +183,43 @@ ylabel(0(100)400)
 graph export "$figs/rmse_MC.pdf", replace 
 
 
+//summary stats, gamma 1
+count if RMSE_reduction<0 & gamma_1_out <= 0.05
+scalar count_negative = r(N)
+count if gamma_1_out < 0.05
+scalar count_full = r(N)
+display count_negative/count_full
+
+//summary stats, gamma 2
+count if RMSE_reduction<0 & gamma_2_out >= 0.05
+scalar count_negative = r(N)
+count if gamma_1_out > 0.05
+scalar count_full = r(N)
+display count_negative/count_full
 
 
+
+//cross sections by elasticity after winsorization
+sum RMSE_reduction, d
+preserve
+keep if  RMSE_reduction<r(p90) 
+//non-renewables
+twoway ///
+(lfit  RMSE_reduction gamma_1_out , lcolor(black)) ///
+(mspline RMSE_reduction gamma_1_out, n(70)  lcolor(red) lpattern(dash)) ///
+(lpoly  RMSE_reduction gamma_1_out , lcolor(orange) lpattern(dot) lwidth(thick)) , ///
+yline(0, lpattern(dash) lcolor(gray%40) ) ///
+ytitle("Reduction in RMSE") xtitle("γ{sub:1}") ///
+legend(order(1 "Linear Fit" 2 "Median Spline" 3  "Local Polynomial") pos(11) ring(0)) 
+graph export "$figs/MC_gamma1.pdf", replace 
+
+//renewables
+twoway ///
+(lfit  RMSE_reduction gamma_2_out , lcolor(black)) ///
+(mspline RMSE_reduction gamma_2_out, n(70) lcolor(red) lpattern(dash)) ///
+(lpoly  RMSE_reduction gamma_2_out , lcolor(orange) lpattern(dot) lwidth(thick)) , ///
+yline(0, lpattern(dash) lcolor(gray%40) ) ///
+ytitle("Reduction in RMSE") xtitle("γ{sub:2}") ///
+legend(order(1 "Linear Fit" 2 "Median Spline" 3  "Local Polynomial") pos(2) ring(0)) 
+graph export "$figs/MC_gamma2.pdf", replace 
+restore 
