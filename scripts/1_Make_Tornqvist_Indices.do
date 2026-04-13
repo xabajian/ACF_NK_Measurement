@@ -324,6 +324,9 @@ gen mangrove_ha_weight     = Mangroves_wealth_weight
 gen b_e_weight             = FWE_wealth_weight
 gen hp_gwh_weight          = Hydro_wealth_weight
 
+tab countrycode, sum(ag_NK_wealth_weight)
+
+
 save renewable_capital_weights.dta, replace
 restore
 
@@ -415,6 +418,9 @@ sum D_Q_Tornquist_renewables ///
 
 gen g_Q_Renew_Tornquist = D_Q_Tornquist_renewables - 1
 
+//urban land only
+gen alt_Renew_urban = DQ_q_urban - 1
+ 
 
 save "$processed/tornqvist_panel.dta", replace
 

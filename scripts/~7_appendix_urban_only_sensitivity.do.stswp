@@ -14,7 +14,7 @@ global sim_dir "$root/simulations"
 set scheme plotplain
 
 
-use "$processed/CWON_data.dta", clear
+use "$processed/CWON_data_urban_only.dta", clear
 							
 
 program define solve_bias_variance, rclass 
@@ -198,9 +198,7 @@ gen RMSE_reduction_topcode = min(RMSE_reduction, r(p90))
 replace RMSE_reduction_topcode = . if RMSE_reduction==.
 
 //save out
-save "$sim_dir/bias_rmse.dta", replace
-drop country_string
-decode country_byte, gen(country_string)
+
 
 //a few summary statistics for main text
 sum RMSE_reduction RMSE_reduction_share, d
@@ -208,15 +206,4 @@ sum RMSE_reduction, d
 sum RMSE_reduction if country_string=="USA", d
  sum RMSE_reduction if RMSE_reduction<0, d
  
-scalar mean_reduction = r(p50)
-sum RMSE_reduction if RMSE_reduction<0
-sum g_A if g_A<0, d
-sum g_A if g_A>0, d
-
-sum g_A,d 
-scalar mean_GA = r(p50)
-
-display mean_reduction/ mean_GA
-export delimited "$sim_dir/bias_rmse.csv", replace
-
 
