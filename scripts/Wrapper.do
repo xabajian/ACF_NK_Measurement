@@ -23,6 +23,8 @@ global processed "$root/processed"
 set scheme plotplain
 
 
+cd "$root/scripts"
+
 /*
 @!#$!@#$#@!$@!#$#!#
 @!#$!@#$#@!$@!#$#!#
@@ -40,8 +42,6 @@ after setting your pwd to ACF_NK_Measurement/scripts.
 @!#$!@#$#@!$@!#$#!#
 @!#$!@#$#@!$@!#$#!#
 */
-
-cd "$root/scripts"
 
 
 do 0_CWON_Regs.do			
@@ -68,6 +68,9 @@ cd "$root/scripts"
 do 6_appendix_figures.do
 cd "$root/scripts"
 
+do 6_appendix_urban_only_renewables.do
+cd "$root/scripts"
+
 do 6_appendix_alternative_sample_periods.do
 cd "$root/scripts"
 
@@ -76,6 +79,10 @@ cd "$root/scripts"
 
 do 7_appendix_simRMSE_sample_sensitivity.do
 cd "$root/scripts"
+
+
+do 7_appendix_urban_only_sensitivity.do
+
 
 
 
