@@ -68,7 +68,7 @@ twoway ( hist RMSE_topcode if RMSE_topcode>0, color(green%50)  lcolor(olive%80) 
     ylabel(, nogrid labsize(small)) ///
     ytitle("Number of Countries") ///
     xtitle("Reduction in RMSE (basis points)") ///
-	text(12 92 "{&Delta}RMSE > 90 bps", size(tiny)) ///
+	text(12 92 "{&Delta}RMSE > 90 bps", size(vsmall)) ///
     legend(off) 
 
 graph export  "$figs/fig1.pdf", replace 

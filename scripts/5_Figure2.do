@@ -72,7 +72,7 @@ reg RMSE_reduction corr_N1_K_out corr_N1_N2_out, r
 test corr_N1_K_out corr_N1_N2_out
 
 reg RMSE_reduction corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A sdA
-test corr_N1_K_out corr_N1_N2_out
+test corr_N1_K_out corr_N1_L g_n1 g_n2
 
 cvlasso RMSE_reduction corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A sdA
 cvlasso, lopt
