@@ -62,6 +62,9 @@ cd "$root/scripts"
 do 4_make_appendix_overlay_table.do
 cd "$root/scripts"
 
+do 5_Figure1.do
+cd "$root/scripts"
+
 do 5_Figure2.do
 cd "$root/scripts"
 
