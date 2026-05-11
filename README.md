@@ -75,7 +75,7 @@ Scripts run in this order do the following things. All STATA scripts can be run 
 ## Figures
 
 - `4_make_appendix_overlay_table.do` - makes appendix table 15 which shows the results from our simulations at the country level
-- `5_Figure1.ipynb` -- python script to create the two panels in figure 1.
+- `5_Figure1.do` -- stata script to create the two panels in figure 1.
 - `5_Figure2.do` -- stata do file to create the six panels in figure 2.
 
 ## Appendix Items
