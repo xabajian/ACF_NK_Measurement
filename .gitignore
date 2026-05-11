@@ -2,6 +2,7 @@
 papers/
 
 
-# ignore unused folder 
+# ignore unused folder and scripts 
 scripts/unused
 simulations/MC_results.dta
+scripts/5_Figure1.ipynb
