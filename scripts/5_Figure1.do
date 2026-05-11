@@ -52,7 +52,7 @@ replace RMSE_reduction = RMSE_reduction*10000
 
 sum RMSE_reduction, d
 local p90 = r(p90)
-
+count if RMSE_reduction > `p90'
 
 //topcode at 90th percentile 
 gen RMSE_topcode = min(RMSE_reduction,`p90'+ 1)
