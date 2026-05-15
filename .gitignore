@@ -1,6 +1,6 @@
 # Ignore the 'papers' folder
 papers/
-AER_I_Submission/
+# AER_I_Submission/
 
 
 # ignore unused folder and scripts 
