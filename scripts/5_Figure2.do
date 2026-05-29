@@ -47,10 +47,12 @@ Step 2 --  RF evidence in text and appendix
 */
 
 
-
+preserve
 eststo clear
 
 *(1)
+//for putting in terms of reductions as -\Delta RMSE.
+replace RMSE_reduction = - RMSE_reduction
 reg RMSE_reduction corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A sdA
 eststo m1
 
@@ -65,7 +67,7 @@ esttab m1 using "$tables/app_tab_decomp.tex", replace ///
           labels("R Squared" "N") ///
           fmt(3 3 0 3))
 *---- export with esttab ----*
-
+restore
 
 //correlations 
 reg RMSE_reduction corr_N1_K_out corr_N1_N2_out, r
