@@ -68,9 +68,6 @@ cd "$root/scripts"
 do 5_Figure2.do
 cd "$root/scripts"
 
-do 5_Figure3.do
-cd "$root/scripts"
-
 do 6_appendix_figures.do
 cd "$root/scripts"
 
