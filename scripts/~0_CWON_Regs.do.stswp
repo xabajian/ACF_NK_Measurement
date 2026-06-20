@@ -157,7 +157,7 @@ eststo clear
 
 xtset country_byte year 
 local keepvars ///
-    dlog_q_urban dlog_prod_area dlog_land ///
+    dlog_prod_area dlog_land ///
     dlog_forest_area_km dlog_mangrove_ha ///
     dlog_b_e dlog_hp_gwh
 

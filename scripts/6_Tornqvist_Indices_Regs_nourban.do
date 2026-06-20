@@ -27,7 +27,7 @@ set scheme plotplain
 @!#$!@#$#@!$@!#$#!#
 */
 
-use "$processed/tornqvist_panel.dta", clear
+use "$processed/tornqvist_panel_nourban.dta", clear
 
 
 /* Merges in PWT */
@@ -74,7 +74,7 @@ drop ///
     copper_rent_weight phosphate_rent_weight gas_rent_weight gold_rent_weight ///
     silver_rent_weight iron_rent_weight tin_rent_weight lead_rent_weight ///
     zinc_rent_weight total_renewable_NK ///
-    q_urban_weight prod_area_weight land_weight forest_area_km_weight ///
+     prod_area_weight land_weight forest_area_km_weight ///
     mangrove_ha_weight b_e_weight hp_gwh_weight ///
     nickel_rent_weight_exponent bauxite_rent_weight_exponent coal_rent_weight_exponent ///
     oil_rent_weight_exponent copper_rent_weight_exponent phosphate_rent_weight_exponent ///
@@ -86,7 +86,7 @@ drop ///
     DQ_gold_exponentiated DQ_silver_exponentiated DQ_iron_exponentiated ///
     DQ_tin_exponentiated DQ_lead_exponentiated DQ_zinc_exponentiated ///
     DQ_nickel_exponentiated D_Q_Tornquist_nonrenewables ///
-    DQ_q_urban_exponentiated DQ_prod_area_exponentiated DQ_land_exponentiated ///
+     DQ_prod_area_exponentiated DQ_land_exponentiated ///
     DQ_forest_area_km_exponentiated DQ_mangrove_ha_exponentiated DQ_b_e_exponentiated ///
     DQ_hp_gwh_exponentiated D_Q_Tornquist_renewables
 
@@ -94,7 +94,7 @@ drop ///
 local   all_nk_vars  DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
     DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
     DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
-    DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
+     DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
 	
 foreach var of local all_nk_vars{
 	replace `var' = ln(`var')
@@ -143,8 +143,6 @@ gen ldiff_TFP = d.log_tfp
 *============================================================*
 
 
-eststo clear
-
 * Variables to difference
 local vars log_K log_L log_HC log_lab_share log_tfp
 
@@ -154,32 +152,34 @@ foreach v of local vars {
 }
 
 
+eststo clear
 
-pdslasso d_log_tfp g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist(d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte) , cluster(country_byte)   fe  post(pds)
+
+pdslasso d_log_tfp g_Q_Renew_Tornquist  g_Q_NonRenew_Tornquist(d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte) , cluster(country_byte)   fe  post(pds)
 
 *(1)
-reg d.log_tfp g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist, vce(cluster country_byte)
+reg d.log_tfp g_Q_Renew_Tornquist  g_Q_NonRenew_Tornquist, vce(robust)
 eststo m1
 
 *(2)
-reg d.log_tfp g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share, ///
-    vce(cluster country_byte)
+reg d.log_tfp g_Q_Renew_Tornquist  g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share, ///
+    vce(robust)
 eststo m2
 
 *(3)
-areg d.log_tfp g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist i.year, ///
-    absorb(country_byte) vce(cluster country_byte)
+areg d.log_tfp g_Q_Renew_Tornquist  g_Q_NonRenew_Tornquist i.year, ///
+    absorb(country_byte) vce(robust)
 eststo m3
 
 *(4)
-areg d.log_tfp g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
-    absorb(country_byte) vce(cluster country_byte)
+areg d.log_tfp g_Q_Renew_Tornquist  g_Q_NonRenew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+    absorb(country_byte) vce(robust)
 eststo m4
 
 
 *(5)
-reghdfe d.log_tfp g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
-    absorb(i.country_byte##c.year) vce(cluster country_byte)
+reghdfe d.log_tfp g_Q_Renew_Tornquist  g_Q_NonRenew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
+    absorb(i.country_byte##c.year) vce(robust)
 eststo m5
 
 	
@@ -192,7 +192,7 @@ qui{
 }
 
 *(6)
-xtabond d.log_tfp g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*,  lags(2) vce(robust)
+xtabond d.log_tfp g_Q_Renew_Tornquist  g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*,  lags(2) vce(robust)
 eststo m6
 
 drop year1* year2*
@@ -205,7 +205,7 @@ esttab m1 m2 m3 m4 m5 m6 using "$tables/main_tornq_regs.tex", replace ///
     b(3) se(3) ///
     star(* 0.1 ** 0.05 *** 0.01)
  
-	
+	//g_prod_area g_land g_forest_area_km  g_b_e g_hp_gwh
 	
 *============================================================*
 * Tab : output  Growth vs. Törnqvist index growth
@@ -257,7 +257,7 @@ drop year1* year2*
 
 *---- export with esttab ----*
 esttab m1 m2 m3 m4 m5 m6 using "$tables/appendix_tornq_regs.tex", replace ///
-    title("TFP Growth vs. Natural Capital Growth") ///
+    title("Output Growth vs. Natural Capital Growth") ///
     keep(g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist) ///
     b(3) se(3) ///
     star(* 0.0001)
@@ -368,7 +368,7 @@ local keepvars ///
 	DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
     DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
     DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
-    DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
+     DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
 
 *(1)
 reg d.log_tfp  `keepvars' , vce(cluster country_byte)
@@ -452,7 +452,7 @@ local keepvars ///
 	DQ_bauxite_quantity DQ_coal_quantity DQ_oil_quantity DQ_copper_quantity ///
     DQ_phosphate_quantity DQ_gas_quantity DQ_gold_quantity DQ_silver_quantity ///
     DQ_iron_quantity DQ_tin_quantity DQ_lead_quantity DQ_zinc_quantity DQ_nickel_quantity ///
-    DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
+     DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh 
 
 *(1)
 reg d.log_tfp  `keepvars'  if year>1995, vce(cluster country_byte)
