@@ -204,19 +204,20 @@ decode country_byte, gen(country_string)
 
 //a few summary statistics for main text
 sum RMSE_reduction RMSE_reduction_share, d
-sum RMSE_reduction, d
 sum RMSE_reduction if country_string=="USA", d
- sum RMSE_reduction if RMSE_reduction<0, d
- 
-scalar mean_reduction = r(p50)
-sum RMSE_reduction if RMSE_reduction<0
+
+
+sum RMSE_reduction , d
+scalar median_reduction = r(p50)
+display median_reduction
+
 sum g_A if g_A<0, d
 sum g_A if g_A>0, d
 
 sum g_A,d 
-scalar mean_GA = r(p50)
+scalar mean_GA = r(mean)
 
-display mean_reduction/ mean_GA
+display median_reduction/ mean_GA
 export delimited "$sim_dir/bias_rmse.csv", replace
 
 

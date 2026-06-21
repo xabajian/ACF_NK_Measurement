@@ -290,8 +290,8 @@ ylabel(, nogrid  labsize(small)) ), ///
 
 	// Figure f
 twoway hist RMSE_reduction_share, freq ///
-    start(-0.4) width(0.1) ///
-    xlabel(-0.4(0.1)0.9, nogrid labsize(small)) ///
+    start(-0.5) width(0.1) ///
+    xlabel(-0.5(0.1)0.9, nogrid labsize(small)) ///
 	xline(0, lpattern(dash) lcolor(gray%40) ) ///
     ylabel(, nogrid labsize(small)) ///
     xtitle("Share of RMSE Reduced Going from Model 1 to 2", size(small)) ///

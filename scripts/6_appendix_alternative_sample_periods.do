@@ -27,7 +27,9 @@ set scheme plotplain
 @!#$!@#$#@!$@!#$#!#
 */
 
-use "$processed/tornqvist_panel.dta", clear
+
+use "$processed/tornqvist_panel_nourban.dta", clear
+// use "$processed/tornqvist_panel.dta", clear
 
 
 /* Merges in PWT */

@@ -157,7 +157,7 @@ eststo clear
 
 xtset country_byte year 
 local keepvars ///
-    dlog_q_urban dlog_prod_area dlog_land ///
+    dlog_prod_area dlog_land ///
     dlog_forest_area_km dlog_mangrove_ha ///
     dlog_b_e dlog_hp_gwh
 
@@ -296,7 +296,7 @@ eststo clear
 
 xtset country_byte year 
 local keepvars ///
-    dlog_q_urban dlog_prod_area dlog_land ///
+    dlog_prod_area dlog_land ///
     dlog_forest_area_km dlog_mangrove_ha ///
     dlog_b_e dlog_hp_gwh
 
@@ -326,7 +326,7 @@ boottest `keepvars', cluster(country_byte) statistic(c) nograph seed(1234)  reps
 
 
 
-/* 
+/*
 !@#$!#@$@#$!@#$!@#$@#
 !@#$!#@$@#$!@#$!@#$@#
 !@#$!#@$@#$!@#$!@#$@#
@@ -339,7 +339,7 @@ RI test
 !@#$!#@$@#$!@#$!@#$@#
 !@#$!#@$@#$!@#$!@#$@#
 
-
+*/
 
 
 //make simple data
@@ -386,7 +386,7 @@ version 12.1
 	areg ldiff_TFP dlog* i.year, absorb(country_byte) vce(cluster country_byte)
 	
     // Extract estimates
-	test dlog_q_urban dlog_prod_area dlog_land dlog_forest_area_km dlog_mangrove_ha dlog_b_e dlog_hp_gwh
+	test  dlog_prod_area dlog_land dlog_forest_area_km dlog_mangrove_ha dlog_b_e dlog_hp_gwh
 	scalar f_stat = r(F)
 
 	
@@ -406,7 +406,7 @@ preserve
 areg ldiff_TFP dlog*, absorb(country_byte) vce(cluster country_byte)
 
 local keepvars ///
-    dlog_q_urban dlog_prod_area dlog_land ///
+     dlog_prod_area dlog_land ///
     dlog_forest_area_km dlog_mangrove_ha ///
     dlog_b_e dlog_hp_gwh
 
@@ -422,6 +422,12 @@ use  "$processed/ri_test_out.dta", clear
 count if F_stat_out > `F'
     
 display r(N) / 100000
+//   1,705
+//
+// .     
+// . display r(N) / 100000
+// .01705
+
 
 histogram F_stat_out, ///
     lcolor(red) color(red%40) bins(50) ///
@@ -436,7 +442,6 @@ histogram F_stat_out, ///
 graph export "$figs/robustness_RI.png", replace
 restore
 
-*/
 
 
 *============================================================*
