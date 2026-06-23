@@ -218,7 +218,7 @@ local NR_quantities ///
     bauxite_quantity coal_quantity oil_quantity copper_quantity phosphate_quantity ///
     gas_quantity gold_quantity silver_quantity iron_quantity tin_quantity ///
     lead_quantity zinc_quantity nickel_quantity ///
-    q_urban prod_area land forest_area_km mangrove_ha b_e hp_gwh
+     prod_area land forest_area_km mangrove_ha b_e hp_gwh
 
 
 /*
@@ -282,7 +282,7 @@ foreach var of local renewable_rents {
 
 //doubling ag wealth here to reflect that im setting urban equal to that 
 gen total_renewable_NK = ///
-    2*ag_NK_wealth + rec_forests_wealth + FWE_wealth + Hydro_wealth + ///
+    ag_NK_wealth + rec_forests_wealth + FWE_wealth + Hydro_wealth + ///
     Mangroves_wealth + NFS_wealth + Timber_wealth
 
 foreach var of local renewable_rents {
@@ -290,7 +290,7 @@ foreach var of local renewable_rents {
 }
 
 gen test = ///
-    2*ag_NK_wealth_weight + rec_forests_wealth_weight + FWE_wealth_weight + ///
+    ag_NK_wealth_weight + rec_forests_wealth_weight + FWE_wealth_weight + ///
     Hydro_wealth_weight + Mangroves_wealth_weight + NFS_wealth_weight + ///
     Timber_wealth_weight
 sum test
@@ -316,7 +316,6 @@ collapse ///
     FWE_wealth_weight Hydro_wealth_weight Mangroves_wealth_weight ///
     NFS_wealth_weight Timber_wealth_weight, by(countrycode)
 
-gen q_urban_weight         = ag_NK_wealth_weight 
 gen prod_area_weight       = Timber_wealth_weight
 gen land_weight            = ag_NK_wealth_weight 
 gen forest_area_km_weight  = rec_forests_wealth_weight + NFS_wealth_weight
@@ -335,8 +334,7 @@ merge m:1 countrycode using renewable_capital_weights.dta
 drop _merge
 
 gen total_weight = ///
-      q_urban_weight ///
-    + prod_area_weight ///
+     prod_area_weight ///
     + land_weight ///
     + forest_area_km_weight ///
     + mangrove_ha_weight ///
@@ -397,15 +395,13 @@ gen g_Q_NonRenew_Tornquist = D_Q_Tornquist_nonrenewables - 1
 
 
 // renewables index
-local renew_resources q_urban prod_area land forest_area_km mangrove_ha b_e hp_gwh
+local renew_resources prod_area land forest_area_km mangrove_ha b_e hp_gwh
 
 foreach var of local renew_resources {
     gen DQ_`var'_exponentiated = DQ_`var'^(`var'_weight)
 }
 
-gen D_Q_Tornquist_renewables = ///
-      DQ_q_urban_exponentiated ///
-    * DQ_prod_area_exponentiated ///
+gen D_Q_Tornquist_renewables = DQ_prod_area_exponentiated ///
     * DQ_land_exponentiated ///
     * DQ_forest_area_km_exponentiated ///
     * DQ_mangrove_ha_exponentiated ///
@@ -413,15 +409,21 @@ gen D_Q_Tornquist_renewables = ///
     * DQ_hp_gwh_exponentiated
 
 sum D_Q_Tornquist_renewables ///
-    DQ_q_urban DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh ///
+     DQ_prod_area DQ_land DQ_forest_area_km DQ_mangrove_ha DQ_b_e DQ_hp_gwh ///
     if D_Q_Tornquist_renewables != .
 
 gen g_Q_Renew_Tornquist = D_Q_Tornquist_renewables - 1
 
-//urban land only
-gen alt_Renew_urban = DQ_q_urban - 1
- 
+// renewables growth
+local renew_resources prod_area land forest_area_km mangrove_ha b_e hp_gwh
 
-save "$processed/tornqvist_panel.dta", replace
+foreach var of local renew_resources {
+    gen g_`var'= DQ_`var' - 1
+}
+
+
+
+
+save "$processed/tornqvist_panel_nourban.dta", replace
 
 
