@@ -154,7 +154,11 @@ local keepvars ///
 //calculate effective clusters 
 gen diff_TFP_forcluster = d.log_tfp
 clusteff  dlog_prod_area dlog_land dlog_forest_area_km dlog_mangrove_ha dlog_b_e dlog_hp_gwh if diff_TFP_forcluster!=., cluster(country_byte)  selection(1 1 1 1 1 1)
+xtunitroot llc diff_TFP_forcluster
 drop diff_TFP_forcluster
+
+//
+
 
 
 /*

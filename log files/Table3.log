@@ -1,0 +1,125 @@
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/xabajian/Documents/GitHub/ACF_NK_Measurement/log files/Table3.log
+  log type:  text
+ opened on:  28 Jun 2026, 22:21:38
+
+. 
+. cd "$da"
+unable to change to /Users/xabajian/Documents/GitHub/ACF_NK_Measurement/data
+r(170);
+
+end of do-file
+
+r(170);
+
+. do "/var/folders/fz/mhtt80kx4ybfmpt4rm83ns3m0000gn/T//SD98206.000000"
+
+. ****************************************************
+. * Find GitHub repo root automatically
+. ****************************************************
+. 
+. clear all
+
+. set more off
+
+. 
+. * Ask bash/git for the top-level directory of the current Git repo
+. tempfile gitroot
+
+. shell git rev-parse --show-toplevel > "`gitroot'"
+
+
+. 
+. * Read that path back into Stata
+. file open fh using "`gitroot'", read text
+
+. file read fh root
+
+. file close fh
+
+. 
+. * Trim whitespace/newline
+. local root = strtrim("`root'")
+
+. 
+. * Store as global if desired
+. global root "/Users/xabajian/Documents/GitHub/Denver_Replication_Games_2026"
+
+. 
+. * Move Stata to the repo root
+. 
+end of do-file
+
+. do "/var/folders/fz/mhtt80kx4ybfmpt4rm83ns3m0000gn/T//SD98206.000000"
+
+. ****************************************************
+. * Find GitHub repo root automatically
+. ****************************************************
+. 
+. clear all
+
+. set more off
+
+. 
+. * Ask bash/git for the top-level directory of the current Git repo
+. tempfile gitroot
+
+. shell git rev-parse --show-toplevel > "`gitroot'"
+
+
+. 
+. * Read that path back into Stata
+. file open fh using "`gitroot'", read text
+
+. file read fh root
+
+. file close fh
+
+. 
+. * Trim whitespace/newline
+. local root = strtrim("`root'")
+
+. 
+. * Store as global if desired
+. global root "/Users/xabajian/Documents/GitHub/Denver_Replication_Games_2026"
+
+. 
+. * Move Stata to the repo root
+. cd "$root"
+/Users/xabajian/Documents/GitHub/Denver_Replication_Games_2026
+
+. 
+end of do-file
+
+. do "/var/folders/fz/mhtt80kx4ybfmpt4rm83ns3m0000gn/T//SD98206.000000"
+
+. 
+. 
+. *** DIRECTORIES ***
+. 
+. global da  "$root/data"
+
+. global do  "$root/programs"
+
+. global dl  "$root/log files"
+
+. global dg  "$root/graphs"
+
+. global tab "$root/tables"
+
+. 
+. cap mkdir "$dl"
+
+. cap mkdir "$dg"
+
+. cap mkdir "$tab"
+
+. 
+. 
+. cap mkdir "$dl"
+
+. cap mkdir "$dg"
+
+. 
+. cap log close
