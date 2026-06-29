@@ -59,6 +59,7 @@ drop if merge_UNFAO == 2
 isid countrycode year
 
 isid countrycode year
+
 /*
 Prep % changes of renewable NK stocks
 */
