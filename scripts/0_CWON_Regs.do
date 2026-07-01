@@ -281,85 +281,6 @@ codebook countryname if flag_hp_gwh==0 & d.log_tfp != .
 
 
 
-
-* Variables to difference
-local vars log_K log_L log_HC log_lab_share
-
-* Generate first-difference variables from time operators
-foreach v of local vars {
-    gen d_`v' = D.`v'
-}
-
-eststo clear
-
-xtset country_byte year 
-local keepvars ///
-    dlog_prod_area dlog_land ///
-    dlog_forest_area_km dlog_mangrove_ha ///
-    dlog_b_e dlog_hp_gwh
-
-
-	// BCH 2014 double selection lassos 
-
-//dont partial FEs
-pdslasso ldiff_TFP `keepvars' (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte) ,   post(pds) 
-test (  dlog_prod_area dlog_land dlog_forest_area_km dlog_mangrove_ha dlog_b_e dlog_hp_gwh)  
-boottest `keepvars',  cluster(country_byte) statistic(c) nograph seed(1234)  reps(999)
-
-
-		//dont partial FEs
-pdslasso ldiff_TFP `keepvars' (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte) ,   post(lasso) 
-test (  dlog_prod_area dlog_land dlog_forest_area_km dlog_mangrove_ha dlog_b_e dlog_hp_gwh)  
-boottest `keepvars',  cluster(country_byte) statistic(c) nograph seed(1234)  reps(999)
-  
-  
-  
-		//dont partial FEs
-pdslasso ldiff_TFP `keepvars' (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte) ,   post(plasso) 
-test (  dlog_prod_area dlog_land dlog_forest_area_km dlog_mangrove_ha dlog_b_e dlog_hp_gwh)  
-boottest `keepvars',  cluster(country_byte) statistic(c) nograph seed(1234)  reps(999)
-  
-		  
-
-
-* driscoll - kraay errors
-
-qui{
-	forvalues i = 1995/2019  {
-		gen year`i' = 1 if year==`i'
-		replace year`i'=0 if  year!=`i'
-}
-}
-
-//dkraay
-* Declare panel structure first
-
-xtset country_byte year 
-local keepvars ///
-    dlog_prod_area dlog_land ///
-    dlog_forest_area_km dlog_mangrove_ha ///
-    dlog_b_e dlog_hp_gwh
-
-	
-xtscc ldiff_TFP `keepvars'   year1* year2*  ///
-    if year > 1995, fe lag(2)
-test `keepvars'
-estadd scalar p_joint = r(p)
-boottest `keepvars',    statistic(c) nograph seed(1234)  reps(999)
-
-xtscc ldiff_TFP `keepvars' d_log_K d_log_L d_log_HC d_log_lab_share  year1* year2*  ///
-    if year > 1995, fe lag(2)
-test `keepvars'
-estadd scalar p_joint = r(p)
-boottest `keepvars',    statistic(c) nograph seed(1234)  reps(999)
-
-
-
-drop year1* year2*
-
-
-
-
 ****************************************************
 * P-value table: Wald tests + bootstrap tests
 ****************************************************
@@ -400,26 +321,11 @@ postfile `ppost' ///
 * BCH 2014 double-selection lassos
 ****************************************************
 
-* PDS
-pdslasso ldiff_TFP `keepvars' ///
-    (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte), ///
-    post(pds)
-
-test `keepvars'
-local wald_p = r(p)
-
-cap noisily boottest `keepvars', ///
-    cluster(country_byte) statistic(c) nograph seed(1234) reps(999)
-
-if _rc local boot_p = .
-else   local boot_p = r(p)
-
-post `ppost' ("BCH double selection") ("pds") (`wald_p') (`boot_p')
 
 
 * LASSO
 pdslasso ldiff_TFP `keepvars' ///
-    (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte), ///
+    (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte i.country_byte##c.year), ///
     post(lasso)
 
 test `keepvars'
@@ -431,12 +337,12 @@ cap noisily boottest `keepvars', ///
 if _rc local boot_p = .
 else   local boot_p = r(p)
 
-post `ppost' ("BCH double selection") ("lasso") (`wald_p') (`boot_p')
+post `ppost' ("BCH") ("lasso") (`wald_p') (`boot_p')
 
 
 * PLASSO
 pdslasso ldiff_TFP `keepvars' ///
-    (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte), ///
+    (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte i.country_byte##c.year), ///
     post(plasso)
 
 test `keepvars'
@@ -448,7 +354,25 @@ cap noisily boottest `keepvars', ///
 if _rc local boot_p = .
 else   local boot_p = r(p)
 
-post `ppost' ("BCH double selection") ("plasso") (`wald_p') (`boot_p')
+post `ppost' ("BCH") ("post lasso") (`wald_p') (`boot_p')
+
+* PDS
+pdslasso ldiff_TFP `keepvars' ///
+    (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte i.country_byte##c.year), ///
+    post(pds)
+
+test `keepvars'
+local wald_p = r(p)
+
+cap noisily boottest `keepvars', ///
+    cluster(country_byte) statistic(c) nograph seed(1234) reps(999)
+
+if _rc local boot_p = .
+else   local boot_p = r(p)
+
+post `ppost' ("BCH") ("pds") (`wald_p') (`boot_p')
+
+
 
 
 ****************************************************
@@ -498,6 +422,31 @@ else   local boot_p = r(p)
 post `ppost' ("Driscoll-Kraay") ("Controls") (`wald_p') (`boot_p')
 
 
+
+qui {
+    forvalues i = 1/180 {
+        gen country_trend_`i' = year * (country_byte == `i')
+    }
+}
+
+* DK, with controls, trend
+xtscc ldiff_TFP `keepvars' ///
+    d_log_K d_log_L d_log_HC d_log_lab_share country_trend_* ///
+    year1* year2* ///
+    if year > 1995, fe lag(2)
+
+test `keepvars'
+local wald_p = r(p)
+
+cap noisily boottest `keepvars', ///
+    statistic(c) nograph seed(1234) reps(999)
+
+if _rc local boot_p = .
+else   local boot_p = r(p)
+
+post `ppost' ("Driscoll-Kraay") ("Controls + Trend") (`wald_p') (`boot_p')
+
+
 ****************************************************
 * Export p-value table
 ****************************************************
@@ -507,7 +456,7 @@ postclose `ppost'
 preserve
     use `pvals', clear
 
-    format wald_p boot_p %9.4f
+    format wald_p boot_p %9.3f
     label variable model     "Model"
     label variable estimator "Estimator"
     label variable wald_p   "Wald p-value"
@@ -532,8 +481,8 @@ preserve
         forvalues i = 1/`=_N' {
             local m = model[`i']
             local e = estimator[`i']
-            local w : display %9.4f wald_p[`i']
-            local b : display %9.4f boot_p[`i']
+            local w : display %9.3f wald_p[`i']
+            local b : display %9.3f boot_p[`i']
 
             file write tex "`m' & `e' & `w' & `b' \\" _n
         }
@@ -546,7 +495,7 @@ preserve
 
 restore
 
-drop year1* year2*
+drop year1* year2* country_trend_*
 */
 
 /*
