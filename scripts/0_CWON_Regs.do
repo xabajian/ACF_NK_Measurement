@@ -254,13 +254,14 @@ drop year1* year2*
 
 *---- export with esttab ----*
 esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1.tex", replace ///
-    title("TFP Growth vs. Natural Capital Growth") ///
+    label ///
+    title("TFP Growth vs. Growth in Renewable Natural Capital Stocks") ///
     keep(`keepvars') ///
     b(3) se(3) ///
     star(* 0.0001) ///
     stats(p_joint p_joint_boot N, ///
           labels("Wald" "Bootstrap Wald" "N") ///
-          fmt(3 3 0 3))
+          fmt(3 3 0))
 *---- export with esttab ----*
 
 
