@@ -57,6 +57,9 @@ Step 2 -- appendix figure of RMSE reductions against external factors
 */
 
 
+corr g_A sdA gdp_pc
+
+reg gdp_pc g_A sdA
 //Figure a
 reg RMSE_reduction gdp_pc, r
 lincom gdp_pc

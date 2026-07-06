@@ -208,6 +208,7 @@ sum RMSE_reduction if country_string=="USA", d
 
 
 sum RMSE_reduction , d
+sum RMSE_reduction if  RMSE_reduction<0 , d
 scalar median_reduction = r(p50)
 display median_reduction
 
@@ -219,5 +220,7 @@ scalar mean_GA = r(mean)
 
 display median_reduction/ mean_GA
 export delimited "$sim_dir/bias_rmse.csv", replace
+
+
 
 
