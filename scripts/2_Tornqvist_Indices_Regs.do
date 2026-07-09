@@ -215,28 +215,28 @@ esttab m1 m2 m3 m4 m5 m6 using "$tables/main_tornq_regs.tex", replace ///
 eststo clear
 
 *(1)
-reg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist, vce(cluster country_byte)
+reg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist, vce(robust)
 eststo m1
 
 *(2)
 reg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist d.log_K d.log_L d.log_HC d.log_lab_share, ///
-    vce(cluster country_byte)
+    vce(robust)
 eststo m2
 
 *(3)
 areg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist i.year, ///
-    absorb(country_byte) vce(cluster country_byte)
+    absorb(country_byte) vce(robust)
 eststo m3
 
 *(4)
 areg d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
-    absorb(country_byte) vce(cluster country_byte)
+    absorb(country_byte) vce(robust)
 eststo m4
 
 
 *(5)
 reghdfe d.log_y g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist i.year d.log_K d.log_L d.log_HC d.log_lab_share, ///
-    absorb(i.country_byte##c.year) vce(cluster country_byte)
+    absorb(i.country_byte##c.year) vce(robust)
 eststo m5
 
 	
@@ -260,7 +260,7 @@ esttab m1 m2 m3 m4 m5 m6 using "$tables/appendix_tornq_regs.tex", replace ///
     title("Output Growth vs. Natural Capital Growth") ///
     keep(g_Q_Renew_Tornquist g_Q_NonRenew_Tornquist) ///
     b(3) se(3) ///
-    star(* 0.0001)
+    star(** 0.05 *** 0.01)
 
 
 *============================================================*

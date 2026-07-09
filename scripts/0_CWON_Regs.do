@@ -951,7 +951,6 @@ boottest `keepvars',  nograph seed(1234)  reps(999)
 estadd scalar p_joint_boot = r(p)
 eststo m6
 
-drop year1* year2*
 
 *---- export with esttab ----*
 esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1_noland.tex", replace ///
@@ -962,6 +961,78 @@ esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1_noland.tex", replace ///
     stats(p_joint p_joint_boot N, ///
           labels("Wald" "Bootstrap Wald" "N") ///
           fmt(3 3 0 3))
+
+		  
+* PDS
+pdslasso ldiff_TFP `keepvars' ///
+    (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte i.country_byte##c.year), ///
+    post(pds)
+
+test `keepvars'
+local wald_p = r(p)
+
+cap noisily boottest `keepvars', ///
+    cluster(country_byte) statistic(c) nograph seed(1234) reps(999)
+
+if _rc local boot_p = .
+else   local boot_p = r(p)
+
+
+
+* DK, no controls
+xtscc ldiff_TFP `keepvars' year1* year2* ///
+    if year > 1995, fe lag(2)
+
+test `keepvars'
+local wald_p = r(p)
+
+cap noisily boottest `keepvars', ///
+    statistic(c) nograph seed(1234) reps(999)
+
+
+
+* DK, with controls
+xtscc ldiff_TFP `keepvars' ///
+    d_log_K d_log_L d_log_HC d_log_lab_share ///
+    year1* year2* ///
+    if year > 1995, fe lag(2)
+
+test `keepvars'
+local wald_p = r(p)
+
+cap noisily boottest `keepvars', ///
+    statistic(c) nograph seed(1234) reps(999)
+
+if _rc local boot_p = .
+else   local boot_p = r(p)
+
+
+
+
+qui {
+    forvalues i = 1/180 {
+        gen country_trend_`i' = year * (country_byte == `i')
+    }
+}
+
+* DK, with controls, trend
+xtscc ldiff_TFP `keepvars' ///
+    d_log_K d_log_L d_log_HC d_log_lab_share country_trend_* ///
+    year1* year2* ///
+    if year > 1995, fe lag(2)
+
+test `keepvars'
+local wald_p = r(p)
+
+cap noisily boottest `keepvars', ///
+    statistic(c) nograph seed(1234) reps(999)
+
+if _rc local boot_p = .
+else   local boot_p = r(p)
+
+drop year1* year2*
+
+
 
 restore
 
