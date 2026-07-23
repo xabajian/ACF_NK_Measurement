@@ -48,6 +48,25 @@ isid countrycode year
 
 gen iso3 = countrycode
 
+// World Bank Data360 TFP growth series (WB_ASPD_DTFP)
+tempfile wb_tfp
+preserve
+    import delimited using "$raw/world_bank_tfp_WB_ASPD_DTFP.csv", ///
+        clear varnames(1) stringcols(_all)
+
+    destring year tfp_growth_percent, replace
+    keep iso3 year tfp_growth_percent
+    rename tfp_growth_percent wb_tfp_growth_pct
+    label var wb_tfp_growth_pct "World Bank TFP growth (percent per year)"
+
+    isid iso3 year
+    save `wb_tfp'
+restore
+
+merge 1:1 iso3 year using `wb_tfp', gen(merge_WBTFP)
+drop if merge_WBTFP == 2
+isid countrycode year
+
 // merge the euro area version from Eurostat
 merge 1:1 year iso3 using "$raw/euro_area_mfp_panel_iso.dta", gen(merge_EU)
 drop if merge_EU == 2
@@ -616,6 +635,108 @@ graph export "$figs/robustness_RI.png", replace
 restore
 
 
+*============================================================*
+* Main table with World bank TFP outcome
+*============================================================*
+
+eststo clear
+
+xtset country_byte year 
+local keepvars ///
+    dlog_prod_area dlog_land ///
+    dlog_forest_area_km dlog_mangrove_ha ///
+    dlog_b_e dlog_hp_gwh
+
+
+
+
+/*
+asymptotic clustered SEs will not work with 4.6 effective clusters even with 117 countries ostensibly.
+*/
+
+*(1)
+reg wb_tfp_growth_pct `keepvars'  if year>1995, vce(robust)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars',  bootcluster(country_byte) nograph seed(1234)  reps(999)
+estadd scalar p_joint_boot = r(p)
+eststo m1
+
+*(2)
+reg wb_tfp_growth_pct `keepvars'  d.log_K d.log_L d.log_HC d.log_lab_share if year>1995,   vce(robust)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars',  bootcluster(country_byte) nograph seed(1234)  reps(999)
+estadd scalar p_joint_boot = r(p)
+eststo m2
+
+*(3)
+areg wb_tfp_growth_pct `keepvars'  i.year  if year>1995, absorb(country_byte)  vce(robust)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars',  bootcluster(country_byte) nograph seed(1234)  reps(999)
+estadd scalar p_joint_boot = r(p)
+eststo m3
+
+
+
+*(4)
+areg wb_tfp_growth_pct `keepvars'  i.year d.log_K d.log_L d.log_HC d.log_lab_share  if year>1995, ///
+    absorb(country_byte)  vce(robust)
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars',  bootcluster(country_byte) nograph seed(1234)  reps(999)
+estadd scalar p_joint_boot = r(p)
+eststo m4
+
+
+	
+	
+*(5)
+
+reghdfe wb_tfp_growth_pct `keepvars'  i.year d.log_K d.log_L d.log_HC d.log_lab_share  if year>1995, ///
+    absorb(i.country_byte##c.year) vce(robust)
+test `keepvars'
+estadd scalar p_joint = r(p)
+// boottest `keepvars',  nograph seed(1234)  reps(999)
+estadd scalar p_joint_boot = 990
+eststo m5
+
+*(6) arellano bond
+
+qui{
+	forvalues i = 1995/2019  {
+		gen year`i' = 1 if year==`i'
+		replace year`i'=0 if  year!=`i'
+}
+}
+
+
+xtabond wb_tfp_growth_pct `keepvars'  d.log_K d.log_L d.log_HC d.log_lab_share year1* year2*  if year>1995,  lags(2) vce(robust)
+
+test `keepvars'
+estadd scalar p_joint = r(p)
+boottest `keepvars',  bootcluster(country_byte)  statistic(c) nograph seed(1234)  reps(999)
+estadd scalar p_joint_boot = r(p)
+eststo m6
+
+
+drop year1* year2*
+
+
+*---- export with esttab ----*
+esttab m1 m2 m3 m4 m5 m6 using "$tables/tab1_WB_TFP.tex", replace ///
+    label ///
+    title("World Bank TFP Growth vs. Growth in Renewable Natural Capital Stocks") ///
+    keep(`keepvars') ///
+    b(3) se(3) ///
+    star(* 0.0001) ///
+    stats(p_joint p_joint_boot N, ///
+          labels("Wald" "Bootstrap Wald" "N") ///
+          fmt(3 3 0))
+*---- export with esttab ----*
+
+
 
 *============================================================*
 * Tab 1: PWT GDP from national accounts as outcome, control for K L
@@ -703,6 +824,8 @@ esttab m1 m2 m3 m4 m5 using "$tables/tab1_gdp_na.tex", replace ///
           labels("Wald" "Bootstrap Wald" "N") ///
           fmt(3 3 0 3))
 *---- export with esttab ----*
+
+
 
 
 *============================================================*
