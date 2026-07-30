@@ -345,7 +345,7 @@ postfile `ppost' ///
 * LASSO
 pdslasso ldiff_TFP `keepvars' ///
     (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte i.country_byte##c.year), ///
-    post(lasso)
+    post(lasso) robust
 
 test `keepvars'
 local wald_p = r(p)
@@ -362,7 +362,7 @@ post `ppost' ("BCH") ("lasso") (`wald_p') (`boot_p')
 * PLASSO
 pdslasso ldiff_TFP `keepvars' ///
     (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte i.country_byte##c.year), ///
-    post(plasso)
+    post(plasso) robust
 
 test `keepvars'
 local wald_p = r(p)
@@ -378,7 +378,7 @@ post `ppost' ("BCH") ("post lasso") (`wald_p') (`boot_p')
 * PDS
 pdslasso ldiff_TFP `keepvars' ///
     (d_log_K d_log_L d_log_HC d_log_lab_share i.year i.country_byte i.country_byte##c.year), ///
-    post(pds)
+    post(pds) robust
 
 test `keepvars'
 local wald_p = r(p)
