@@ -219,7 +219,9 @@ sum g_A,d
 scalar mean_GA = r(mean)
 
 display median_reduction/ mean_GA
-export delimited "$sim_dir/bias_rmse.csv", replace
+
+//summarize coefficients
+sum , d
 
 
 
