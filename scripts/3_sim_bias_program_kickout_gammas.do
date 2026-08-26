@@ -76,7 +76,7 @@ scalar tfp_bias_NK = ///
 scalar g_hat = `gA' + tfp_bias_NK
 
 //====================================================
-// Estimator 2: regressing output on {K, L, N1} omitting {N2}
+// Estimator 2: regressing output on {K, L, N1} omitting {N1}
 // Bias = gamma2*(gn2 - [lambdaK*gK + lambdaN1*gn1 + lambdaL*gL])
 // where lambda = Var([gK gn1 gL])^{-1} Cov([gK gn1 gL], gn2) w
 //====================================================
