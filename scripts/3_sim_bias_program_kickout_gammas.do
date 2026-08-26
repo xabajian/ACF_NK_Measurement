@@ -67,6 +67,13 @@ matrix cKL_N2 = ( cov_K_N2  \ cov_L_N2 )
 matrix bKL_N1 = iVKL * cKL_N1   // [b_N1K, b_N1L]'
 matrix bKL_N2 = iVKL * cKL_N2   // [b_N2K, b_N2L]'
 
+// Natural-capital components of the coefficient estimands in model 0.
+// If the structural coefficients on K and L are beta_K and beta_L, the
+// full regression estimands are beta_K + coef_K_model0 and
+// beta_L + coef_L_model0, respectively.
+scalar coef_K_model0 = gamma_1*bKL_N1[1,1] + gamma_2*bKL_N2[1,1]
+scalar coef_L_model0 = gamma_1*bKL_N1[2,1] + gamma_2*bKL_N2[2,1]
+
 
 // Bias term for estimator A (two omitted stocks, now partialling out K and L)
 scalar tfp_bias_NK = ///
@@ -76,7 +83,7 @@ scalar tfp_bias_NK = ///
 scalar g_hat = `gA' + tfp_bias_NK
 
 //====================================================
-// Estimator 2: regressing output on {K, L, N1} omitting {N1}
+// Estimator 2: regressing output on {K, L, N1} omitting {N2}
 // Bias = gamma2*(gn2 - [lambdaK*gK + lambdaN1*gn1 + lambdaL*gL])
 // where lambda = Var([gK gn1 gL])^{-1} Cov([gK gn1 gL], gn2) w
 //====================================================
@@ -93,6 +100,13 @@ matrix cKN1L_N2 = ( cov_K_N2 \ cov_N1_N2 \ cov_L_N2 )
 
 // Projection coefficients (lambdas)
 matrix lambda = iVKN1L * cKN1L_N2   // [lambdaK, lambdaN1, lambdaL]'
+
+// Coefficient estimands in model 1. As in model 0, the K and L quantities
+// are the natural-capital components; add the structural K and L
+// coefficients to obtain the full output-regression coefficients.
+scalar coef_K_model1  = gamma_2*lambda[1,1]
+scalar coef_N1_model1 = gamma_1 + gamma_2*lambda[2,1]
+scalar coef_L_model1  = gamma_2*lambda[3,1]
 
 
 // Bias term for estimator 2
@@ -128,6 +142,13 @@ return scalar bias0_out = scalar(tfp_bias_NK)
 return scalar bias1_out = scalar(tfp_bias_1K)
 return scalar var0_out = scalar(var_no_NK)
 return scalar var1_out = scalar(var_1_NK)
+
+//country-level coefficient estimands
+return scalar coef_K_model0_out  = scalar(coef_K_model0)
+return scalar coef_L_model0_out  = scalar(coef_L_model0)
+return scalar coef_K_model1_out  = scalar(coef_K_model1)
+return scalar coef_L_model1_out  = scalar(coef_L_model1)
+return scalar coef_N1_model1_out = scalar(coef_N1_model1)
  
  end
  
@@ -144,6 +165,17 @@ gen bias0 = .
 gen bias1 = .
 gen var0 = .
 gen var1 = .
+gen double coef_K_model0 = .
+gen double coef_L_model0 = .
+gen double coef_K_model1 = .
+gen double coef_L_model1 = .
+gen double coef_N1_model1 = .
+
+label variable coef_K_model0  "Natural-capital component of K coefficient: model 0"
+label variable coef_L_model0  "Natural-capital component of L coefficient: model 0"
+label variable coef_K_model1  "Natural-capital component of K coefficient: model 1"
+label variable coef_L_model1  "Natural-capital component of L coefficient: model 1"
+label variable coef_N1_model1 "Coefficient on N1: model 1"
 
 count
 quietly {
@@ -187,6 +219,11 @@ quietly {
 		replace bias1 = r(bias1_out)  in `i' 
 		replace var0 = r(var0_out)  in `i'
 		replace var1 = r(var1_out)  in `i'
+		replace coef_K_model0 = r(coef_K_model0_out) in `i'
+		replace coef_L_model0 = r(coef_L_model0_out) in `i'
+		replace coef_K_model1 = r(coef_K_model1_out) in `i'
+		replace coef_L_model1 = r(coef_L_model1_out) in `i'
+		replace coef_N1_model1 = r(coef_N1_model1_out) in `i'
     }
 }
 
@@ -198,7 +235,7 @@ gen RMSE_reduction_topcode = min(RMSE_reduction, r(p90))
 replace RMSE_reduction_topcode = . if RMSE_reduction==.
 
 //save out
-save "$sim_dir/bias_rmse.dta", replace
+// save "$sim_dir/bias_rmse.dta", replace
 drop country_string
 decode country_byte, gen(country_string)
 
@@ -220,9 +257,8 @@ scalar mean_GA = r(mean)
 
 display median_reduction/ mean_GA
 
-//summarize coefficients
-sum , d
-
+sum coef*, d
+// export delimited "$sim_dir/bias_rmse.csv", replace
 
 
 
