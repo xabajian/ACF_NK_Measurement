@@ -56,7 +56,8 @@ cd "$root/scripts"
 do 2_Tornqvist_Indices_Regs.do	
 cd "$root/scripts"
 
-do 3_sim_bias_program.do		
+// do 3_sim_bias_program.do		
+do 3_sim_bias_program_fixed.do		
 cd "$root/scripts"
 
 do 4_make_appendix_overlay_table.do
