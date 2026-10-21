@@ -78,10 +78,10 @@ cd "$root/scripts"
 do 6_appendix_alternative_sample_periods.do
 cd "$root/scripts"
 
-do 6_appendix_simRMSE_elasticity_sensitivity.do
+do 6_appendix_simRMSE_elasticity_sensitivity_fixed.do
 cd "$root/scripts"
 
-do 7_appendix_simRMSE_sample_sensitivity.do
+do 7_appendix_simRMSE_sample_sensitivity_fixed.do
 cd "$root/scripts"
 
 

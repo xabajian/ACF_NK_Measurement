@@ -78,7 +78,7 @@ scalar var_L  = (`sdL')^2
 
 //====================================================
 // Estimator 1: regressing output on {K, L} omitting {N1, N2}
-// Bias = gamma1*(gn1 - b_N1K*gK - b_N1L*gL) + gamma2*(gn2 - b_N2K*gK - b_N2L*gL)
+// Bias = gamma1*(g1 - b_N1K*gK - b_N1L*gL) + gamma2*(g2 - b_N2K*gK - b_N2L*gL)
 // where kappas = Var([gK,gL])^{-1} Cov([gK,gL], gN)
 //====================================================
 
@@ -98,15 +98,15 @@ matrix bKL_N2 = iVKL * cKL_N2   // [b_N2K, b_N2L]'
 
 // Bias term for estimator A (two omitted stocks, now partialling out K and L)
 scalar tfp_bias_NK = ///
-      gamma_1 * ( `gn1' - bKL_N1[1,1]*`gK' - bKL_N1[2,1]*`gL' ) ///
-    + gamma_2 * ( `gn2' - bKL_N2[1,1]*`gK' - bKL_N2[2,1]*`gL' )
+      gamma_1 * ( `g1' - bKL_N1[1,1]*`gK' - bKL_N1[2,1]*`gL' ) ///
+    + gamma_2 * ( `g2' - bKL_N2[1,1]*`gK' - bKL_N2[2,1]*`gL' )
 
 scalar g_hat = `gA' + tfp_bias_NK
 
 //====================================================
-// Estimator 2: regressing output on {K, L, N1} omitting {N1}
-// Bias = gamma2*(gn2 - [lambdaK*gK + lambdaN1*gn1 + lambdaL*gL])
-// where lambda = Var([gK gn1 gL])^{-1} Cov([gK gn1 gL], gn2) w
+// Estimator 2: regressing output on {K, L, N1} omitting {N2}
+// Bias = gamma2*(g2 - [lambdaK*gK + lambdaN1*g1 + lambdaL*gL])
+// where lambda = Var([K N1 L])^{-1} Cov([K N1 L], N2)
 //====================================================
 
 // Build E([K N1 L]'[K N1 L])^-1
@@ -124,7 +124,7 @@ matrix lambda = iVKN1L * cKN1L_N2   // [lambdaK, lambdaN1, lambdaL]'
 
 
 // Bias term for estimator 2
-scalar tfp_bias_1K = gamma_2 * ( `gn2' - lambda[1,1]*`gK' - lambda[2,1]*`gn1' -  lambda[3,1]*`gL' )
+scalar tfp_bias_1K = gamma_2 * ( `g2' - lambda[1,1]*`gK' - lambda[2,1]*`g1' - lambda[3,1]*`gL' )
 scalar g_tilde = `gA' + tfp_bias_1K
 
 
@@ -134,9 +134,24 @@ scalar TFP_square_bias_NK = sqrt(tfp_bias_NK^2)
 scalar abs_difference_TFP = TFP_square_bias_NK-TFP_square_bias_1K
 
 
-//repeat for RMSE
-scalar var_no_NK = (`sdA'^2 + gamma_1 ^2 * `sdn1'^2 + gamma_2 ^2 * `sdn2'^2 + 2*gamma_1*gamma_2*cov_N1_N2) / `number_periods'
-scalar var_1_NK = (`sdA'^2 + gamma_2 ^2 * `sdn1'^2  ) / `number_periods'
+//repeat for RMSE, using the residual variance of the omitted inputs
+
+//Model 0: residualize {N1,N2} with respect to {K,L}
+matrix V_N = ( var_N1, cov_N1_N2 \ ///
+               cov_N1_N2, var_N2 )
+matrix C_KL_N = ( cov_N1_K, cov_K_N2 \ ///
+                  cov_L_N1, cov_L_N2 )
+matrix gamma_N = ( gamma_1 \ gamma_2 )
+matrix V_N_resid = V_N - C_KL_N' * iVKL * C_KL_N
+matrix omitted_var0 = gamma_N' * V_N_resid * gamma_N
+
+scalar var_no_NK = (`sdA'^2 + omitted_var0[1,1]) / `number_periods'
+
+//Model 1: residualize omitted N2 with respect to {K,N1,L}
+matrix projected_var_N2 = cKN1L_N2' * iVKN1L * cKN1L_N2
+scalar residual_var_N2 = var_N2 - projected_var_N2[1,1]
+
+scalar var_1_NK = (`sdA'^2 + gamma_2^2 * residual_var_N2) / `number_periods'
 scalar MSE_NK = sqrt(var_no_NK + tfp_bias_NK^2)
 scalar MSE_1K = sqrt(var_1_NK + tfp_bias_1K^2)
 scalar MSE_difference = MSE_NK - MSE_1K
@@ -193,7 +208,7 @@ display count_negative/count_full
 //summary stats, gamma 2
 count if RMSE_reduction<0 & gamma_2_out >= 0.05
 scalar count_negative = r(N)
-count if gamma_1_out > 0.05
+count if gamma_2_out >= 0.05
 scalar count_full = r(N)
 display count_negative/count_full
 

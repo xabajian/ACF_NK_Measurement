@@ -13,7 +13,10 @@ global sim_dir "$root/simulations"
 
 set scheme plotplain
 
+
+use "$processed/CWON_data_urban_only.dta", clear
 							
+
 program define solve_bias_variance, rclass 
 
 
@@ -129,20 +132,6 @@ return scalar var1_out = scalar(var_1_NK)
  end
  
  
-local periodlist early late 
-
-
-
-foreach sample_period of local periodlist {
-
-qui{
-
-local read_string = "$processed/CWON_data_" + "`sample_period'" + ".dta"
-
-use "`read_string'", clear
-							
-
-							
 gen bias_reduction = .
 gen RMSE_reduction = .
 gen RMSE_baseline = .
@@ -183,7 +172,6 @@ quietly {
         * Run simulation
 		solve_bias_variance, number_periods(25) corr_N1_K(`corr_N1_K_in') corr_N1_N2(`corr_N1_N2_in') corr_N2_K(`corr_N2_K_in')  gn1(`g1_in')  gn2(`g2_in')  gK(`gk_in') sdK(`sdK_in') sdA(`sdA_in') sdn1(`sd1_in') sdn2(`sd2_in') gA(`ga_in')  gL(`gl_in') sdL(`sdL_in') corr_N1_L(`corr_L_N1_in')  corr_N2_L(`corr_L_N2_in')  corr_L_K(`corr_L_K_in') 
 			
-		//  number_periods(integer 70) corr_N1_K(real 0.01) corr_N1_N2(real 0.01) corr_N2_K(real 0.01) gn1(real 0.01)  gn2(real 0.01)   gK(real 0.01) sdK(real 0.01) sdA(real 0.01) sdn1(real 0.01) sdn2(real 0.01) gA(real 0.01)  gL(real 0.01) sdL(real 0.01) corr_N1_L(real 0.01) corr_N2_L(real 0.01)   corr_L_K(real 0.01)  ] 
 
 
         * Store returned results
@@ -201,111 +189,21 @@ quietly {
 		replace var1 = r(var1_out)  in `i'
     }
 }
-keep if sdA!=.
-}
+
 //summary stats
-local newline = char(10)
-display "`newline' `sample_period' PERIOD `newline'"
 sum RMSE_reduction, d
-count if RMSE_reduction<0
+
+//topcode for figure
+gen RMSE_reduction_topcode = min(RMSE_reduction, r(p90))
+replace RMSE_reduction_topcode = . if RMSE_reduction==.
+
+//save out
 
 
-
-/* 
-@!#$!@#$#@!$@!#$#!#
-@!#$!@#$#@!$@!#$#!#
-
-//Alternative Figure 2s
-
-@!#$!@#$#@!$@!#$#!#
-@!#$!@#$#@!$@!#$#!#
-*/
-
-qui{
-  //Figure a
-twoway  ///
-(scatter RMSE_reduction g_n1,   mcolor(navy%100) msy(circle) msize(small)     ///
-yline(0, lpattern(dash) lcolor(gray%40) ) ///
-xline(0, lpattern(dash) lcolor(gray%40) ) ///
-xlabel(, nogrid  labsize(small)) ///
-ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("Average Growth in Non-Renewable Resource Use (g{sub:N{sub:1}}), 1996-2019", size(small))  ///
-    ytitle("Reduction in RMSE", size(small)) ///
-    legend(off) ///
-    title("{bf:a}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
- saving("$figs/overlay_alt1.gph", replace) 
-
-
-
- //Figure b
-twoway ///
-(scatter RMSE_reduction g_n2,   mcolor(navy%100) msy(circle) msize(small)     ///
-yline(0, lpattern(dash) lcolor(gray%40) ) ///
-xline(0, lpattern(dash) lcolor(gray%40) ) ///
-xlabel(, nogrid  labsize(small)) ///
-ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("Average Growth in Renewable Resource Use (g{sub:N{sub:2}}), 1996-2019", size(small))  ///
-    ytitle("Reduction in RMSE", size(small)) ///
-    legend(off) ///
-    title("{bf:b}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
- saving("$figs/overlay_alt2.gph", replace) 
-
-
+//a few summary statistics for main text
+sum RMSE_reduction RMSE_reduction_share, d
+sum RMSE_reduction, d
+sum RMSE_reduction if country_string=="USA", d
+ sum RMSE_reduction if RMSE_reduction<0, d
  
- //Figure c
-twoway (lfit g_A_bar g_A_bar , color(grey%20)   lpattern(dash)) ///
-(scatter g_hat_A g_A_bar,   mcolor(red%100) msy(circle) msize(small)     ///
-xlabel(, nogrid  labsize(small)) ///
-ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("Average g{sub:A} from the PWT", size(small))  ///
-    ytitle("Estimated γ̃{sub:A} from Model 1", size(small)) ///
-    legend(off) ///
-    title("{bf:c}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
- saving("$figs/overlay_alt3.gph", replace) 
 
-  //Figure d
-twoway (lfit g_A_bar g_A_bar , color(grey%20)   lpattern(dash)) ///
-(scatter g_tilde_A g_A_bar,   mcolor(red%100) msy(circle) msize(small)     ///
-xlabel(, nogrid  labsize(small)) ///
-ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("Average g{sub:A} from the PWT", size(small))  ///
-    ytitle("Estimated γ̂{sub:A} from Model 2", size(small)) ///
-    legend(off) ///
-    title("{bf:d}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
- saving("$figs/overlay_alt4.gph", replace) 
-
-	 
-
-  //Figure e
-twoway (lfit RMSE_baseline_NK RMSE_baseline_NK , color(grey%20)   lpattern(dash)) ///
-(scatter RMSE_baseline RMSE_baseline_NK,   mcolor(red%100) msy(circle) msize(small)     ///
-xlabel(, nogrid  labsize(small)) ///
-ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("RMSE when Omitting Non-Renewables", size(small))  /// 
-    ytitle("RMSE when Including Non-Renewables", size(small)) ///
-    legend(off) ///
-    title("{bf:e}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
-  saving("$figs/overlay_alt5.gph", replace) 
-    
-
-	// Figure f
-twoway hist RMSE_reduction_share, freq ///
-    start(-0.5) width(0.1) ///
-    xlabel(-0.5(0.1)0.9, nogrid labsize(small)) ///
-	xline(0, lpattern(dash) lcolor(gray%40) ) ///
-    ylabel(, nogrid labsize(small)) ///
-    xtitle("Share of RMSE Reduced Going from Model 1 to 2", size(small)) ///
-    ytitle("Number of Countries") ///
-    legend(off) ///
-    title("{bf:f}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
-    saving("$figs/overlay_alt6.gph", replace)
-
-
-graph combine "$figs/overlay_alt1.gph" "$figs/overlay_alt2.gph" "$figs/overlay_alt3.gph" "$figs/overlay_alt4.gph" "$figs/overlay_alt5.gph" "$figs/overlay_alt6.gph" ,  ///
-col(2) imargin(none) 
-
-graph export  "$figs/four_cases_overlay_`sample_period'.png", replace 
-graph export  "$figs/four_cases_overlay_`sample_period'.pdf", replace 
-}
-
-}
