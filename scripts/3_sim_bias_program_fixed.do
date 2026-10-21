@@ -223,9 +223,12 @@ sum RMSE_reduction if country_string=="USA", d
 
 
 sum RMSE_reduction , d
-sum RMSE_reduction if  RMSE_reduction<0 , d
 scalar median_reduction = r(p50)
+
 display median_reduction
+
+
+sum RMSE_reduction if  RMSE_reduction<0 , d
 
 sum g_A if g_A<0, d
 sum g_A if g_A>0, d

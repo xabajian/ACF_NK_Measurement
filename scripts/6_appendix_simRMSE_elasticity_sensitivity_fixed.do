@@ -201,6 +201,7 @@ graph export "$figs/rmse_MC.pdf", replace
 //summary stats, gamma 1
 count if RMSE_reduction<0 & gamma_1_out <= 0.05
 scalar count_negative = r(N)
+
 count if gamma_1_out < 0.05
 scalar count_full = r(N)
 display count_negative/count_full
@@ -235,6 +236,6 @@ twoway ///
 (lpoly  RMSE_reduction gamma_2_out , lcolor(orange) lpattern(dot) lwidth(thick)) , ///
 yline(0, lpattern(dash) lcolor(gray%40) ) ///
 ytitle("Reduction in RMSE") xtitle("γ{sub:2}") ///
-legend(order(1 "Linear Fit" 2 "Median Spline" 3  "Local Polynomial") pos(2) ring(0)) 
+legend(order(1 "Linear Fit" 2 "Median Spline" 3  "Local Polynomial") pos(3) ring(0)) 
 graph export "$figs/MC_gamma2.pdf", replace 
 restore 
