@@ -272,3 +272,4 @@ summarize RMSE_model0_crs RMSE_model1_crs RMSE_reduction_crs ///
     RMSE_reduction_share_crs, detail
 
 
+summarize coef_K_model0_crs coef_L_model0_crs coef_K_model1_crs coef_N1_model1_crs coef_L_model1_crs , d

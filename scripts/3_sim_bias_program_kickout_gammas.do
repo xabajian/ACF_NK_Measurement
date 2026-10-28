@@ -258,6 +258,13 @@ scalar mean_GA = r(mean)
 display median_reduction/ mean_GA
 
 sum coef*, d
+
+twoway (kdensity coef_K_model0 if g_A!=.) ///
+(kdensity coef_K_model1  if g_A!=.) 
+
+twoway (kdensity coef_L_model0  if g_A!=.) ///
+(kdensity coef_L_model1  if g_A!=.) 
+
 // export delimited "$sim_dir/bias_rmse.csv", replace
 
 
