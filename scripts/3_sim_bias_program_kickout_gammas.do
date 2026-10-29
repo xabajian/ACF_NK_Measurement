@@ -1,3 +1,5 @@
+
+*
 *===============================*
 * Paths / globals
 *===============================*
@@ -21,9 +23,56 @@ program define solve_bias_variance, rclass
 
 
 version 12.1
-syntax [,  number_periods(integer 25) corr_N1_K(real 0.01) corr_N1_N2(real 0.01) corr_N2_K(real 0.01) gn1(real 0.01)  gn2(real 0.01)   gK(real 0.01) sdK(real 0.01) sdA(real 0.01) sdn1(real 0.01) sdn2(real 0.01) gA(real 0.01)  gL(real 0.01) sdL(real 0.01) corr_N1_L(real 0.01) corr_N2_L(real 0.01)   corr_L_K(real 0.01)  ] 
+syntax [,  number_periods(integer 25) covariance_ddof(integer 1) corr_n1_k(real 0.01) corr_n1_n2(real 0.01) corr_n2_k(real 0.01) gn1(real 0.01)  gn2(real 0.01)   gk(real 0.01) sdk(real 0.01) sda(real 0.01) sdn1(real 0.01) sdn2(real 0.01) ga(real 0.01)  gl(real 0.01) sdl(real 0.01) corr_n1_l(real 0.01) corr_n2_l(real 0.01)   corr_l_k(real 0.01)  ] 
 
 		
+
+    * Validate the moment calibration before using invsym(), which can otherwise
+    * silently return a generalized inverse for a singular design covariance.
+    if `number_periods' < 4 | `number_periods' >= . {
+        display as error "number_periods() must be at least 4"
+        exit 198
+    }
+    if !inlist(`covariance_ddof', 0, 1) {
+        display as error "covariance_ddof() must be 0 or 1"
+        exit 198
+    }
+    foreach input in corr_n1_k corr_n1_n2 corr_n2_k corr_n1_l ///
+        corr_n2_l corr_l_k gn1 gn2 gk gl sdn1 sdn2 sdk sdl sda {
+        if missing(``input'') {
+            display as error "Missing calibration input: `input'"
+            exit 498
+        }
+    }
+    if `sdk' <= 0 | `sdl' <= 0 | `sdn1' <= 0 | `sdn2' < 0 | `sda' < 0 {
+        display as error "Included-input SDs must be positive; other SDs nonnegative"
+        exit 498
+    }
+    foreach input in corr_n1_k corr_n1_n2 corr_n2_k corr_n1_l corr_n2_l corr_l_k {
+        if abs(``input'') > 1 {
+            display as error "Correlation outside [-1,1]: `input'"
+            exit 498
+        }
+    }
+    scalar rmse_cov_divisor = `number_periods' - `covariance_ddof'
+    scalar rmse_n2_active = (`sdn2' > 0)
+    matrix rmse_R = (1, `corr_n1_k', `corr_l_k', `corr_n2_k'*rmse_n2_active \ ///
+        `corr_n1_k', 1, `corr_n1_l', `corr_n1_n2'*rmse_n2_active \ ///
+        `corr_l_k', `corr_n1_l', 1, `corr_n2_l'*rmse_n2_active \ ///
+        `corr_n2_k'*rmse_n2_active, `corr_n1_n2'*rmse_n2_active, ///
+        `corr_n2_l'*rmse_n2_active, rmse_n2_active)
+    matrix symeigen rmse_evec rmse_eval = rmse_R
+    if rmse_eval[1,4] < -1e-10 {
+        display as error "Input correlations do not define a positive semidefinite covariance"
+        exit 498
+    }
+    matrix rmse_R_included = rmse_R[1..3,1..3]
+    matrix symeigen rmse_evec rmse_eval = rmse_R_included
+    if rmse_eval[1,3] <= 1e-10 {
+        display as error "Included-input covariance is singular or numerically ill-conditioned"
+        exit 498
+    }
+
 //gammas 
 scalar gamma_1 = 0.05
 scalar gamma_2 = 0.05
@@ -33,25 +82,25 @@ scalar gamma_2 = 0.05
 //------------------------------
 // 1) Covariances
 //------------------------------
-scalar cov_N1_K = `corr_N1_K' * `sdK' * `sdn1'
-scalar cov_N1_N2 = `corr_N1_N2'  * `sdn1' * `sdn2'
-scalar cov_K_N2 = `corr_N2_K'  * `sdK' * `sdn2'
-scalar cov_L_K    = `corr_L_K'   * `sdL'  * `sdK'
-scalar cov_L_N1   = `corr_N1_L'  * `sdL'  * `sdn1'
-scalar cov_L_N2   = `corr_N2_L'  * `sdL'  * `sdn2'
+scalar cov_N1_K = `corr_n1_k' * `sdk' * `sdn1'
+scalar cov_N1_N2 = `corr_n1_n2'  * `sdn1' * `sdn2'
+scalar cov_K_N2 = `corr_n2_k'  * `sdk' * `sdn2'
+scalar cov_L_K    = `corr_l_k'   * `sdl'  * `sdk'
+scalar cov_L_N1   = `corr_n1_l'  * `sdl'  * `sdn1'
+scalar cov_L_N2   = `corr_n2_l'  * `sdl'  * `sdn2'
 
 
 
 // variances
-scalar var_K  = (`sdK')^2
+scalar var_K  = (`sdk')^2
 scalar var_N1 = (`sdn1')^2
 scalar var_N2 = (`sdn2')^2
-scalar var_L  = (`sdL')^2
+scalar var_L  = (`sdl')^2
 
 //====================================================
 // Estimator 1: regressing output on {K, L} omitting {N1, N2}
-// Bias = gamma1*(gn1 - b_N1K*gK - b_N1L*gL) + gamma2*(gn2 - b_N2K*gK - b_N2L*gL)
-// where kappas = Var([gK,gL])^{-1} Cov([gK,gL], gN)
+// Bias = gamma1*(gn1 - b_N1K*gk - b_N1L*gl) + gamma2*(gn2 - b_N2K*gk - b_N2L*gl)
+// where kappas = Var([gk,gl])^{-1} Cov([gk,gl], gN)
 //====================================================
 
 // Build Var([K L]) and its inverse
@@ -77,18 +126,18 @@ scalar coef_L_model0 = gamma_1*bKL_N1[2,1] + gamma_2*bKL_N2[2,1]
 
 // Bias term for estimator A (two omitted stocks, now partialling out K and L)
 scalar tfp_bias_NK = ///
-      gamma_1 * ( `gn1' - bKL_N1[1,1]*`gK' - bKL_N1[2,1]*`gL' ) ///
-    + gamma_2 * ( `gn2' - bKL_N2[1,1]*`gK' - bKL_N2[2,1]*`gL' )
+      gamma_1 * ( `gn1' - bKL_N1[1,1]*`gk' - bKL_N1[2,1]*`gl' ) ///
+    + gamma_2 * ( `gn2' - bKL_N2[1,1]*`gk' - bKL_N2[2,1]*`gl' )
 
-scalar g_hat = `gA' + tfp_bias_NK
+scalar g_hat = `ga' + tfp_bias_NK
 
 //====================================================
 // Estimator 2: regressing output on {K, L, N1} omitting {N2}
-// Bias = gamma2*(gn2 - [lambdaK*gK + lambdaN1*gn1 + lambdaL*gL])
-// where lambda = Var([gK gn1 gL])^{-1} Cov([gK gn1 gL], gn2) w
+// Bias = gamma2*(gn2 - [lambdaK*gk + lambdaN1*gn1 + lambdaL*gl])
+// where lambda = Var([gk gn1 gl])^{-1} Cov([gk gn1 gl], gn2) w
 //====================================================
 
-// Build E([K N1 L]'[K N1 L])^-1
+// Build Var([K N1 L]) and its inverse
 matrix VKN1L = ( var_K    , cov_N1_K , cov_L_K  \ ///
                  cov_N1_K , var_N1   , cov_L_N1 \ ///
                  cov_L_K  , cov_L_N1 , var_L    )
@@ -110,8 +159,8 @@ scalar coef_L_model1  = gamma_2*lambda[3,1]
 
 
 // Bias term for estimator 2
-scalar tfp_bias_1K = gamma_2 * ( `gn2' - lambda[1,1]*`gK' - lambda[2,1]*`gn1' -  lambda[3,1]*`gL' )
-scalar g_tilde = `gA' + tfp_bias_1K
+scalar tfp_bias_1K = gamma_2 * ( `gn2' - lambda[1,1]*`gk' - lambda[2,1]*`gn1' -  lambda[3,1]*`gl' )
+scalar g_tilde = `ga' + tfp_bias_1K
 
 
 //create outputs
@@ -120,9 +169,45 @@ scalar TFP_square_bias_NK = sqrt(tfp_bias_NK^2)
 scalar abs_difference_TFP = TFP_square_bias_NK-TFP_square_bias_1K
 
 
-//repeat for RMSE
-scalar var_no_NK = (`sdA'^2 + gamma_1 ^2 * `sdn1'^2 + gamma_2 ^2 * `sdn2'^2 + 2*gamma_1*gamma_2*cov_N1_N2) / `number_periods'
-scalar var_1_NK = (`sdA'^2 + gamma_2 ^2 * `sdn1'^2  ) / `number_periods'
+// Conditional error variances: residualize omitted inputs on INCLUDED inputs.
+// Model 0: X={K,L}, omitted inputs={N1,N2}.
+matrix V_N = ( var_N1, cov_N1_N2 \ ///
+               cov_N1_N2, var_N2 )
+matrix C_KL_N = ( cov_N1_K, cov_K_N2 \ ///
+                  cov_L_N1, cov_L_N2 )
+matrix gamma_N = ( gamma_1 \ gamma_2 )
+matrix V_N_resid = V_N - C_KL_N' * iVKL * C_KL_N
+matrix omitted_var0 = gamma_N' * V_N_resid * gamma_N
+scalar rmse_tau0 = `sda'^2 + omitted_var0[1,1]
+
+// Model 1: X={K,N1,L}, omitted input=N2 (not N1).
+matrix projected_var_N2 = cKN1L_N2' * iVKN1L * cKN1L_N2
+scalar residual_var_N2 = var_N2 - projected_var_N2[1,1]
+scalar rmse_tau1 = `sda'^2 + gamma_2^2 * residual_var_N2
+
+// Intercept factors [(Z'Z)^(-1)]_11 = 1/n + mu'V^(-1)mu/(n-ddof).
+// Keep the means in exactly the same order as the corresponding covariance.
+matrix rmse_mu0 = ( `gk' \ `gl' )
+matrix rmse_mu1 = ( `gk' \ `gn1' \ `gl' )
+matrix rmse_D0 = rmse_mu0' * iVKL * rmse_mu0
+matrix rmse_D1 = rmse_mu1' * iVKN1L * rmse_mu1
+scalar rmse_factor0 = 1/`number_periods' + rmse_D0[1,1]/rmse_cov_divisor
+scalar rmse_factor1 = 1/`number_periods' + rmse_D1[1,1]/rmse_cov_divisor
+
+// Reject material negative/nonfinite variances; truncate only roundoff noise.
+scalar rmse_var_scale = `sda'^2 + gamma_1^2*var_N1 + gamma_2^2*var_N2
+if missing(rmse_tau0, rmse_tau1, rmse_factor0, rmse_factor1) | ///
+    rmse_tau0 < -1e-10*rmse_var_scale | rmse_tau1 < -1e-10*rmse_var_scale | ///
+    rmse_factor0 <= 0 | rmse_factor1 <= 0 {
+    display as error "Invalid conditional error variance or intercept factor"
+    exit 498
+}
+scalar rmse_tau0 = max(0, rmse_tau0)
+scalar rmse_tau1 = max(0, rmse_tau1)
+scalar var_no_NK = rmse_tau0 * rmse_factor0
+scalar var_1_NK = rmse_tau1 * rmse_factor1
+
+// Historical MSE_* names are retained for compatibility; these are ROOT MSEs.
 scalar MSE_NK = sqrt(var_no_NK + tfp_bias_NK^2)
 scalar MSE_1K = sqrt(var_1_NK + tfp_bias_1K^2)
 scalar MSE_difference = MSE_NK - MSE_1K
@@ -133,9 +218,15 @@ return scalar abs_difference_TFP_out = abs_difference_TFP
 return scalar MSE_difference_out = scalar(MSE_difference)
 return scalar MSE_NK_out = scalar(MSE_NK)
 return scalar MSE_1K_out = scalar(MSE_1K)
-return scalar reduction_share = scalar((MSE_NK-MSE_1K)/MSE_NK)
+return scalar reduction_share = (scalar(MSE_NK)-scalar(MSE_1K))/scalar(MSE_NK)
 return scalar g_hat_out   = scalar(g_hat)
 return scalar g_tilde_out = scalar(g_tilde)
+
+// Conditional RMSE diagnostics; existing return names remain unchanged.
+return scalar tau0_out = scalar(rmse_tau0)
+return scalar tau1_out = scalar(rmse_tau1)
+return scalar intercept_factor0_out = scalar(rmse_factor0)
+return scalar intercept_factor1_out = scalar(rmse_factor1)
 
 //new updates
 return scalar bias0_out = scalar(tfp_bias_NK)
@@ -153,18 +244,23 @@ return scalar coef_N1_model1_out = scalar(coef_N1_model1)
  end
  
  
-gen bias_reduction = .
-gen RMSE_reduction = .
-gen RMSE_baseline = .
-gen RMSE_baseline_NK = .
-gen RMSE_reduction_share = .
-gen g_A_bar = .
-gen g_hat_A = .
-gen g_tilde_A = .
-gen bias0 = .
-gen bias1 = .
-gen var0 = .
-gen var1 = .
+gen int rmse_rc = .
+gen double tau0 = .
+gen double tau1 = .
+gen double intercept_factor0 = .
+gen double intercept_factor1 = .
+gen double bias_reduction = .
+gen double RMSE_reduction = .
+gen double RMSE_baseline = .
+gen double RMSE_baseline_NK = .
+gen double RMSE_reduction_share = .
+gen double g_A_bar = .
+gen double g_hat_A = .
+gen double g_tilde_A = .
+gen double bias0 = .
+gen double bias1 = .
+gen double var0 = .
+gen double var1 = .
 gen double coef_K_model0 = .
 gen double coef_L_model0 = .
 gen double coef_K_model1 = .
@@ -176,6 +272,10 @@ label variable coef_L_model0  "Natural-capital component of L coefficient: model
 label variable coef_K_model1  "Natural-capital component of K coefficient: model 1"
 label variable coef_L_model1  "Natural-capital component of L coefficient: model 1"
 label variable coef_N1_model1 "Coefficient on N1: model 1"
+
+* Conditional design settings: use ddof=0 only for 1/n-normalized covariances.
+local rmse_periods = 25
+local rmse_ddof = 1
 
 count
 quietly {
@@ -202,9 +302,20 @@ quietly {
 		
 		
         * Run simulation
-		solve_bias_variance, number_periods(25) corr_N1_K(`corr_N1_K_in') corr_N1_N2(`corr_N1_N2_in') corr_N2_K(`corr_N2_K_in')  gn1(`g1_in')  gn2(`g2_in')  gK(`gk_in') sdK(`sdK_in') sdA(`sdA_in') sdn1(`sd1_in') sdn2(`sd2_in') gA(`ga_in')  gL(`gl_in') sdL(`sdL_in') corr_N1_L(`corr_L_N1_in')  corr_N2_L(`corr_L_N2_in')  corr_L_K(`corr_L_K_in') 
+		capture noisily solve_bias_variance, number_periods(`rmse_periods') covariance_ddof(`rmse_ddof') corr_n1_k(`corr_N1_K_in') corr_n1_n2(`corr_N1_N2_in') corr_n2_k(`corr_N2_K_in')  gn1(`g1_in')  gn2(`g2_in')  gk(`gk_in') sdk(`sdK_in') sda(`sdA_in') sdn1(`sd1_in') sdn2(`sd2_in') ga(`ga_in')  gl(`gl_in') sdl(`sdL_in') corr_n1_l(`corr_L_N1_in')  corr_n2_l(`corr_L_N2_in')  corr_l_k(`corr_L_K_in') 
 			
 
+
+        local rmse_call_rc = _rc
+        replace rmse_rc = `rmse_call_rc' in `i'
+        if `rmse_call_rc' != 0 {
+            noisily display as error "Skipping observation `i': invalid RMSE calibration (rc=`rmse_call_rc')"
+            continue
+        }
+        replace tau0 = r(tau0_out) in `i'
+        replace tau1 = r(tau1_out) in `i'
+        replace intercept_factor0 = r(intercept_factor0_out) in `i'
+        replace intercept_factor1 = r(intercept_factor1_out) in `i'
 
         * Store returned results
         replace bias_reduction = r(abs_difference_TFP_out) in `i'
@@ -226,6 +337,8 @@ quietly {
 		replace coef_N1_model1 = r(coef_N1_model1_out) in `i'
     }
 }
+
+tabulate rmse_rc, missing
 
 //summary stats
 sum RMSE_reduction, d

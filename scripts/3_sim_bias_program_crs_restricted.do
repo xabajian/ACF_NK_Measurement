@@ -1,3 +1,5 @@
+
+*
 *===============================================================================
 * Country-level bias and RMSE under restricted OLS (constant returns to scale)
 *
@@ -32,34 +34,81 @@ use "$processed/CWON_data.dta", clear
 capture program drop solve_bias_variance_crs
 program define solve_bias_variance_crs, rclass
     version 12.1
-    syntax [, number_periods(integer 25)                         ///
-        corr_N1_K(real 0.01) corr_N1_N2(real 0.01)              ///
-        corr_N2_K(real 0.01) corr_N1_L(real 0.01)               ///
-        corr_N2_L(real 0.01) corr_L_K(real 0.01)                ///
-        gn1(real 0.01) gn2(real 0.01) gK(real 0.01)             ///
-        gL(real 0.01) gA(real 0.01)                             ///
-        sdn1(real 0.01) sdn2(real 0.01) sdK(real 0.01)          ///
-        sdL(real 0.01) sdA(real 0.01)                           ///
-        betaK(real 0.30) betaL(real 0.60)                       ///
+    syntax [, number_periods(integer 25) covariance_ddof(integer 1)                         ///
+        corr_n1_k(real 0.01) corr_n1_n2(real 0.01)              ///
+        corr_n2_k(real 0.01) corr_n1_l(real 0.01)               ///
+        corr_n2_l(real 0.01) corr_l_k(real 0.01)                ///
+        gn1(real 0.01) gn2(real 0.01) gk(real 0.01)             ///
+        gl(real 0.01) ga(real 0.01)                             ///
+        sdn1(real 0.01) sdn2(real 0.01) sdk(real 0.01)          ///
+        sdl(real 0.01) sda(real 0.01)                           ///
+        betak(real 0.30) betal(real 0.60)                       ///
         gamma1(real 0.05) gamma2(real 0.05) ]
 
-    if `number_periods' <= 0 {
-        display as error "number_periods() must be positive"
+
+    * Validate the moment calibration before using invsym(), which can otherwise
+    * silently return a generalized inverse for a singular design covariance.
+    if `number_periods' < 4 | `number_periods' >= . {
+        display as error "number_periods() must be at least 4"
+        exit 198
+    }
+    if !inlist(`covariance_ddof', 0, 1) {
+        display as error "covariance_ddof() must be 0 or 1"
+        exit 198
+    }
+    foreach input in corr_n1_k corr_n1_n2 corr_n2_k corr_n1_l ///
+        corr_n2_l corr_l_k gn1 gn2 gk gl sdn1 sdn2 sdk sdl sda {
+        if missing(``input'') {
+            display as error "Missing calibration input: `input'"
+            exit 498
+        }
+    }
+    if `sdk' <= 0 | `sdl' <= 0 | `sdn1' <= 0 | `sdn2' < 0 | `sda' < 0 {
+        display as error "Included-input SDs must be positive; other SDs nonnegative"
+        exit 498
+    }
+    foreach input in corr_n1_k corr_n1_n2 corr_n2_k corr_n1_l corr_n2_l corr_l_k {
+        if abs(``input'') > 1 {
+            display as error "Correlation outside [-1,1]: `input'"
+            exit 498
+        }
+    }
+    scalar rmse_cov_divisor = `number_periods' - `covariance_ddof'
+    scalar rmse_n2_active = (`sdn2' > 0)
+    matrix rmse_R = (1, `corr_n1_k', `corr_l_k', `corr_n2_k'*rmse_n2_active \ ///
+        `corr_n1_k', 1, `corr_n1_l', `corr_n1_n2'*rmse_n2_active \ ///
+        `corr_l_k', `corr_n1_l', 1, `corr_n2_l'*rmse_n2_active \ ///
+        `corr_n2_k'*rmse_n2_active, `corr_n1_n2'*rmse_n2_active, ///
+        `corr_n2_l'*rmse_n2_active, rmse_n2_active)
+    matrix symeigen rmse_evec rmse_eval = rmse_R
+    if rmse_eval[1,4] < -1e-10 {
+        display as error "Input correlations do not define a positive semidefinite covariance"
+        exit 498
+    }
+    matrix rmse_R_included = rmse_R[1..3,1..3]
+    matrix symeigen rmse_evec rmse_eval = rmse_R_included
+    if rmse_eval[1,3] <= 1e-10 {
+        display as error "Included-input covariance is singular or numerically ill-conditioned"
+        exit 498
+    }
+
+    if missing(`betak', `betal', `gamma1', `gamma2') {
+        display as error "Structural coefficients must be finite"
         exit 198
     }
 
     *--------------------------------------------------------------------------
     * Country-level second moments
     *--------------------------------------------------------------------------
-    scalar cov_N1_K  = `corr_N1_K'  * `sdK'  * `sdn1'
-    scalar cov_N1_N2 = `corr_N1_N2' * `sdn1' * `sdn2'
-    scalar cov_K_N2  = `corr_N2_K'  * `sdK'  * `sdn2'
-    scalar cov_L_K   = `corr_L_K'   * `sdL'  * `sdK'
-    scalar cov_L_N1  = `corr_N1_L'  * `sdL'  * `sdn1'
-    scalar cov_L_N2  = `corr_N2_L'  * `sdL'  * `sdn2'
+    scalar cov_N1_K  = `corr_n1_k'  * `sdk'  * `sdn1'
+    scalar cov_N1_N2 = `corr_n1_n2' * `sdn1' * `sdn2'
+    scalar cov_K_N2  = `corr_n2_k'  * `sdk'  * `sdn2'
+    scalar cov_L_K   = `corr_l_k'   * `sdl'  * `sdk'
+    scalar cov_L_N1  = `corr_n1_l'  * `sdl'  * `sdn1'
+    scalar cov_L_N2  = `corr_n2_l'  * `sdl'  * `sdn2'
 
-    scalar var_K  = (`sdK')^2
-    scalar var_L  = (`sdL')^2
+    scalar var_K  = (`sdk')^2
+    scalar var_L  = (`sdl')^2
     scalar var_N1 = (`sdn1')^2
     scalar var_N2 = (`sdn2')^2
 
@@ -78,7 +127,7 @@ program define solve_bias_variance_crs, rclass
     matrix C0 = ( cov_N1_K, cov_K_N2 \ ///
                   cov_L_N1, cov_L_N2 )
 
-    matrix beta0  = ( `betaK' \ `betaL' )
+    matrix beta0  = ( `betak' \ `betal' )
     matrix gammaN = ( `gamma1' \ `gamma2' )
     matrix one0   = ( 1 \ 1 )
 
@@ -94,18 +143,22 @@ program define solve_bias_variance_crs, rclass
     matrix d0 = beta0 - b0_r
 
     * Bias of average measured productivity relative to average true A.
-    scalar s_bias0_crs = d0[1,1]*`gK' + d0[2,1]*`gL' + ///
+    scalar s_bias0_crs = d0[1,1]*`gk' + d0[2,1]*`gl' + ///
                          `gamma1'*`gn1' + `gamma2'*`gn2'
 
-    * Residual variance: Var(A + d0'X0 + gamma'Z0).
-    matrix quad0  = d0'*V0*d0
-    matrix cross0 = d0'*C0*gammaN
-    matrix omit0  = gammaN'*VN*gammaN
-    scalar residual_var0 = (`sdA')^2 + quad0[1,1] + ///
-                           2*cross0[1,1] + omit0[1,1]
-    scalar s_mean_var0_crs = max(0, residual_var0)/`number_periods'
-    scalar s_RMSE_model0_crs = ///
-        sqrt(s_mean_var0_crs + s_bias0_crs^2)
+    * Conditional stochastic variance uses the unrestricted projection error.
+    * A false CRS restriction adds deterministic fit error at fixed X; it enters
+    * the bias above, not the stochastic error variance below.
+    matrix rmse_Omega0 = VN - C0'*iV0*C0
+    matrix rmse_omit0 = gammaN'*rmse_Omega0*gammaN
+    scalar rmse_tau0 = `sda'^2 + rmse_omit0[1,1]
+
+    * Covariance kernel for restricted slopes, q'b=1:
+    * H = V^(-1) - V^(-1)q(q'V^(-1)q)^(-1)q'V^(-1).
+    matrix rmse_H0 = iV0 - (1/denom0)*iV0*one0*one0'*iV0
+    matrix rmse_mu0 = ( `gk' \ `gl' )
+    matrix rmse_D0 = rmse_mu0'*rmse_H0*rmse_mu0
+    scalar rmse_factor0 = 1/`number_periods' + rmse_D0[1,1]/rmse_cov_divisor
 
     *=========================================================================
     * Model 1: included inputs X1={K,N1,L}; omitted input Z1={N2}
@@ -117,7 +170,7 @@ program define solve_bias_variance_crs, rclass
     matrix iV1 = invsym(V1)
 
     matrix C1 = ( cov_K_N2 \ cov_N1_N2 \ cov_L_N2 )
-    matrix beta1 = ( `betaK' \ `gamma1' \ `betaL' )
+    matrix beta1 = ( `betak' \ `gamma1' \ `betal' )
     matrix one1  = ( 1 \ 1 \ 1 )
 
     * Unrestricted and restricted population OLS coefficient estimands.
@@ -131,18 +184,32 @@ program define solve_bias_variance_crs, rclass
     * d1 is the included-input coefficient error relative to the DGP.
     matrix d1 = beta1 - b1_r
 
-    scalar s_bias1_crs = d1[1,1]*`gK' + d1[2,1]*`gn1' + ///
-                         d1[3,1]*`gL' + `gamma2'*`gn2'
+    scalar s_bias1_crs = d1[1,1]*`gk' + d1[2,1]*`gn1' + ///
+                         d1[3,1]*`gl' + `gamma2'*`gn2'
 
-    * Residual variance: Var(A + d1'X1 + gamma_2*N2).
-    matrix quad1  = d1'*V1*d1
-    matrix cross1 = d1'*C1
-    scalar residual_var1 = (`sdA')^2 + quad1[1,1] + ///
-                           2*`gamma2'*cross1[1,1] + ///
-                           (`gamma2')^2*var_N2
-    scalar s_mean_var1_crs = max(0, residual_var1)/`number_periods'
-    scalar s_RMSE_model1_crs = ///
-        sqrt(s_mean_var1_crs + s_bias1_crs^2)
+    * Conditional error variance: only unexplained N2 growth and TFP are random.
+    matrix rmse_projected1 = C1'*iV1*C1
+    scalar rmse_tau1 = `sda'^2 + (`gamma2')^2*(var_N2-rmse_projected1[1,1])
+
+    * Account for the CRS constraint when propagating slope uncertainty.
+    matrix rmse_H1 = iV1 - (1/denom1)*iV1*one1*one1'*iV1
+    matrix rmse_mu1 = ( `gk' \ `gn1' \ `gl' )
+    matrix rmse_D1 = rmse_mu1'*rmse_H1*rmse_mu1
+    scalar rmse_factor1 = 1/`number_periods' + rmse_D1[1,1]/rmse_cov_divisor
+
+    scalar rmse_var_scale = `sda'^2 + (`gamma1')^2*var_N1 + (`gamma2')^2*var_N2
+    if missing(rmse_tau0, rmse_tau1, rmse_factor0, rmse_factor1) | ///
+        rmse_tau0 < -1e-10*rmse_var_scale | rmse_tau1 < -1e-10*rmse_var_scale | ///
+        rmse_factor0 <= 0 | rmse_factor1 <= 0 {
+        display as error "Invalid conditional error variance or intercept factor"
+        exit 498
+    }
+    scalar rmse_tau0 = max(0, rmse_tau0)
+    scalar rmse_tau1 = max(0, rmse_tau1)
+    scalar s_mean_var0_crs = rmse_tau0 * rmse_factor0
+    scalar s_mean_var1_crs = rmse_tau1 * rmse_factor1
+    scalar s_RMSE_model0_crs = sqrt(s_mean_var0_crs + s_bias0_crs^2)
+    scalar s_RMSE_model1_crs = sqrt(s_mean_var1_crs + s_bias1_crs^2)
 
     scalar s_RMSE_reduction_crs = ///
         s_RMSE_model0_crs - s_RMSE_model1_crs
@@ -156,7 +223,7 @@ program define solve_bias_variance_crs, rclass
     return scalar coef_N1_model1_crs = b1_r[2,1]
     return scalar coef_L_model1_crs  = b1_r[3,1]
 
-    * Return model-level bias, variance of the mean, and RMSE.
+    * Return conditional intercept bias, variance, and RMSE.
     return scalar bias0_crs = scalar(s_bias0_crs)
     return scalar bias1_crs = scalar(s_bias1_crs)
     return scalar var0_crs = scalar(s_mean_var0_crs)
@@ -166,8 +233,13 @@ program define solve_bias_variance_crs, rclass
     return scalar RMSE_reduction_crs = scalar(s_RMSE_reduction_crs)
     return scalar RMSE_reduction_share_crs = ///
         scalar(s_RMSE_reduction_share_crs)
-    return scalar g_hat_A_crs = `gA' + scalar(s_bias0_crs)
-    return scalar g_tilde_A_crs = `gA' + scalar(s_bias1_crs)
+    * Diagnostics: tau is the error variance; factor is the intercept multiplier.
+    return scalar tau0_crs = scalar(rmse_tau0)
+    return scalar tau1_crs = scalar(rmse_tau1)
+    return scalar intercept_factor0_crs = scalar(rmse_factor0)
+    return scalar intercept_factor1_crs = scalar(rmse_factor1)
+    return scalar g_hat_A_crs = `ga' + scalar(s_bias0_crs)
+    return scalar g_tilde_A_crs = `ga' + scalar(s_bias1_crs)
 end
 
 
@@ -180,6 +252,11 @@ gen double coef_K_model1_crs  = .
 gen double coef_N1_model1_crs = .
 gen double coef_L_model1_crs  = .
 
+gen int rmse_rc = .
+gen double tau0_crs = .
+gen double tau1_crs = .
+gen double intercept_factor0_crs = .
+gen double intercept_factor1_crs = .
 gen double bias0_crs = .
 gen double bias1_crs = .
 gen double var0_crs = .
@@ -200,6 +277,10 @@ label variable RMSE_model0_crs    "RMSE: restricted model 0"
 label variable RMSE_model1_crs    "RMSE: restricted model 1"
 label variable RMSE_reduction_crs "RMSE model 0 minus RMSE model 1"
 
+
+* Conditional design settings: use ddof=0 only for 1/n-normalized covariances.
+local rmse_periods = 25
+local rmse_ddof = 1
 
 count
 local N = r(N)
@@ -223,18 +304,29 @@ quietly {
         local sdL_in = sdL[`i']
         local sdA_in = sdA[`i']
 
-        solve_bias_variance_crs, number_periods(25)             ///
-            corr_N1_K(`corr_N1_K_in')                           ///
-            corr_N1_N2(`corr_N1_N2_in')                         ///
-            corr_N2_K(`corr_N2_K_in')                           ///
-            corr_N1_L(`corr_L_N1_in')                           ///
-            corr_N2_L(`corr_L_N2_in')                           ///
-            corr_L_K(`corr_L_K_in')                             ///
+        capture noisily solve_bias_variance_crs, number_periods(`rmse_periods') covariance_ddof(`rmse_ddof')             ///
+            corr_n1_k(`corr_N1_K_in')                           ///
+            corr_n1_n2(`corr_N1_N2_in')                         ///
+            corr_n2_k(`corr_N2_K_in')                           ///
+            corr_n1_l(`corr_L_N1_in')                           ///
+            corr_n2_l(`corr_L_N2_in')                           ///
+            corr_l_k(`corr_L_K_in')                             ///
             gn1(`g1_in') gn2(`g2_in')                           ///
-            gK(`gk_in') gL(`gl_in') gA(`ga_in')                 ///
+            gk(`gk_in') gl(`gl_in') ga(`ga_in')                 ///
             sdn1(`sd1_in') sdn2(`sd2_in')                       ///
-            sdK(`sdK_in') sdL(`sdL_in') sdA(`sdA_in')           ///
-            betaK(0.30) betaL(0.60) gamma1(0.05) gamma2(0.05)
+            sdk(`sdK_in') sdl(`sdL_in') sda(`sdA_in')           ///
+            betak(0.30) betal(0.60) gamma1(0.05) gamma2(0.05)
+
+        local rmse_call_rc = _rc
+        replace rmse_rc = `rmse_call_rc' in `i'
+        if `rmse_call_rc' != 0 {
+            noisily display as error "Skipping observation `i': invalid RMSE calibration (rc=`rmse_call_rc')"
+            continue
+        }
+        replace tau0_crs = r(tau0_crs) in `i'
+        replace tau1_crs = r(tau1_crs) in `i'
+        replace intercept_factor0_crs = r(intercept_factor0_crs) in `i'
+        replace intercept_factor1_crs = r(intercept_factor1_crs) in `i'
 
         replace coef_K_model0_crs  = r(coef_K_model0_crs) in `i'
         replace coef_L_model0_crs  = r(coef_L_model0_crs) in `i'
@@ -256,6 +348,8 @@ quietly {
     }
 }
 
+
+tabulate rmse_rc, missing
 
 * Verify the adding-up restrictions numerically.
 assert abs(coef_K_model0_crs + coef_L_model0_crs - 1) < 1e-8 ///
