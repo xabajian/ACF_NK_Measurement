@@ -320,7 +320,7 @@ gen RMSE_reduction_topcode = min(RMSE_reduction, r(p90))
 replace RMSE_reduction_topcode = . if RMSE_reduction==.
 
 //save out
-save "$sim_dir/bias_rmse.dta", replace
+save "$sim_dir/bias_rmse_unconditional.dta", replace
 drop country_string
 decode country_byte, gen(country_string)
 
@@ -344,7 +344,7 @@ sum g_A,d
 scalar mean_GA = r(mean)
 
 display median_reduction/ mean_GA
-export delimited "$sim_dir/bias_rmse.csv", replace
+export delimited "$sim_dir/bias_rmse_unconditional.csv", replace
 
 
 

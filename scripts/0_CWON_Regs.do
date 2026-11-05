@@ -1330,7 +1330,7 @@ local keepvars ///
     dlog_b_e dlog_hp_gwh
 
 *(1)
-reg d.log_tfp dlog* if year>1995, vce(robust)
+reg d.log_ag_TFP dlog* if year>1995, vce(robust)
 test `keepvars'
 estadd scalar p_joint = r(p)
 boottest `keepvars',  nograph seed(1234)  reps(999)

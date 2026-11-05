@@ -238,8 +238,7 @@ foreach var of local NR_quantities {
 	//new
 	replace DQ_`var' = 1 if (L.`var' == . | L.`var' == 0 | `var' == 0 | `var' == .)
     // topcode
-    replace DQ_`var' = 2 if DQ_`var' > 2
-	
+	replace DQ_`var' = 2 if DQ_`var' > 2 & !missing(DQ_`var')
 	
 }
 

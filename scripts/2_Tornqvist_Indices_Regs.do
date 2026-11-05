@@ -538,6 +538,9 @@ bysort country_byte: egen corr_N2_L      = corr(g_n2 g_L)
 bysort country_byte: egen corr_L_K     = corr(g_L g_k)
 
 
+sum g_n1 g_n2 g_k g_L
+
+
 collapse (mean) ///
     corr_N1_K corr_N1_N2 corr_N2_L corr_N1_L  corr_L_K corr_N2_K ///
     g_L g_n1 g_k g_n2 dlog_tfp g_A= dlog_tfp (sd) sdL = g_L sdn1 = g_n1 sdK = g_k sdn2 = g_n2 sdA = dlog_tfp , by(country_byte)
@@ -548,9 +551,10 @@ sum corr_N1_K corr_N1_N2 corr_N2_L corr_N1_L corr_N2_K ///
 // scatter g_n1 g_n1_CWON
 
 count
-keep if corr_N1_N2 != .
-keep if g_k > 0 & g_k != .
+gen byte complete = !missing(g_n1, g_n2, g_k, g_L, dlog_tfp, corr_N1_K, corr_N1_N2, corr_N2_L, corr_N1_L , corr_L_K, corr_N2_K)
+keep if complete
 count
+
 
 rename corr_N1_K  corr_N1_K_out
 rename corr_N1_N2 corr_N1_N2_out
