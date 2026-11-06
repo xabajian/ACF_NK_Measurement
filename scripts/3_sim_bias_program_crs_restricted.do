@@ -280,7 +280,7 @@ label variable RMSE_reduction_crs "RMSE model 0 minus RMSE model 1"
 
 * Conditional design settings: use ddof=0 only for 1/n-normalized covariances.
 local rmse_periods = 25
-local rmse_ddof = 1
+local rmse_ddof = 0
 
 count
 local N = r(N)

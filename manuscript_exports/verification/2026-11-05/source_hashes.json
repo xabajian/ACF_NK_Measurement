@@ -1,0 +1,12 @@
+{
+  "scripts/3_sim_bias_program.do": "b5895893eadf47282a35df4927b638a0840d3f0a3201daf9667930d2b51bde02",
+  "scripts/3_sim_bias_program_crs_restricted.do": "7fad19403a6b17c35c7ee4ad77c9be693906622d005158ba612af4418c301743",
+  "scripts/3_sim_bias_program_unconditional.do": "031ccf79ab5d72e1508a7823eaa9e07461daec804df8adc7454a7d259bd5c84e",
+  "scripts/6_appendix_simBias_elasticity_sensitivity.do": "93e9ae37c817545d866f4685b1f6549af88eeaef76f2ecf631239724743cb40d",
+  "scripts/7_appendix_alternative_sample_periods.do": "d616460f8abbe81d7b103bc996b9e81882f09dbc72a5fc1fd897923c8b1f01cc",
+  "simulations/bias_rmse.dta": "0674b25d2bcdf89b3ddc83d9def91269f5ee46bc125511ca9b19f52a15b0ec20",
+  "simulations/bias_rmse_unconditional.dta": "f3ef6982cdff767e616c3178af9d32577ec98909c64a1a5dcb57832006a0317f",
+  "simulations/CWON_data_early.dta": "44858b3f45a3f4f6a1231140c94927b9fd02d6dbef03a2ff2492954ea934b386",
+  "simulations/CWON_data_late.dta": "42c829ba600cb761c8366d42534b7d09ccbaff780495f37bef259594748094f0",
+  "simulations/MC_results_bias.dta": "22ba9391441aa5228536a929e24cc24c7174401f832da2291f68335d13bcafab"
+}

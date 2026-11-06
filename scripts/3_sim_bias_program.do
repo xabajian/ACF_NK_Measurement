@@ -241,8 +241,8 @@ gen double var0 = .
 gen double var1 = .
 
 * Conditional design settings: use ddof=0 only for 1/n-normalized covariances.
-local rmse_periods = 50
-local rmse_ddof = 1
+local rmse_periods = 25
+local rmse_ddof = 0
 
 count
 quietly {

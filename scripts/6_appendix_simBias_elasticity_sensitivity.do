@@ -19,8 +19,15 @@ use "$processed/CWON_data.dta", clear
 keep if sdA!=.
 sort country_byte
 gen seed_in = _n
-scalar seed_mc_trial = ceil(100*runiform())
-display seed_mc_trial
+
+* Number of eligible country observations is determined by the data.
+* Assumes one observation per country, as in the original country-level file.
+local n_countries = _N
+if `n_countries' == 0 {
+    display as error "No countries remain after filtering for sdA."
+    exit 2000
+}
+display as text "Number of eligible countries: `n_countries'"
 
 
 program define solve_bias_variance, rclass 
@@ -32,9 +39,13 @@ syntax [,  number_periods(integer 25) covariance_ddof(integer 1) gamma1(real 0.0
 		
 
 
-    * Original sampling: 100 countries remain after dropping missing sdA.
+    * Sample uniformly from all eligible country observations, regardless of count.
     if "`draw'" != "" {
-        scalar seed_mc_trial = ceil(100*runiform())
+        if _N == 0 {
+            display as error "No eligible countries are available for sampling."
+            exit 2000
+        }
+        scalar seed_mc_trial = floor(_N*runiform()) + 1
         local draw_row = scalar(seed_mc_trial)
         local corr_n1_k = corr_N1_K_out[`draw_row']
         local corr_n1_n2 = corr_N1_N2_out[`draw_row']

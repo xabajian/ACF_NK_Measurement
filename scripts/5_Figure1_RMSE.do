@@ -33,8 +33,8 @@ merge 1:1 ISO3 using "$map_dir/country_GIS_db_noAntarctica.dta", gen(merge)
 replace RMSE_reduction = -RMSE_reduction*10000
 
 spmap RMSE_reduction using "$map_dir/country_GIS_coord_noAntarctica.dta", ///
-    id(_ID) clmethod(custom) clbreaks(-500 -100 -75 -50 -25 -5 0 5 25 50 75) ///
-    fcolor(green green*0.5 green*0.4 green*0.3 green*0.2 green*0.1 blue*0.1 blue*0.2 blue*0.3 blue*0.4) ///
+    id(_ID) clmethod(custom) clbreaks(-500 -100 -75 -50 -25 -5 0 5 25 50) ///
+    fcolor(green green*0.5 green*0.4 green*0.3 green*0.2 green*0.1 blue*0.1 blue*0.2 blue*0.3) ///
     ndfcolor(gs15) ndocolor(black) ndsize(vvthin) ///
     legend(on size(small)) ///
     legtitle("Change in RMSE" "(basis points)") ///
@@ -74,7 +74,7 @@ twoway ///
         color(blue%50) lcolor(navy%80) freq width(5) start(-105)), ///
     xline(0, lpattern(dash) lcolor(gray%80)) ///
     xscale(range(-110 5)) ///
-    xlabel(`p90_in' -75 -50 -25 0 25 50 75, nogrid labsize(small)) ///
+    xlabel(`p90_in' -75 -50 -25 0 25 50, nogrid labsize(small)) ///
     ylabel(0(10)50, nogrid labsize(small) axis(1)) ///
     ytitle("Number of Countries") ///
     xtitle("Change in RMSE (basis points)") ///

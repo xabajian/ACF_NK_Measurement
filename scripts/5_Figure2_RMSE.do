@@ -126,7 +126,7 @@ twoway (lfit g_A_bar g_A_bar , color(grey%20)   lpattern(dash)) ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
   xtitle("Average g{sub:A} from the PWT", size(small))  ///
-    ytitle("Estimated γ̃{sub:A} from Model 1", size(small)) ///
+    ytitle("Expected TFP, Model 1", size(small)) ///
     legend(off) ///
     title("{bf:c}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
  saving("$figs/overlay_alt3.gph", replace) 
@@ -137,7 +137,7 @@ twoway (lfit g_A_bar g_A_bar , color(grey%20)   lpattern(dash)) ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
   xtitle("Average g{sub:A} from the PWT", size(small))  ///
-    ytitle("Estimated γ̂{sub:A} from Model 2", size(small)) ///
+    ytitle("Expected TFP, Model 2", size(small)) ///
     legend(off) ///
     title("{bf:d}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
  saving("$figs/overlay_alt4.gph", replace) 

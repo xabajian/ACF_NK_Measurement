@@ -1,0 +1,1169 @@
+{
+  "tables": [
+    {
+      "file": "main_table_1.tex",
+      "label": "table:1",
+      "document": "0.main.chat.tex",
+      "kind": "editorial"
+    },
+    {
+      "file": "main_table_2.tex",
+      "label": "table:2",
+      "document": "0.main.chat.tex",
+      "kind": "regression",
+      "source": "tab1.tex",
+      "rows": [
+        {
+          "token": "row0",
+          "key": "dlog_prod_area",
+          "display": "Timber Land",
+          "baseline_b": " 0.165 & 0.168 & 0.071 & 0.074 & -0.004 & 0.025 ",
+          "baseline_se": " (0.049) & (0.046) & (0.048) & (0.046) & (0.053) & (0.104) "
+        },
+        {
+          "token": "row1",
+          "key": "dlog_land",
+          "display": "Agricultural Land",
+          "baseline_b": " 0.029 & 0.045 & 0.032 & 0.038 & 0.042 & 0.043 ",
+          "baseline_se": " (0.019) & (0.019) & (0.019) & (0.018) & (0.018) & (0.017) "
+        },
+        {
+          "token": "row2",
+          "key": "dlog_forest_area_km",
+          "display": "Forest Cover",
+          "baseline_b": " -0.069 & -0.113 & -0.006 & 0.010 & 0.081 & -0.027 ",
+          "baseline_se": " (0.062) & (0.065) & (0.062) & (0.062) & (0.055) & (0.076) "
+        },
+        {
+          "token": "row3",
+          "key": "dlog_mangrove_ha",
+          "display": "Mangroves",
+          "baseline_b": " 0.112 & 0.057 & 0.352 & 0.322 & 0.318 & -0.111 ",
+          "baseline_se": " (0.129) & (0.132) & (0.163) & (0.167) & (0.202) & (0.427) "
+        },
+        {
+          "token": "row4",
+          "key": "dlog_b_e",
+          "display": "Fishery Biomass",
+          "baseline_b": " 0.112 & 0.026 & 0.092 & 0.070 & 0.039 & -0.109 ",
+          "baseline_se": " (0.056) & (0.054) & (0.063) & (0.061) & (0.082) & (0.105) "
+        },
+        {
+          "token": "row5",
+          "key": "dlog_hp_gwh",
+          "display": "Hydropower",
+          "baseline_b": " 0.010 & 0.011 & 0.009 & 0.009 & 0.006 & 0.006 ",
+          "baseline_se": " (0.005) & (0.005) & (0.005) & (0.005) & (0.006) & (0.003) "
+        }
+      ],
+      "stars": false,
+      "stats": {
+        "stat0": {
+          "key": "Wald",
+          "baseline": " 0.001 & 0.001 & 0.018 & 0.018 & 0.090 & 0.045 "
+        },
+        "stat1": {
+          "key": "Bootstrap Wald",
+          "baseline": " 0.000 & 0.000 & 0.008 & 0.010 & -- & 0.062 "
+        },
+        "stat2": {
+          "key": "N",
+          "baseline": " 2,808 & 2,808 & 2,808 & 2,808 & 2,808 & 2,457 "
+        },
+        "stat3": {
+          "key": "Countries",
+          "baseline": " 117 & 117 & 117 & 117 & 117 & 117 "
+        }
+      },
+      "baseline_source_sha256": "2ffcc917e52ad9beec481a9136ac9abefec15ab996a5527378d20fa558d6d227"
+    },
+    {
+      "file": "main_table_3.tex",
+      "label": "table:3",
+      "document": "0.main.chat.tex",
+      "kind": "editorial"
+    },
+    {
+      "file": "si_app_table_covered_countries.tex",
+      "label": "app:table:covered_countries",
+      "document": "0.SI.chat.tex",
+      "kind": "editorial"
+    },
+    {
+      "file": "si_app_tab_renewable_list_regs.tex",
+      "label": "app:tab:renewable_list_regs",
+      "document": "0.SI.chat.tex",
+      "kind": "editorial"
+    },
+    {
+      "file": "si_app_tab_wald.tex",
+      "label": "app:tab:wald",
+      "document": "0.SI.chat.tex",
+      "kind": "wald",
+      "source": "wald_bootstrap_pvalues.tex"
+    },
+    {
+      "file": "si_app_tab_no_land.tex",
+      "label": "app:tab:no_land",
+      "document": "0.SI.chat.tex",
+      "kind": "regression",
+      "source": "tab1_noland.tex",
+      "rows": [
+        {
+          "token": "row0",
+          "key": "dlog_forest_area_km",
+          "display": "Forest Cover",
+          "baseline_b": " 0.068 & 0.027 & 0.047 & 0.067 & 0.086 & -0.013 ",
+          "baseline_se": " (0.061) \n & (0.062) \n & (0.068) \n & (0.075) \n & (0.043) \n & (0.070) "
+        },
+        {
+          "token": "row1",
+          "key": "dlog_mangrove_ha",
+          "display": "Mangroves",
+          "baseline_b": " 0.138 & 0.085 & 0.348 & 0.317 & 0.303 & -0.096 ",
+          "baseline_se": " (0.240) \n & (0.237) \n & (0.298) \n & (0.322) \n & (0.366) \n & (0.428) "
+        },
+        {
+          "token": "row2",
+          "key": "dlog_b_e",
+          "display": "Biomass",
+          "baseline_b": " 0.114 & 0.031 & 0.092 & 0.070 & 0.039 & -0.109 ",
+          "baseline_se": " (0.098) \n & (0.078) \n & (0.107) \n & (0.101) \n & (0.134) \n & (0.107) "
+        },
+        {
+          "token": "row3",
+          "key": "dlog_hp_gwh",
+          "display": "Hydropower",
+          "baseline_b": " 0.011 & 0.011 & 0.009 & 0.009 & 0.006 & 0.006 ",
+          "baseline_se": " (0.004) \n & (0.004) \n & (0.004) \n & (0.004) \n & (0.003) \n & (0.003) "
+        }
+      ],
+      "stars": false,
+      "stats": {
+        "stat0": {
+          "key": "Wald",
+          "baseline": " 0.050 & 0.061 & 0.111 & 0.107 & 0.062 & 0.229 "
+        },
+        "stat1": {
+          "key": "Bootstrap Wald",
+          "baseline": " 0.067 & 0.108 & 0.128 & 0.116 & -- & 0.185 "
+        },
+        "stat2": {
+          "key": "N",
+          "baseline": " 2,808 & 2,808 & 2,808 & 2,808 & 2,808 & 2,457 "
+        }
+      },
+      "baseline_source_sha256": "64709162152d59e530908fd13721a6b06c7f5ee8496907562ab9b91d19c477fa"
+    },
+    {
+      "file": "si_app_table_all_NK.tex",
+      "label": "app:table:all_NK",
+      "document": "0.SI.chat.tex",
+      "kind": "regression",
+      "source": "tab1_appendix_all_NK.tex",
+      "rows": [
+        {
+          "token": "row0",
+          "key": "DQ_prod_area",
+          "display": "Timber Land",
+          "baseline_b": " 0.015 & 0.034 & 0.037 & 0.046 & 0.042 & 0.037 ",
+          "baseline_se": " (0.025) & (0.025) & (0.023) & (0.023) & (0.021) & (0.018) "
+        },
+        {
+          "token": "row1",
+          "key": "DQ_land",
+          "display": "Agricultural Land",
+          "baseline_b": " 0.201 & 0.192 & 0.110 & 0.109 & 0.076 & 0.143 ",
+          "baseline_se": " (0.102) & (0.076) & (0.085) & (0.084) & (0.067) & (0.098) "
+        },
+        {
+          "token": "row2",
+          "key": "DQ_forest_area_km",
+          "display": "Forest Cover",
+          "baseline_b": " -0.107 & -0.171 & -0.178 & -0.206 & -0.081 & -0.084 ",
+          "baseline_se": " (0.105) & (0.091) & (0.095) & (0.095) & (0.090) & (0.104) "
+        },
+        {
+          "token": "row3",
+          "key": "DQ_mangrove_ha",
+          "display": "Mangroves",
+          "baseline_b": " 0.094 & 0.099 & 0.149 & 0.172 & 0.333 & 0.157 ",
+          "baseline_se": " (0.241) & (0.218) & (0.259) & (0.257) & (0.211) & (0.302) "
+        },
+        {
+          "token": "row4",
+          "key": "DQ_b_e",
+          "display": "Fishery Biomass",
+          "baseline_b": " -0.101 & -0.120 & -0.020 & -0.026 & 0.171 & 0.021 ",
+          "baseline_se": " (0.069) & (0.058) & (0.074) & (0.074) & (0.106) & (0.103) "
+        },
+        {
+          "token": "row5",
+          "key": "DQ_hp_gwh",
+          "display": "Hydropower",
+          "baseline_b": " 0.013 & 0.013 & 0.012 & 0.012 & 0.010 & 0.010 ",
+          "baseline_se": " (0.005) & (0.005) & (0.005) & (0.005) & (0.005) & (0.004) "
+        },
+        {
+          "token": "row6",
+          "key": "DQ_bauxite_quantity",
+          "display": "Bauxite",
+          "baseline_b": " 0.002 & 0.002 & 0.001 & 0.001 & 0.000 & -0.001 ",
+          "baseline_se": " (0.003) & (0.004) & (0.003) & (0.004) & (0.003) & (0.003) "
+        },
+        {
+          "token": "row7",
+          "key": "DQ_coal_quantity",
+          "display": "Coal",
+          "baseline_b": " 0.005 & 0.007 & 0.009 & 0.009 & 0.007 & 0.004 ",
+          "baseline_se": " (0.004) & (0.004) & (0.004) & (0.004) & (0.003) & (0.003) "
+        },
+        {
+          "token": "row8",
+          "key": "DQ_oil_quantity",
+          "display": "Oil",
+          "baseline_b": " 0.014 & 0.014 & 0.016 & 0.015 & 0.015 & 0.015 ",
+          "baseline_se": " (0.007) & (0.007) & (0.007) & (0.007) & (0.008) & (0.008) "
+        },
+        {
+          "token": "row9",
+          "key": "DQ_copper_quantity",
+          "display": "Copper",
+          "baseline_b": " 0.000 & 0.001 & 0.002 & 0.002 & 0.002 & -0.002 ",
+          "baseline_se": " (0.003) & (0.003) & (0.003) & (0.003) & (0.003) & (0.003) "
+        },
+        {
+          "token": "row10",
+          "key": "DQ_phosphate_quantity",
+          "display": "Phosphate",
+          "baseline_b": " 0.014 & 0.014 & 0.015 & 0.015 & 0.015 & 0.017 ",
+          "baseline_se": " (0.008) & (0.008) & (0.009) & (0.008) & (0.009) & (0.011) "
+        },
+        {
+          "token": "row11",
+          "key": "DQ_gas_quantity",
+          "display": "Natural Gas",
+          "baseline_b": " 0.002 & 0.003 & 0.003 & 0.003 & 0.003 & 0.003 ",
+          "baseline_se": " (0.003) & (0.003) & (0.003) & (0.003) & (0.003) & (0.004) "
+        },
+        {
+          "token": "row12",
+          "key": "DQ_gold_quantity",
+          "display": "Gold",
+          "baseline_b": " 0.002 & 0.002 & 0.003 & 0.003 & 0.002 & 0.002 ",
+          "baseline_se": " (0.002) & (0.002) & (0.002) & (0.002) & (0.002) & (0.002) "
+        },
+        {
+          "token": "row13",
+          "key": "DQ_silver_quantity",
+          "display": "Silver",
+          "baseline_b": " 0.001 & 0.001 & 0.002 & 0.002 & 0.002 & 0.001 ",
+          "baseline_se": " (0.001) & (0.001) & (0.001) & (0.001) & (0.001) & (0.002) "
+        },
+        {
+          "token": "row14",
+          "key": "DQ_iron_quantity",
+          "display": "Iron",
+          "baseline_b": " 0.002 & 0.003 & 0.001 & 0.002 & 0.003 & 0.004 ",
+          "baseline_se": " (0.002) & (0.002) & (0.002) & (0.002) & (0.002) & (0.003) "
+        },
+        {
+          "token": "row15",
+          "key": "DQ_tin_quantity",
+          "display": "Tin",
+          "baseline_b": " 0.002 & 0.002 & 0.004 & 0.004 & 0.004 & -0.000 ",
+          "baseline_se": " (0.004) & (0.004) & (0.004) & (0.004) & (0.004) & (0.005) "
+        },
+        {
+          "token": "row16",
+          "key": "DQ_lead_quantity",
+          "display": "Lead",
+          "baseline_b": " 0.001 & 0.001 & 0.002 & 0.002 & 0.002 & 0.002 ",
+          "baseline_se": " (0.002) & (0.002) & (0.002) & (0.002) & (0.002) & (0.002) "
+        },
+        {
+          "token": "row17",
+          "key": "DQ_zinc_quantity",
+          "display": "Zinc",
+          "baseline_b": " -0.000 & -0.000 & -0.001 & -0.001 & -0.001 & -0.001 ",
+          "baseline_se": " (0.002) & (0.002) & (0.002) & (0.002) & (0.002) & (0.003) "
+        },
+        {
+          "token": "row18",
+          "key": "DQ_nickel_quantity",
+          "display": "Nickel",
+          "baseline_b": " 0.003 & 0.003 & 0.002 & 0.002 & 0.002 & 0.001 ",
+          "baseline_se": " (0.003) & (0.003) & (0.003) & (0.003) & (0.003) & (0.003) "
+        }
+      ],
+      "stars": false,
+      "note": "Urban Land row removed because the current no-urban specification does not estimate it. Resource labels follow variable names (DQ_prod_area = Timber Land, DQ_land = Agricultural Land).",
+      "stats": {
+        "stat0": {
+          "key": "Wald",
+          "baseline": " 0.002 & 0.000 & 0.001 & 0.000 & 0.000 & 0.014 "
+        },
+        "stat1": {
+          "key": "Bootstrap Wald",
+          "baseline": " 0.096 & 0.044 & 0.032 & 0.014 & -- & 0.111 "
+        },
+        "stat2": {
+          "key": "N",
+          "baseline": " 5,255 & 5,255 & 5,255 & 5,255 & 5,255 & 4,901 "
+        },
+        "stat3": {
+          "key": "Countries",
+          "baseline": " 118 & 118 & 118 & 118 & 118 & 118 "
+        }
+      },
+      "baseline_source_sha256": "8f3935e049ed6b77e1a2c39a2b6e388adcc1a347fcc4e5469d7767e508fb457c"
+    },
+    {
+      "file": "si_app_table_all_NK_post.tex",
+      "label": "app:table:all_NK_post",
+      "document": "0.SI.chat.tex",
+      "kind": "regression",
+      "source": "tab1_appendix_all_NK_post94.tex",
+      "rows": [
+        {
+          "token": "row0",
+          "key": "DQ_prod_area",
+          "display": "Timber Land",
+          "baseline_b": " 0.028 & 0.044 & 0.032 & 0.038 & 0.044 & 0.036 ",
+          "baseline_se": " (0.024) & (0.025) & (0.021) & (0.021) & (0.021) & (0.017) "
+        },
+        {
+          "token": "row1",
+          "key": "DQ_land",
+          "display": "Agricultural Land",
+          "baseline_b": " 0.157 & 0.159 & 0.069 & 0.074 & -0.009 & 0.147 ",
+          "baseline_se": " (0.090) & (0.076) & (0.073) & (0.071) & (0.065) & (0.089) "
+        },
+        {
+          "token": "row2",
+          "key": "DQ_forest_area_km",
+          "display": "Forest Cover",
+          "baseline_b": " -0.067 & -0.109 & -0.014 & 0.004 & 0.083 & 0.075 ",
+          "baseline_se": " (0.095) & (0.091) & (0.081) & (0.083) & (0.053) & (0.103) "
+        },
+        {
+          "token": "row3",
+          "key": "DQ_mangrove_ha",
+          "display": "Mangroves",
+          "baseline_b": " 0.147 & 0.091 & 0.357 & 0.327 & 0.315 & 0.166 ",
+          "baseline_se": " (0.243) & (0.239) & (0.281) & (0.304) & (0.337) & (0.286) "
+        },
+        {
+          "token": "row4",
+          "key": "DQ_b_e",
+          "display": "Fishery Biomass",
+          "baseline_b": " 0.120 & 0.035 & 0.122 & 0.099 & 0.068 & 0.052 ",
+          "baseline_se": " (0.094) & (0.074) & (0.111) & (0.104) & (0.129) & (0.107) "
+        },
+        {
+          "token": "row5",
+          "key": "DQ_hp_gwh",
+          "display": "Hydropower",
+          "baseline_b": " 0.011 & 0.012 & 0.010 & 0.010 & 0.008 & 0.010 ",
+          "baseline_se": " (0.005) & (0.005) & (0.004) & (0.004) & (0.004) & (0.004) "
+        },
+        {
+          "token": "row6",
+          "key": "DQ_bauxite_quantity",
+          "display": "Bauxite",
+          "baseline_b": " 0.003 & 0.003 & 0.001 & 0.001 & -0.001 & -0.001 ",
+          "baseline_se": " (0.006) & (0.006) & (0.005) & (0.005) & (0.004) & (0.003) "
+        },
+        {
+          "token": "row7",
+          "key": "DQ_coal_quantity",
+          "display": "Coal",
+          "baseline_b": " 0.004 & 0.006 & 0.002 & 0.003 & 0.003 & 0.001 ",
+          "baseline_se": " (0.006) & (0.005) & (0.004) & (0.004) & (0.005) & (0.004) "
+        },
+        {
+          "token": "row8",
+          "key": "DQ_oil_quantity",
+          "display": "Oil",
+          "baseline_b": " 0.003 & 0.003 & 0.003 & 0.002 & 0.002 & 0.003 ",
+          "baseline_se": " (0.003) & (0.003) & (0.002) & (0.002) & (0.002) & (0.002) "
+        },
+        {
+          "token": "row9",
+          "key": "DQ_copper_quantity",
+          "display": "Copper",
+          "baseline_b": " -0.003 & -0.003 & -0.003 & -0.003 & -0.004 & -0.007 ",
+          "baseline_se": " (0.003) & (0.003) & (0.003) & (0.003) & (0.003) & (0.004) "
+        },
+        {
+          "token": "row10",
+          "key": "DQ_phosphate_quantity",
+          "display": "Phosphate",
+          "baseline_b": " 0.018 & 0.017 & 0.021 & 0.020 & 0.020 & 0.020 ",
+          "baseline_se": " (0.011) & (0.011) & (0.013) & (0.013) & (0.014) & (0.013) "
+        },
+        {
+          "token": "row11",
+          "key": "DQ_gas_quantity",
+          "display": "Natural Gas",
+          "baseline_b": " 0.000 & 0.000 & -0.000 & -0.000 & -0.000 & 0.000 ",
+          "baseline_se": " (0.001) & (0.001) & (0.001) & (0.001) & (0.001) & (0.001) "
+        },
+        {
+          "token": "row12",
+          "key": "DQ_gold_quantity",
+          "display": "Gold",
+          "baseline_b": " 0.003 & 0.002 & 0.002 & 0.002 & 0.001 & 0.001 ",
+          "baseline_se": " (0.002) & (0.002) & (0.002) & (0.002) & (0.002) & (0.002) "
+        },
+        {
+          "token": "row13",
+          "key": "DQ_silver_quantity",
+          "display": "Silver",
+          "baseline_b": " 0.002 & 0.002 & 0.003 & 0.003 & 0.003 & 0.002 ",
+          "baseline_se": " (0.002) & (0.002) & (0.002) & (0.002) & (0.002) & (0.002) "
+        },
+        {
+          "token": "row14",
+          "key": "DQ_iron_quantity",
+          "display": "Iron",
+          "baseline_b": " 0.004 & 0.004 & 0.004 & 0.004 & 0.005 & 0.007 ",
+          "baseline_se": " (0.003) & (0.003) & (0.003) & (0.003) & (0.004) & (0.004) "
+        },
+        {
+          "token": "row15",
+          "key": "DQ_tin_quantity",
+          "display": "Tin",
+          "baseline_b": " -0.002 & -0.001 & -0.001 & -0.001 & -0.001 & 0.001 ",
+          "baseline_se": " (0.002) & (0.003) & (0.002) & (0.003) & (0.003) & (0.003) "
+        },
+        {
+          "token": "row16",
+          "key": "DQ_lead_quantity",
+          "display": "Lead",
+          "baseline_b": " 0.002 & 0.002 & 0.002 & 0.002 & 0.002 & 0.001 ",
+          "baseline_se": " (0.002) & (0.002) & (0.002) & (0.002) & (0.002) & (0.002) "
+        },
+        {
+          "token": "row17",
+          "key": "DQ_zinc_quantity",
+          "display": "Zinc",
+          "baseline_b": " -0.002 & -0.002 & -0.003 & -0.003 & -0.003 & -0.004 ",
+          "baseline_se": " (0.003) & (0.003) & (0.002) & (0.002) & (0.002) & (0.003) "
+        },
+        {
+          "token": "row18",
+          "key": "DQ_nickel_quantity",
+          "display": "Nickel",
+          "baseline_b": " 0.003 & 0.002 & 0.000 & 0.000 & -0.000 & -0.001 ",
+          "baseline_se": " (0.005) & (0.005) & (0.004) & (0.004) & (0.004) & (0.003) "
+        }
+      ],
+      "stars": false,
+      "note": "Urban Land row removed because the current no-urban specification does not estimate it. Resource labels follow variable names (DQ_prod_area = Timber Land, DQ_land = Agricultural Land).",
+      "stats": {
+        "stat0": {
+          "key": "Wald",
+          "baseline": " 0.016 & 0.014 & 0.023 & 0.028 & 0.021 & 0.001 "
+        },
+        "stat1": {
+          "key": "Bootstrap Wald",
+          "baseline": " 0.096 & 0.044 & 0.032 & 0.014 & -- & 0.111 "
+        },
+        "stat2": {
+          "key": "N",
+          "baseline": " 2,832 & 2,832 & 2,832 & 2,832 & 2,832 & 2,802 "
+        },
+        "stat3": {
+          "key": "Countries",
+          "baseline": " 118 & 118 & 118 & 118 & 118 & 118 "
+        }
+      },
+      "baseline_source_sha256": "c9019ddf5790ce6bb98466e1e167c888c01e72edecba097fd5feb12d56bdcec2"
+    },
+    {
+      "file": "si_app_tab_robustness_EU.tex",
+      "label": "app:tab:robustness_EU",
+      "document": "0.SI.chat.tex",
+      "kind": "regression",
+      "source": "tab1_eurostat.tex",
+      "rows": [
+        {
+          "token": "row0",
+          "key": "dlog_prod_area",
+          "display": "Timber Land",
+          "baseline_b": " -0.477 & -0.711 & -0.818 & -0.815 & -1.147 ",
+          "baseline_se": " (0.286) & (0.252) & (0.254) & (0.246) & (0.342) "
+        },
+        {
+          "token": "row1",
+          "key": "dlog_land",
+          "display": "Agricultural Land",
+          "baseline_b": " 0.027 & 0.030 & 0.035 & 0.041 & 0.035 ",
+          "baseline_se": " (0.038) & (0.036) & (0.032) & (0.029) & (0.028) "
+        },
+        {
+          "token": "row2",
+          "key": "dlog_forest_area_km",
+          "display": "Forest Cover",
+          "baseline_b": " 0.308 & 0.328 & 0.421 & 0.408 & 0.418 ",
+          "baseline_se": " (0.373) & (0.329) & (0.315) & (0.292) & (0.311) "
+        },
+        {
+          "token": "row3",
+          "key": "dlog_b_e",
+          "display": "Biomass",
+          "baseline_b": " -0.443& -0.522& 0.268 & 0.198 & 0.243 ",
+          "baseline_se": " (0.107) & (0.109) & (0.134) & (0.141) & (0.338) "
+        },
+        {
+          "token": "row4",
+          "key": "dlog_hp_gwh",
+          "display": "Hydropower",
+          "baseline_b": " -0.002 & 0.001 & 0.001 & 0.001 & 0.002 ",
+          "baseline_se": " (0.004) & (0.004) & (0.004) & (0.004) & (0.004) "
+        }
+      ],
+      "stars": false,
+      "stats": {
+        "stat0": {
+          "key": "Wald",
+          "baseline": " 0.001 & 0.000 & 0.006 & 0.005 & 0.023 "
+        },
+        "stat1": {
+          "key": "Bootstrap Wald",
+          "baseline": " 0.015 & 0.003 & 0.115 & 0.096 & -- "
+        },
+        "stat2": {
+          "key": "N",
+          "baseline": " 476 & 476 & 476 & 476 & 476 "
+        },
+        "stat3": {
+          "key": "Countries",
+          "baseline": " 28 & 28 & 28 & 28 & 28 "
+        }
+      },
+      "baseline_source_sha256": "235ac05542fa5043fc8b6b9a5628e092bb4fce63f2700964b7fb75b6ed53886f"
+    },
+    {
+      "file": "si_app_tab_robustness_EU_apples.tex",
+      "label": "app:tab:robustness_EU_apples",
+      "document": "0.SI.chat.tex",
+      "kind": "regression",
+      "source": "tab1_EU_comp.tex",
+      "rows": [
+        {
+          "token": "row0",
+          "key": "dlog_prod_area",
+          "display": "Timber Land",
+          "baseline_b": " -0.218 & -0.306 & -0.165 & -0.148 & -0.449 ",
+          "baseline_se": " (0.189) & (0.169) & (0.155) & (0.161) & (0.258) "
+        },
+        {
+          "token": "row1",
+          "key": "dlog_land",
+          "display": "Agricultural Land",
+          "baseline_b": " 0.008 & 0.024 & 0.002 & 0.015 & 0.010 ",
+          "baseline_se": " (0.035) & (0.033) & (0.029) & (0.025) & (0.025) "
+        },
+        {
+          "token": "row2",
+          "key": "dlog_forest_area_km",
+          "display": "Forest Cover",
+          "baseline_b": " 0.191 & 0.192 & 0.172 & 0.174 & 0.103 ",
+          "baseline_se": " (0.165) & (0.143) & (0.116) & (0.111) & (0.155) "
+        },
+        {
+          "token": "row3",
+          "key": "dlog_b_e",
+          "display": "Biomass",
+          "baseline_b": " -0.275 & -0.401& 0.023 & 0.052 & 0.019 ",
+          "baseline_se": " (0.084) & (0.099) & (0.122) & (0.137) & (0.298) "
+        },
+        {
+          "token": "row4",
+          "key": "dlog_hp_gwh",
+          "display": "Hydropower",
+          "baseline_b": " -0.004 & -0.000 & 0.000 & 0.001 & 0.001 ",
+          "baseline_se": " (0.004) & (0.004) & (0.004) & (0.003) & (0.003) "
+        }
+      ],
+      "stars": false,
+      "stats": {
+        "stat0": {
+          "key": "Wald",
+          "baseline": " 0.020 & 0.002 & 0.807 & 0.702 & 0.405 "
+        },
+        "stat1": {
+          "key": "Bootstrap Wald",
+          "baseline": " 0.095 & 0.004 & 0.828 & 0.752 & -- "
+        },
+        "stat2": {
+          "key": "N",
+          "baseline": " 476 & 476 & 476 & 476 & 476 "
+        },
+        "stat3": {
+          "key": "Countries",
+          "baseline": " 28 & 28 & 28 & 28 & 28 "
+        }
+      },
+      "baseline_source_sha256": "918f427bc1b5f6252114850b8068cb23d3d1df03234cef8c3e342c781ceba203"
+    },
+    {
+      "file": "si_app_tab_fuglie_regs.tex",
+      "label": "app:tab:fuglie_regs",
+      "document": "0.SI.chat.tex",
+      "kind": "regression",
+      "source": "tab1_ag_TFP.tex",
+      "rows": [
+        {
+          "token": "row0",
+          "key": "dlog_prod_area",
+          "display": "Timber Land",
+          "baseline_b": " 0.164 & -0.131 & -0.067 & -0.284 & -0.374 ",
+          "baseline_se": " (0.049) & (0.186) & (0.093) & (0.266) & (0.361) "
+        },
+        {
+          "token": "row1",
+          "key": "dlog_land",
+          "display": "Agricultural Land",
+          "baseline_b": " 0.027 & 0.037 & 0.059 & 0.039 & 0.057 ",
+          "baseline_se": " (0.019) & (0.049) & (0.037) & (0.054) & (0.059) "
+        },
+        {
+          "token": "row2",
+          "key": "dlog_forest_area_km",
+          "display": "Forest Cover",
+          "baseline_b": " -0.067 & 0.157 & 0.078 & 0.221 & 0.276 ",
+          "baseline_se": " (0.061) & (0.200) & (0.124) & (0.247) & (0.285) "
+        },
+        {
+          "token": "row3",
+          "key": "dlog_mangrove_ha",
+          "display": "Mangroves",
+          "baseline_b": " 0.122 & -0.108 & 0.247 & 0.426 & 0.736 ",
+          "baseline_se": " (0.128) & (0.327) & (0.317) & (0.505) & (0.595) "
+        },
+        {
+          "token": "row4",
+          "key": "dlog_b_e",
+          "display": "Biomass",
+          "baseline_b": " 0.112 & 0.072 & -0.024 & -0.055 & 0.005 ",
+          "baseline_se": " (0.056) & (0.140) & (0.153) & (0.171) & (0.225) "
+        },
+        {
+          "token": "row5",
+          "key": "dlog_hp_gwh",
+          "display": "Hydropower",
+          "baseline_b": " 0.011 & -0.012 & -0.007 & -0.015 & -0.016 ",
+          "baseline_se": " (0.005) & (0.008) & (0.008) & (0.009) & (0.009) "
+        }
+      ],
+      "stars": false,
+      "stats": {
+        "stat0": {
+          "key": "Wald",
+          "baseline": " 0.001 & 0.769 & 0.572 & 0.495 & 0.275 "
+        },
+        "stat1": {
+          "key": "Bootstrap Wald",
+          "baseline": " 0.001 & 0.829 & 0.606 & 0.582 & -- "
+        },
+        "stat2": {
+          "key": "N",
+          "baseline": " 2,808 & 2,377 & 3,399 & 2,377 & 2,377 "
+        },
+        "stat3": {
+          "key": "Countries",
+          "baseline": " 117 & 114 & 163 & 114 & 114 "
+        }
+      },
+      "baseline_source_sha256": "f5e81dc9552a91681af87ba4b7e0e5d5e52106680107f388ec3be6ea4acd966e"
+    },
+    {
+      "file": "si_app_tab_output_growth_rgdp.tex",
+      "label": "app:tab:output_growth_rgdp",
+      "document": "0.SI.chat.tex",
+      "kind": "regression",
+      "source": "tab1_gdp_na.tex",
+      "rows": [
+        {
+          "token": "row0",
+          "key": "dlog_prod_area",
+          "display": "Timber Land",
+          "baseline_b": " 0.000 & 0.121 & -0.079 & -0.097 & -0.092 ",
+          "baseline_se": " (0.092) & (0.105) & (0.114) & (0.118) & (0.198) "
+        },
+        {
+          "token": "row1",
+          "key": "dlog_land",
+          "display": "Agricultural Land",
+          "baseline_b": " 0.067 & 0.091 & 0.096 & 0.101 & 0.098 ",
+          "baseline_se": " (0.050) & (0.050) & (0.052) & (0.055) & (0.071) "
+        },
+        {
+          "token": "row2",
+          "key": "dlog_forest_area_km",
+          "display": "Forest Cover",
+          "baseline_b": " 0.278 & 0.038 & 0.111 & 0.135 & -0.060 ",
+          "baseline_se": " (0.133) & (0.132) & (0.164) & (0.174) & (0.166) "
+        },
+        {
+          "token": "row3",
+          "key": "dlog_mangrove_ha",
+          "display": "Mangroves",
+          "baseline_b": " -0.015 & 0.148 & 0.650 & 0.625 & 1.271 ",
+          "baseline_se": " (0.265) & (0.255) & (0.337) & (0.452) & (0.647) "
+        },
+        {
+          "token": "row4",
+          "key": "dlog_b_e",
+          "display": "Fishery Biomass",
+          "baseline_b": " -0.051 & 0.044 & 0.108 & -0.008 & -0.280 ",
+          "baseline_se": " (0.125) & (0.111) & (0.133) & (0.172) & (0.303) "
+        },
+        {
+          "token": "row5",
+          "key": "dlog_hp_gwh",
+          "display": "Hydropower",
+          "baseline_b": " 0.010 & 0.010 & 0.006 & 0.002 & -0.001 ",
+          "baseline_se": " (0.006) & (0.006) & (0.007) & (0.008) & (0.007) "
+        }
+      ],
+      "stars": false,
+      "stats": {
+        "stat0": {
+          "key": "Wald",
+          "baseline": " 0.033 & 0.000 & 0.024 & 0.181 & 0.017 "
+        },
+        "stat1": {
+          "key": "Bootstrap Wald",
+          "baseline": " 0.063 & 0.000 & 0.014 & -- & 0.003 "
+        },
+        "stat2": {
+          "key": "N",
+          "baseline": " 3,258 & 2,808 & 2,808 & 2,808 & 2,457 "
+        },
+        "stat3": {
+          "key": "Countries",
+          "baseline": " 136 & 117 & 117 & 117 & 117 "
+        }
+      },
+      "baseline_source_sha256": "4745c8391e20c2a183edba3eb09a4fdf025d896419d28b3010dac4308d124297",
+      "hidden_coefficients": [
+        "dlog_K",
+        "dlog_L"
+      ]
+    },
+    {
+      "file": "si_app_tab_output_growth_PPP.tex",
+      "label": "app:tab:output_growth_PPP",
+      "document": "0.SI.chat.tex",
+      "kind": "regression",
+      "source": "tab1_gdp_PPP.tex",
+      "rows": [
+        {
+          "token": "row0",
+          "key": "dlog_prod_area",
+          "display": "Timber Land",
+          "baseline_b": " 0.054 & 0.189& 0.095 & 0.015 & -0.092 ",
+          "baseline_se": " (0.054) & (0.048) & (0.049) & (0.054) & (0.198) "
+        },
+        {
+          "token": "row1",
+          "key": "dlog_land",
+          "display": "Agricultural Land",
+          "baseline_b": " 0.021 & 0.045 & 0.035 & 0.039 & 0.098 ",
+          "baseline_se": " (0.017) & (0.019) & (0.018) & (0.018) & (0.071) "
+        },
+        {
+          "token": "row2",
+          "key": "dlog_forest_area_km",
+          "display": "Forest Cover",
+          "baseline_b": " 0.011 & -0.176 & -0.025 & 0.064 & -0.060 ",
+          "baseline_se": " (0.065) & (0.066) & (0.063) & (0.058) & (0.166) "
+        },
+        {
+          "token": "row3",
+          "key": "dlog_mangrove_ha",
+          "display": "Mangroves",
+          "baseline_b": " 0.125 & 0.080 & 0.281 & 0.262 & 1.271 ",
+          "baseline_se": " (0.108) & (0.116) & (0.159) & (0.200) & (0.647) "
+        },
+        {
+          "token": "row4",
+          "key": "dlog_b_e",
+          "display": "Fishery Biomass",
+          "baseline_b": " -0.008 & 0.007 & 0.056 & 0.027 & -0.280 ",
+          "baseline_se": " (0.053) & (0.053) & (0.060) & (0.082) & (0.303) "
+        },
+        {
+          "token": "row5",
+          "key": "dlog_hp_gwh",
+          "display": "Hydropower",
+          "baseline_b": " 0.011 & 0.011 & 0.008 & 0.006 & -0.001 ",
+          "baseline_se": " (0.004) & (0.004) & (0.005) & (0.005) & (0.007) "
+        }
+      ],
+      "stars": false,
+      "stats": {
+        "stat0": {
+          "key": "Wald",
+          "baseline": " 0.091 & 0.178 & 0.159 & 0.342 & 0.307 "
+        },
+        "stat1": {
+          "key": "Bootstrap Wald",
+          "baseline": " 0.164 & 0.210 & 0.195 & -- & 0.371 "
+        },
+        "stat2": {
+          "key": "N",
+          "baseline": " 3,264 & 2,808 & 2,808 & 2,808 & 2,457 "
+        },
+        "stat3": {
+          "key": "Countries",
+          "baseline": " 136 & 117 & 117 & 117 & 117 "
+        }
+      },
+      "baseline_source_sha256": "940326b8a269e49c917106973d1142c51150f10f202732d03ad325b3d7790edc",
+      "hidden_coefficients": [
+        "dlog_K",
+        "dlog_L"
+      ]
+    },
+    {
+      "file": "si_app_tab_non_renewable_list_index.tex",
+      "label": "app:tab:non-renewable_list_index",
+      "document": "0.SI.chat.tex",
+      "kind": "editorial"
+    },
+    {
+      "file": "si_app_tab_renewable_list_index.tex",
+      "label": "app:tab:renewable_list_index",
+      "document": "0.SI.chat.tex",
+      "kind": "editorial"
+    },
+    {
+      "file": "si_app_tab_index_regressions.tex",
+      "label": "app:tab:index_regressions",
+      "document": "0.SI.chat.tex",
+      "kind": "regression",
+      "source": "appendix_tornq_regs.tex",
+      "rows": [
+        {
+          "token": "row0",
+          "key": "g_Q_Renew_Tornquist",
+          "display": "$g_{j,t}^{R}$",
+          "baseline_b": " 0.078$^{***}$& 0.046$^{**}$ & 0.052$^{***}$& 0.042$^{**}$ & 0.046$^{**}$ & 0.035$^{**}$ ",
+          "baseline_se": " (0.021) & (0.020) & (0.020) & (0.019) & (0.020) & (0.014) "
+        },
+        {
+          "token": "row1",
+          "key": "g_Q_NonRenew_Tornquist",
+          "display": "$g_{j,t}^{NR}$",
+          "baseline_b": " 0.025$^{***}$& 0.013$^{***}$& 0.017$^{***}$& 0.011$^{***}$& 0.011$^{***}$& 0.013$^{***}$",
+          "baseline_se": " (0.004) & (0.003) & (0.004) & (0.003) & (0.003) & (0.004) "
+        }
+      ],
+      "stars": true,
+      "stats": {
+        "stat0": {
+          "key": "N",
+          "baseline": " 4974 & 3953 & 4974 & 3953 & 3953 & 3697 "
+        },
+        "stat1": {
+          "key": "Countries",
+          "baseline": " 134 & 104 & 134 & 104 & 104 & 104 "
+        }
+      },
+      "baseline_source_sha256": "9ece93e52d2a00fb7cefb6d6439a93a3fdcee85fd8c46812843b4ca041e2f437"
+    },
+    {
+      "file": "si_app_table_simulation_params.tex",
+      "label": "app:table:simulation_params",
+      "document": "0.SI.chat.tex",
+      "kind": "editorial"
+    },
+    {
+      "file": "si_app_tab_overlay.tex",
+      "label": "app:tab:overlay",
+      "document": "0.SI.chat.tex",
+      "kind": "country",
+      "source": "../simulations/bias_rmse.csv"
+    },
+    {
+      "file": "si_app_tab_rf_decomp.tex",
+      "label": "app:tab:rf_decomp",
+      "document": "0.SI.chat.tex",
+      "kind": "regression",
+      "source": "app_tab_decomp_bias.tex",
+      "rows": [
+        {
+          "token": "row0",
+          "key": "corr_N1_K_out",
+          "display": "$\\rho(g_{N_1}, g_K)$",
+          "baseline_b": " $0.006$ ",
+          "baseline_se": " $(0.003)$ "
+        },
+        {
+          "token": "row1",
+          "key": "corr_N1_N2_out",
+          "display": "$\\rho(g_{N_1}, g_{N_2})$",
+          "baseline_b": " $-0.003$ ",
+          "baseline_se": " $(0.003)$ "
+        },
+        {
+          "token": "row2",
+          "key": "corr_N2_L",
+          "display": "$\\rho(g_{N_2}, g_L)$",
+          "baseline_b": " $0.002$ ",
+          "baseline_se": " $(0.003)$ "
+        },
+        {
+          "token": "row3",
+          "key": "corr_N1_L",
+          "display": "$\\rho(g_{N_1}, g_L)$",
+          "baseline_b": " $0.008$ ",
+          "baseline_se": " $(0.003)$ "
+        },
+        {
+          "token": "row4",
+          "key": "corr_L_K",
+          "display": "$\\rho(g_L, g_K)$",
+          "baseline_b": " $0.004$ ",
+          "baseline_se": " $(0.002)$ "
+        },
+        {
+          "token": "row5",
+          "key": "corr_N2_K_out",
+          "display": "$\\rho(g_{N_2}, g_K)$",
+          "baseline_b": " $-0.002$ ",
+          "baseline_se": " $(0.003)$ "
+        },
+        {
+          "token": "row6",
+          "key": "g_L",
+          "display": "$\\bar g_{L}$",
+          "baseline_b": " $0.016$ ",
+          "baseline_se": " $(0.059)$ "
+        },
+        {
+          "token": "row7",
+          "key": "g_n1",
+          "display": "$\\bar g_{N_1}$",
+          "baseline_b": " $-0.048$ ",
+          "baseline_se": " $(0.011)$ "
+        },
+        {
+          "token": "row8",
+          "key": "g_k",
+          "display": "$\\bar g_{K}$",
+          "baseline_b": " $0.008$ ",
+          "baseline_se": " $(0.036)$ "
+        },
+        {
+          "token": "row9",
+          "key": "g_n2",
+          "display": "$\\bar g_{N_2}$",
+          "baseline_b": " $-0.153$ ",
+          "baseline_se": " $(0.094)$ "
+        },
+        {
+          "token": "row10",
+          "key": "g_A",
+          "display": "$\\bar g_{A}$",
+          "baseline_b": " $0.039$ ",
+          "baseline_se": " $(0.062)$ "
+        },
+        {
+          "token": "row11",
+          "key": "sdA",
+          "display": "$\\sigma_{TFP}$",
+          "baseline_b": " $0.065$ ",
+          "baseline_se": " $(0.026)$ "
+        }
+      ],
+      "stars": true,
+      "note": "The source regression uses conventional OLS standard errors; the table note now reflects that.",
+      "stats": {
+        "stat0": {
+          "key": "N",
+          "baseline": " $100$ "
+        }
+      },
+      "baseline_source_sha256": "37a9ff81efb3b1c39c4071171434d4f3d914ff920a3af2acd822adef429589e6",
+      "coefficient_sign": -1
+    },
+    {
+      "file": "si_app_tab_rf_decomp_rmse.tex",
+      "label": "app:tab:rf_decomp_rmse",
+      "document": "0.SI.chat.tex",
+      "kind": "regression",
+      "source": "app_tab_decomp.tex",
+      "rows": [
+        {
+          "token": "row0",
+          "key": "corr_N1_K_out",
+          "display": "$\\rho(g_{N_1}, g_K)$",
+          "baseline_b": " $0.006$ ",
+          "baseline_se": " $(0.003)$ "
+        },
+        {
+          "token": "row1",
+          "key": "corr_N1_N2_out",
+          "display": "$\\rho(g_{N_1}, g_{N_2})$",
+          "baseline_b": " $-0.003$ ",
+          "baseline_se": " $(0.003)$ "
+        },
+        {
+          "token": "row2",
+          "key": "corr_N2_L",
+          "display": "$\\rho(g_{N_2}, g_L)$",
+          "baseline_b": " $0.002$ ",
+          "baseline_se": " $(0.003)$ "
+        },
+        {
+          "token": "row3",
+          "key": "corr_N1_L",
+          "display": "$\\rho(g_{N_1}, g_L)$",
+          "baseline_b": " $0.008$ ",
+          "baseline_se": " $(0.003)$ "
+        },
+        {
+          "token": "row4",
+          "key": "corr_L_K",
+          "display": "$\\rho(g_L, g_K)$",
+          "baseline_b": " $0.004$ ",
+          "baseline_se": " $(0.002)$ "
+        },
+        {
+          "token": "row5",
+          "key": "corr_N2_K_out",
+          "display": "$\\rho(g_{N_2}, g_K)$",
+          "baseline_b": " $-0.002$ ",
+          "baseline_se": " $(0.003)$ "
+        },
+        {
+          "token": "row6",
+          "key": "g_L",
+          "display": "$\\bar g_{L}$",
+          "baseline_b": " $0.016$ ",
+          "baseline_se": " $(0.059)$ "
+        },
+        {
+          "token": "row7",
+          "key": "g_n1",
+          "display": "$\\bar g_{N_1}$",
+          "baseline_b": " $-0.048$ ",
+          "baseline_se": " $(0.011)$ "
+        },
+        {
+          "token": "row8",
+          "key": "g_k",
+          "display": "$\\bar g_{K}$",
+          "baseline_b": " $0.008$ ",
+          "baseline_se": " $(0.036)$ "
+        },
+        {
+          "token": "row9",
+          "key": "g_n2",
+          "display": "$\\bar g_{N_2}$",
+          "baseline_b": " $-0.153$ ",
+          "baseline_se": " $(0.094)$ "
+        },
+        {
+          "token": "row10",
+          "key": "g_A",
+          "display": "$\\bar g_{A}$",
+          "baseline_b": " $0.039$ ",
+          "baseline_se": " $(0.062)$ "
+        },
+        {
+          "token": "row11",
+          "key": "sdA",
+          "display": "$\\sigma_{TFP}$",
+          "baseline_b": " $0.065$ ",
+          "baseline_se": " $(0.026)$ "
+        }
+      ],
+      "stars": true,
+      "note": "The source regression uses conventional OLS standard errors; the table note now reflects that.",
+      "stats": {
+        "stat0": {
+          "key": "N",
+          "baseline": " $100$ "
+        }
+      },
+      "baseline_source_sha256": "37a9ff81efb3b1c39c4071171434d4f3d914ff920a3af2acd822adef429589e6",
+      "coefficient_sign": -1
+    },
+    {
+      "file": "si_simulation_robustness.tex",
+      "label": "app:tab:simulation_robustness",
+      "document": "0.SI.chat.tex",
+      "kind": "editorial",
+      "note": "Audited summary of current baseline, sample-period, unconditional, and CRS results. Refresh after changing the underlying analyses; see verification/2026-11-05."
+    }
+  ],
+  "figures": [
+    {
+      "source": "figure_map_hist_vertical_RMSE.pdf",
+      "file": "figure_map_hist_vertical_RMSE.pdf"
+    },
+    {
+      "source": "four_cases_overlay_RMSE.pdf",
+      "file": "four_cases_overlay_RMSE.pdf"
+    },
+    {
+      "source": "RMSE_Correlations.pdf",
+      "file": "RMSE_Correlations.pdf"
+    },
+    {
+      "source": "MC_gamma1_bias.pdf",
+      "file": "MC_gamma1_bias.pdf"
+    },
+    {
+      "source": "MC_gamma2_bias.pdf",
+      "file": "MC_gamma2_bias.pdf"
+    },
+    {
+      "source": "robustness_RI.png",
+      "file": "robustness_RI.png"
+    },
+    {
+      "source": "RMSE_decomp1.pdf",
+      "file": "RMSE_decomp1.pdf"
+    },
+    {
+      "source": "RMSE_decomp2.pdf",
+      "file": "RMSE_decomp2.pdf"
+    },
+    {
+      "source": "12_cases_app_RMSE.pdf",
+      "file": "12_cases_app_RMSE.pdf"
+    },
+    {
+      "source": "bias_MC.pdf",
+      "file": "bias_MC.pdf"
+    },
+    {
+      "source": "../manuscript_exports/figs/four_cases_overlay_bias_early.pdf",
+      "file": "four_cases_overlay_bias_early.pdf"
+    },
+    {
+      "source": "../manuscript_exports/figs/four_cases_overlay_bias_late.pdf",
+      "file": "four_cases_overlay_bias_late.pdf"
+    },
+    {
+      "source": "../manuscript_exports/figs/figure_map_hist_vertical_bias.pdf",
+      "file": "figure_map_hist_vertical_bias.pdf"
+    },
+    {
+      "source": "four_cases_overlay_bias.pdf",
+      "file": "four_cases_overlay_bias.pdf"
+    },
+    {
+      "source": "12_cases_app_bias.pdf",
+      "file": "12_cases_app_bias.pdf"
+    }
+  ]
+}

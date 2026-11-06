@@ -6,5 +6,6 @@ papers/
 # ignore unused folder and scripts 
 scripts/unused
 simulations/MC_results.dta
+simulations/MC_results_bias.dta
 
 

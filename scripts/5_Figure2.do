@@ -126,7 +126,7 @@ twoway (lfit g_A_bar g_A_bar , color(grey%20)   lpattern(dash)) ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
   xtitle("Average g{sub:A} from the PWT", size(small))  ///
-    ytitle("Estimated γ̃{sub:A} from Model 1", size(small)) ///
+    ytitle("Expected TFP, Model 1", size(small)) ///
     legend(off) ///
     title("{bf:c}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
  saving("$figs/overlay_bias_main3.gph", replace) 
@@ -137,7 +137,7 @@ twoway (lfit g_A_bar g_A_bar , color(grey%20)   lpattern(dash)) ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
   xtitle("Average g{sub:A} from the PWT", size(small))  ///
-    ytitle("Estimated γ̂{sub:A} from Model 2", size(small)) ///
+    ytitle("Expected TFP, Model 2", size(small)) ///
     legend(off) ///
     title("{bf:d}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
  saving("$figs/overlay_bias_main4.gph", replace) 
@@ -162,8 +162,8 @@ twoway (lfit abs_bias_model2 abs_bias_model2 , color(grey%20)   lpattern(dash)) 
 (scatter abs_bias_model1 abs_bias_model2,   mcolor(red%100) msy(circle) msize(small)     ///
 xlabel(, nogrid  labsize(small)) ///
 ylabel(, nogrid  labsize(small)) ), ///
-  xtitle("Absolute Bias, Model 2 (Including Non-Renewables)", size(small))  /// 
-    ytitle("Absolute Bias, Model 1 (Omitting Non-Renewables)", size(small)) ///
+  xtitle("Absolute Bias, Model 2", size(small))  /// 
+    ytitle("Absolute Bias, Model 1", size(small)) ///
     legend(off) ///
     title("{bf:e}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
   saving("$figs/overlay_bias_main5.gph", replace) 
