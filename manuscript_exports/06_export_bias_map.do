@@ -66,7 +66,7 @@ twoway ///
     ylabel(0(10)50, nogrid labsize(small) axis(1)) ///
     ytitle("Number of Countries") ///
     xtitle("Change in absolute bias (basis points)") ///
-    text(15 -105 "{&Delta}|bias| > 100 bps", size(vsmall)) ///
+    text(17 -105 "{&Delta}|Bias| > 100 bps", size(vsmall)) ///
     text(51 -108 "{bf:b}", size(medsmall) placement(e)) ///
     legend(off) ///
     graphregion(margin(zero)) ///

@@ -303,6 +303,8 @@ quietly {
 tabulate rmse_rc, missing
 
 //summary stats
+sum bias_reduction, d
+
 sum RMSE_reduction, d
 
 //topcode for figure
@@ -319,7 +321,7 @@ sum RMSE_reduction RMSE_reduction_share, d
 sum RMSE_reduction if country_string=="USA", d
 
 
-sum RMSE_reduction , d
+sum bias_reduction , d
 scalar median_reduction = r(p50)
 
 display median_reduction
