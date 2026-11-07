@@ -593,11 +593,11 @@ restore
 //plot RI tests
 preserve 
 
-areg ldiff_TFP dlog*, absorb(country_byte) vce(robust)
+areg ldiff_TFP dlog*, absorb(country_byte year) vce(robust)
 
 local keepvars ///
      dlog_prod_area dlog_land ///
-    dlog_forest_area_km dlog_mangrove_ha ///
+    dlog_forest_area_km dlog_mangrove_ha ///ss
     dlog_b_e dlog_hp_gwh
 
 test `keepvars'
@@ -612,18 +612,19 @@ use  "$processed/ri_test_out.dta", clear
 count if F_stat_out > `F'
     
 display r(N) / 100000
-//   1,849
+//   1,439
 //
 // .     
 // . display r(N) / 100000
-// .01849
+// .01439
+
 
 
 
 
 histogram F_stat_out, ///
     lcolor(red) color(red%40) bins(50) ///
-    text(4000 2.75 "{it:F} = `F'", size(vsmall)) ///
+    text(4000 2.9 "{it:F} = `F'", size(vsmall)) ///
     legend(off) ///
     ytitle("Number of Resampled Estimates") ///
     xline(`F', lcolor(gray) extend lpattern(dash)) ///
