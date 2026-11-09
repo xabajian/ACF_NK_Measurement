@@ -67,7 +67,7 @@ twoway ///
     ytitle("Number of Countries") ///
     xtitle("Change in absolute bias (basis points)") ///
     text(17 -105 "-{&Delta}Bias > 100 bps", size(vsmall)) ///
-    text(51 -108 "{bf:b}", size(medsmall) placement(e)) ///
+    text(51 -102 "{bf:b}", size(medsmall) placement(e)) ///
     legend(off) ///
     graphregion(margin(zero)) ///
     name(panel_b_hist_bias, replace)
