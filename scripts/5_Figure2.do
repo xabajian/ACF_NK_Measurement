@@ -51,7 +51,7 @@ preserve
 eststo clear
 
 *(1)
-// Preserve the original regression-table sign convention: -Delta absolute bias.
+// Positive reduction: abs(bias0) - abs(bias1), consistent with the FWL plots and manuscript.
 sum bias_reduction, d
 reg bias_reduction corr_N1_K_out corr_N1_N2_out corr_N2_L corr_N1_L corr_L_K corr_N2_K_out g_L g_n1 g_k g_n2 g_A sdA
 eststo m1

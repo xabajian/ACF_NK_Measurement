@@ -991,7 +991,7 @@
         }
       },
       "baseline_source_sha256": "37a9ff81efb3b1c39c4071171434d4f3d914ff920a3af2acd822adef429589e6",
-      "coefficient_sign": -1
+      "coefficient_sign": 1
     },
     {
       "file": "si_app_tab_rf_decomp_rmse.tex",
@@ -1094,7 +1094,7 @@
         }
       },
       "baseline_source_sha256": "37a9ff81efb3b1c39c4071171434d4f3d914ff920a3af2acd822adef429589e6",
-      "coefficient_sign": -1
+      "coefficient_sign": 1
     },
     {
       "file": "si_simulation_robustness.tex",
