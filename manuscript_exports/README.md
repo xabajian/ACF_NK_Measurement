@@ -9,7 +9,7 @@ do "/Users/xabajian/Documents/GitHub/ACF_NK_Measurement/manuscript_exports/00_pu
 This exports existing results. It does **not** re-estimate regressions or rerun simulations. It requires Python 3 (standard library only), available as `python3`, and writes directly to the sibling manuscript repository:
 
 - `ACF_Manuscript/tables/generated/`: 20 formatted LaTeX table includes, an export report, and source hashes.
-- `ACF_Manuscript/figs/generated/`: 12 figures used by the two `.chat.tex` documents.
+- `ACF_Manuscript/figs/generated/`: 16 figures used by the two `.chat.tex` documents.
 
 Both `0.main.chat.tex` and `0.SI.chat.tex` now read these relative paths, so Overleaf needs only the manuscript repository. Commit/sync the generated files and the edited `.chat.tex` files through your usual workflow; select the appropriate `.chat.tex` file as the Overleaf main document. There is no automatic Git commit, push, or Overleaf upload.
 
@@ -72,6 +72,7 @@ All source files and template substitutions are validated before destination fil
 - RMSE decomposition: `tables/app_tab_decomp.tex` from `scripts/5_Figure2_RMSE.do`. That source uses conventional OLS errors; its manuscript note now says OLS standard errors instead of robust errors.
 - The current all-natural-capital sources exclude urban land. Their obsolete Urban Land rows were removed. `DQ_prod_area` is mapped to Timber Land and `DQ_land` to Agricultural Land, correcting the pasted row-label mismatch.
 - The main map and overlay now use the explicit `_bias.pdf` files. The SI includes separate bias and RMSE decomposition tables and FWL figures. Saved decomposition regressions use negative reductions; the manifest reverses coefficient signs for publication, preserving standard errors and stars.
+- Appendix correlation PDFs (`Bias_Correlations.pdf` and `RMSE_Correlations.pdf`) are copied from `figs/` and included separately in the SI. Together with the two MSE diagnostic PDFs, all four final PDF outputs of `scripts/6_appendix_figures.do` are published. PNG duplicates and intermediate `.gph` panels are not needed by Overleaf. Rerun the script before publishing to refresh these figures.
 - RMSE diagnostic PDFs are now copied directly from `figs/RMSE_decomp1.pdf` and `figs/RMSE_decomp2.pdf`, produced by `scripts/6_appendix_figures.do`. Rerun that analysis script after edits before publishing. Neither publishing wrapper calls `05_export_diagnostics.do`; that helper is retained only as an unused historical fallback. The separate bias-map correction still runs.
 - The country table now reads `simulations/bias_rmse.csv`, exported by the main figure script, instead of the stale `tables/country_tab.tex`. Re-run the figure script after simulations to refresh this CSV. The current manuscript revision verified that the CSV agrees with the DTA for all 103 countries.
 - The GDP and agricultural TFP outputs differ materially from some pasted values. The source filenames and variable names determine the exports; see `tables/generated/export_report_all.md` for detailed numeric changes. Check the associated prose and captions before submission.

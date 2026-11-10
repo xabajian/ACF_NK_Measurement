@@ -1114,6 +1114,10 @@
       "file": "four_cases_overlay_RMSE.pdf"
     },
     {
+      "source": "Bias_Correlations.pdf",
+      "file": "Bias_Correlations.pdf"
+    },
+    {
       "source": "RMSE_Correlations.pdf",
       "file": "RMSE_Correlations.pdf"
     },

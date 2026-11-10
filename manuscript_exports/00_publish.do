@@ -5,7 +5,7 @@ if `"`analysis'"' != "" global ACF_ANALYSIS `"`analysis'"'
 if `"`manuscript'"' != "" global ACF_MANUSCRIPT `"`manuscript'"'
 if "$ACF_ANALYSIS" == "" global ACF_ANALYSIS "/Users/xabajian/Documents/GitHub/ACF_NK_Measurement"
 do "$ACF_ANALYSIS/manuscript_exports/config.do"
-* RMSE decomposition PDFs come from scripts/6_appendix_figures.do.
+* Bias/RMSE correlation and MSE decomposition PDFs come from scripts/6_appendix_figures.do.
 * Rerun that script after changing the analysis; exports copy its saved PDFs.
 do "$ACF_ANALYSIS/manuscript_exports/06_export_bias_map.do"
 tempfile success
