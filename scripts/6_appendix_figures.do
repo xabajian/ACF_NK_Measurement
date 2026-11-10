@@ -18,6 +18,8 @@ global figs   "$root/figs"
 global tables "$root/tables"
 global raw "$root/raw"
 global processed "$root/processed"
+global sim_dir "$root/simulations"
+
 set scheme plotplain
 
 
@@ -224,6 +226,75 @@ sureg ///
 	test  gdp_pc rgdpna hc resource_rents_gdp resource_depletion_gni
 	
 
+	
+	/*
+Step 2 -- Appendix figure of reductions in absolute bias
+against external factors.
+*/
+
+corr g_A sdA gdp_pc
+reg gdp_pc g_A sdA
+
+local xvars gdp_pc rgdpna hc statcap resource_rents_gdp resource_depletion_gni
+local panels a b c d e f
+local i = 0
+
+foreach x of local xvars {
+    local ++i
+    local panel : word `i' of `panels'
+
+    if `i' == 1 local xlab "ln(GDP per Capita) in 2019"
+    if `i' == 2 local xlab "ln(GDP) in 2019"
+    if `i' == 3 local xlab "Human Capital Index in 2019"
+    if `i' == 4 local xlab "Statistical Capacity in 2019"
+    if `i' == 5 local xlab "Resource Rents as Share of GDP in 2019"
+    if `i' == 6 local xlab "Natural Resource Depletion as a Share of GNI in 2019"
+
+    reg bias_reduction `x', r
+    lincom `x'
+    local b : display %4.3f r(estimate)
+    local p : display %4.3f r(p)
+
+    // Scale the annotation location to each panel's observed data range.
+    // Original fixed RMSE coordinates need not suit bias_reduction.
+    quietly summarize bias_reduction if e(sample)
+    local ypos = r(min) + 0.85*(r(max) - r(min))
+    quietly summarize `x' if e(sample)
+    local xpos = r(min) + 0.15*(r(max) - r(min))
+
+    twoway ///
+        (lfit bias_reduction `x', lpattern(dash) lcolor(gray%60)) ///
+        (lpoly bias_reduction `x', color(orange%80) lwidth(.6) lpattern(dash)) ///
+        (scatter bias_reduction `x', mcolor(navy%100) msy(circle) msize(small) ///
+            yline(0, lpattern(dash) lcolor(gray%40)) ///
+            xlabel(, nogrid labsize(small)) ///
+            ylabel(, nogrid labsize(small))), ///
+        xtitle("`xlab'", size(small)) ///
+        ytitle("Reduction in Absolute Bias", size(small)) ///
+        text(`ypos' `xpos' "{&beta} = `b', {it:p}: `p'.", size(vsmall)) ///
+        legend(off) ///
+        title("{bf:`panel'}", pos(11) ring(0) just(left) size(medsmall) color(black)) ///
+        saving("$figs/overlay_bias`i'.gph", replace)
+}
+
+graph combine ///
+    "$figs/overlay_bias1.gph" "$figs/overlay_bias2.gph" ///
+    "$figs/overlay_bias3.gph" "$figs/overlay_bias4.gph" ///
+    "$figs/overlay_bias5.gph" "$figs/overlay_bias6.gph", ///
+    col(2) imargin(none)
+
+graph export "$figs/Bias_Correlations.png", replace
+graph export "$figs/Bias_Correlations.pdf", replace
+
+sureg ///
+    (bias_reduction gdp_pc) ///
+    (bias_reduction rgdpna) ///
+    (bias_reduction hc) ///
+    (bias_reduction statcap)
+
+reg bias_reduction gdp_pc rgdpna hc resource_rents_gdp resource_depletion_gni, r
+test gdp_pc rgdpna hc resource_rents_gdp resource_depletion_gni
+	
 
 /*
 @!#$!@#$#@!$@!#$#!#
